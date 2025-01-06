@@ -1,6 +1,6 @@
 ﻿namespace Scratchy.Domain.Interfaces.Services
 {
-    public interface IFollowService
+    public interface IFollowerService
     {
         Task FollowUserAsync(string followerId, string followingId);
         Task UnfollowUserAsync(string followerIdstring, string followingId);

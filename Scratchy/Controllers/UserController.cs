@@ -23,7 +23,7 @@ namespace Scratchy.Controllers
         private readonly IUserService _userService;
         private readonly IConfiguration _configuration;
         private readonly IFriendshipService _friendshipService;
-        private readonly IFollowService _followService;
+        private readonly IFollowerService _followService;
 
         public UserController(
             IUserRepository userRepo, 
@@ -32,7 +32,7 @@ namespace Scratchy.Controllers
             INotificationService notificationService,
             IConfiguration configuration,
             IUserService userService,
-            IFriendshipService friendshipService, IFollowService followService)
+            IFriendshipService friendshipService, IFollowerService followService)
         {
             _userRepo = userRepo;
             _loginService = loginService;

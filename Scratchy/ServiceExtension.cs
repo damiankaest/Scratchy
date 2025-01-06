@@ -69,7 +69,7 @@ public static class ServiceExtensions
         services.AddScoped<IArtistService, ArtistService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IFriendshipService, FriendshipService>();
-        services.AddScoped<IFollowService, FollowService>();
+        services.AddScoped<IFollowerService, FollowService>();
         services.AddScoped<INotificationService, NotificationService>();
     }
 

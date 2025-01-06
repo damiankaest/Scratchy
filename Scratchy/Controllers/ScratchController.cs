@@ -18,9 +18,9 @@ namespace Scratchy.Controllers
         private readonly IUserRepository _userDataRepository;
         private readonly ILibraryService _libService;
         private readonly IBlobService _blobService;
-        private readonly IFollowService _followService;
+        private readonly IFollowerService _followService;
 
-        public ScratchController(IFollowService followService, IScratchRepository scratchRepository, IUserRepository userDataRepository,ILibraryService libService,IBlobService blobService, IAlbumRepository albumRepository = null)
+        public ScratchController(IFollowerService followService, IScratchRepository scratchRepository, IUserRepository userDataRepository,ILibraryService libService,IBlobService blobService, IAlbumRepository albumRepository = null)
         {
             _scratchRepository = scratchRepository;
             _userDataRepository = userDataRepository;

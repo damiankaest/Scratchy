@@ -18,9 +18,9 @@ namespace Scratchy.Controllers
         private IAlbumRepository _albumRepository;
         private IArtistService _artistService;
         private IUserService _userService;
-        private IFollowService _followService;
+        private IFollowerService _followService;
 
-        public ExploreController(IExplorerService explorerService, IAlbumRepository albumRepository, IArtistService artistService, IUserService userService,IFollowService followService)
+        public ExploreController(IExplorerService explorerService, IAlbumRepository albumRepository, IArtistService artistService, IUserService userService,IFollowerService followService)
         {
             _explorerService = explorerService;
             _albumRepository = albumRepository;
