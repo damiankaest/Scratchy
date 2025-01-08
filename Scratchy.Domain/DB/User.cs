@@ -13,6 +13,9 @@ namespace Scratchy.Domain.DB
             Id = createUserDto.Uid;
         }
 
+        public ICollection<UserBadge> UserBadges { get; set; }
+
+
         public User()
         {
             

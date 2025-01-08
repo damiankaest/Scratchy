@@ -29,13 +29,14 @@ namespace Scratchy.Controllers
                 //return Unauthorized(new { Message = "User ID not found in token." });
             }
 
-            var follower = await _followerService.GetFollowingAsync(currentUserID);
-            var result = new List<FollowingDto>()
+            var followingIds = await _followerService.GetFollowingAsync(currentUserID);
+            var result = new List<FollowingDto>();
+
+            foreach (var followingId in followingIds)
             {
-                new FollowingDto() {Id = "1235413521", UserName = "Damian Kästner"},
-                new FollowingDto() {Id = "1235413522", UserName = "Bastian Kästner"},
-                new FollowingDto() {Id = "1235413523", UserName = "Jana Kästner"}
-            };
+                var user = await _userService.GetByIdAsync(followingId);
+                result.Add(new FollowingDto() { Id = followingId, UserName = user.Username });
+            }
             return Ok(result);
         }
 
@@ -49,11 +50,11 @@ namespace Scratchy.Controllers
             {
                 //return Unauthorized(new { Message = "User ID not found in token." });
             }
-            var followers = await _followerService.GetFollowersAsync(currentUserID);
+            var followerIds = await _followerService.GetFollowersAsync(currentUserID);
 
             var result = new List<FollowerDto>();
 
-            foreach (var followerId in followers)
+            foreach (var followerId in followerIds)
             {
                 var user = await _userService.GetByIdAsync(followerId);
                 result.Add(new FollowerDto() { Id = followerId, UserName = user.Username });

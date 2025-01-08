@@ -2,7 +2,7 @@
 
 namespace Scratchy.Domain.Interfaces.Repositories
 {
-    public interface IFollowRepository
+    public interface IFollowerRepository
     {
         Task AddAsync(Follow follow);
         Task RemoveAsync(Follow follow);

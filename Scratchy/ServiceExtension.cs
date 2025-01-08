@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Scratchy.Application.Services;
 using Scratchy.Domain.Interfaces.Repositories;
@@ -50,8 +48,10 @@ public static class ServiceExtensions
         services.AddTransient<ILibraryRepository, LibraryRepository>();
         services.AddTransient<IArtistRepository, ArtistRepository>();
         services.AddTransient<IFriendshipRepository, FriendshipRepository>();
-        services.AddTransient<IFollowRepository, FollowRepository>();
+        services.AddTransient<IFollowerRepository, FollowRepository>();
         services.AddTransient<INotificationRepository, NotificationRepository>();
+        services.AddTransient<IBadgeRepository, BadgeRepository>();
+        services.AddTransient<IUserBadgeRepository,UserBadgeRepository>();
     }
 
     public static void ConfigureServices(this IServiceCollection services)
@@ -69,8 +69,9 @@ public static class ServiceExtensions
         services.AddScoped<IArtistService, ArtistService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IFriendshipService, FriendshipService>();
-        services.AddScoped<IFollowerService, FollowService>();
+        services.AddScoped<IFollowerService, FollowerService>();
         services.AddScoped<INotificationService, NotificationService>();
+        services.AddScoped<IBadgeService, BadgeService>();
     }
 
     public static void ConfigureApplicationInsights(this IServiceCollection services, IConfiguration configuration)
@@ -80,59 +81,4 @@ public static class ServiceExtensions
             ConnectionString = configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]
         });
     }
-
-    //public static void ConfigureAuthentication(this IServiceCollection services, IConfiguration configuration)
-    //{
-    //    var firebaseProjectId = configuration["Firebase:ProjectId"]; // Firebase-Projekt-ID
-
-    //    services.AddAuthentication(options =>
-    //    {
-    //        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    //        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    //    })
-    //    .AddJwtBearer(options =>
-    //    {
-
-    //        options.Authority = $"https://securetoken.google.com/{firebaseProjectId}";
-    //        options.TokenValidationParameters = new TokenValidationParameters
-    //        {
-    //            ValidateIssuer = true,
-    //            ValidIssuer = $"https://securetoken.google.com/{firebaseProjectId}",
-    //            ValidateAudience = true,
-    //            ValidAudience = firebaseProjectId,
-    //            ValidateLifetime = true,
-    //            ValidateIssuerSigningKey = true
-    //        };
-
-    //        options.Events = new JwtBearerEvents
-    //        {
-    //            OnAuthenticationFailed = context =>
-    //            {
-    //                Console.WriteLine($"Authentication failed: {context.Exception.Message}");
-    //                return Task.CompletedTask;
-    //            },
-    //            OnTokenValidated = async context =>
-    //            {
-    //                try
-    //                {
-    //                    var idToken = context.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-
-    //                    var firebaseToken = await FirebaseWrapper.VerifyTokenAsync(idToken);
-    //                    Console.WriteLine($"Token validated successfully for user: {firebaseToken.Uid}");
-
-    //                    var claimsIdentity = context.Principal.Identity as System.Security.Claims.ClaimsIdentity;
-    //                    if (claimsIdentity != null)
-    //                    {
-    //                        claimsIdentity.AddClaim(new System.Security.Claims.Claim("user_id", firebaseToken.Uid));
-    //                    }
-    //                }
-    //                catch (Exception ex)
-    //                {
-    //                    Console.WriteLine($"Custom Firebase validation failed: {ex.Message}");
-    //                    throw;
-    //                }
-    //            }
-    //        };
-    //    });
-    //}
 }

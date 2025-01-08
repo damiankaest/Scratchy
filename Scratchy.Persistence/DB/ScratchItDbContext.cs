@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Scratchy.Domain.DB;
+using System.Reflection.Emit;
 
 namespace Scratchy.Persistence.DB
 {
@@ -19,7 +20,23 @@ namespace Scratchy.Persistence.DB
         public DbSet<Friendship> Friendships { get; set; }
         public DbSet<Follow> Follows { get; set; }
 
+        public DbSet<UserBadge> UserBadges { get; set; }
+        public DbSet<Badge> Badges { get; set; }
+
         public DbSet<Library> Libraries { get; set; }
+
+        // upcoming Features:
+        public DbSet<Wishlist> Wishlists { get; set; }
+        public DbSet<WishlistItem> WishlistItems { get; set; }
+        public DbSet<MarketplaceListing> MarketplaceListings { get; set; }
+        public DbSet<Playlist> Playlists { get; set; }
+        public DbSet<PlaylistItem> PlaylistItems { get; set; }
+        public DbSet<Report> Reports { get; set; }
+
+
+
+
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -27,6 +44,27 @@ namespace Scratchy.Persistence.DB
             builder.Entity<Follow>()
                  .Property(f => f.Id)
                  .HasDefaultValueSql("NEWID()"); // SQL Server generiert GUID automatisch
+
+            builder.Entity<Badge>(entity =>
+            {
+                entity.HasKey(b => b.Id);
+            });
+
+            builder.Entity<UserBadge>(entity =>
+            {
+                entity.HasKey(ub => ub.Id);
+
+                // Relationen
+                entity
+                    .HasOne(ub => ub.User)
+                    .WithMany(u => u.UserBadges)
+                    .HasForeignKey(ub => ub.UserId);
+
+                entity
+                    .HasOne(ub => ub.Badge)
+                    .WithMany(b => b.UserBadges)
+                    .HasForeignKey(ub => ub.BadgeId);
+            });
         }
     }
 }

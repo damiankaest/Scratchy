@@ -5,7 +5,7 @@ using Scratchy.Persistence.DB;
 
 namespace Scratchy.Persistence.Repositories
 {
-    public class FollowRepository : IFollowRepository
+    public class FollowRepository : IFollowerRepository
     {
         private readonly ScratchItDbContext _context;
 
