@@ -1,4 +1,4 @@
-﻿using Scratchy.Domain.DB;
+﻿using Scratchy.Domain.DTO.DB;
 
 namespace Scratchy.Domain.Interfaces.Repositories
 {
@@ -6,10 +6,10 @@ namespace Scratchy.Domain.Interfaces.Repositories
     {
         Task AddAsync(Follow follow);
         Task RemoveAsync(Follow follow);
-        Task<Follow> GetFollowAsync(string followerId, string followingId);
-        Task<bool> IsFollowingAsync(string followerId, string followingId);
-        Task<List<string>> GetFollowersAsync(string userId);
-        Task<List<string>> GetFollowingAsync(string userId);
+        Task<Follow> GetFollowAsync(int followerId, int followingId);
+        Task<bool> IsFollowingAsync(int followerId, int followingId);
+        Task<List<int>> GetFollowersAsync(int userId);
+        Task<List<int>> GetFollowingAsync(int userId);
     }
 
 }

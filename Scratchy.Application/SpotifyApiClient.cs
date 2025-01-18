@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
-using Scratchy.Domain.DB;
-using System.Collections.Generic;
+using Scratchy.Domain.DTO.DB;
 
 namespace Scratchy.Application
 {
@@ -65,7 +64,7 @@ namespace Scratchy.Application
             JObject jsonResponse = JObject.Parse(content);
 
             var albums = jsonResponse["albums"]?["items"]?
-                .Select(item => new Album((JObject)item))
+                .Select(item => new Album())
                 .ToList() ?? new List<Album>();
 
             return albums;

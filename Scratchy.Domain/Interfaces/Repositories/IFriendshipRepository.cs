@@ -1,4 +1,4 @@
-﻿using Scratchy.Domain.DB;
+﻿using Scratchy.Domain.DTO.DB;
 
 namespace Scratchy.Domain.Interfaces.Repositories
 {
@@ -6,10 +6,10 @@ namespace Scratchy.Domain.Interfaces.Repositories
     {
         object GetByUserId(string requestId);
 
-        Task<Friendship> GetByIdAsync(string id);
-        Task<List<Friendship>> GetByUserIdAsync(string userId);
-        Task AddAsync(Friendship friendship);
-        Task UpdateAsync(Friendship friendship);
+        Task<Follow> GetByIdAsync(string id);
+        Task<List<Follow>> GetByUserIdAsync(string userId);
+        Task AddAsync(Follow friendship);
+        Task UpdateAsync(Follow friendship);
         Task<List<string>> GetFriendIdsAsync(string userId);
     }
 }

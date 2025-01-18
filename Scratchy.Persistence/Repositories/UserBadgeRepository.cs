@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Scratchy.Domain.DB;
+using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Persistence.DB;
 
@@ -21,7 +21,7 @@ namespace Scratchy.Persistence.Repositories
         /// <param name="userId">ID des Benutzers</param>
         /// <param name="badgeId">ID des Badges</param>
         /// <returns>UserBadge oder null, falls nicht vorhanden</returns>
-        public async Task<UserBadge> GetByUserAndBadgeAsync(string userId, string badgeId)
+        public async Task<UserBadge> GetByUserAndBadgeAsync(int userId, int badgeId)
         {
             return await _context.UserBadges
                 .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BadgeId == badgeId);
@@ -51,7 +51,7 @@ namespace Scratchy.Persistence.Repositories
         /// Löscht einen Eintrag anhand der eindeutigen ID (Primärschlüssel in UserBadges).
         /// </summary>
         /// <param name="userBadgeId">ID des UserBadge-Eintrags</param>
-        public async Task DeleteAsync(string userBadgeId)
+        public async Task DeleteAsync(int userBadgeId)
         {
             var userBadge = await _context.UserBadges.FindAsync(userBadgeId);
             if (userBadge != null)
@@ -59,11 +59,6 @@ namespace Scratchy.Persistence.Repositories
                 _context.UserBadges.Remove(userBadge);
                 await _context.SaveChangesAsync();
             }
-        }
-
-        public Task<UserBadge> GetByUserAndBadgeAsync(string userId, int badgeId)
-        {
-            throw new NotImplementedException();
         }
     }
 }

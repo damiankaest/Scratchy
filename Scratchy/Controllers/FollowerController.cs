@@ -50,16 +50,16 @@ namespace Scratchy.Controllers
             {
                 //return Unauthorized(new { Message = "User ID not found in token." });
             }
-            var followerIds = await _followerService.GetFollowersAsync(currentUserID);
+            //var followerIds = await _followerService.GetFollowersAsync(currentUserID);
 
             var result = new List<FollowerDto>();
 
-            foreach (var followerId in followerIds)
-            {
-                var user = await _userService.GetByIdAsync(followerId);
-                result.Add(new FollowerDto() { Id = followerId, UserName = user.Username });
-             }
-            return Ok(result);
+            //foreach (var followerId in followerIds)
+            //{
+            //    var user = await _userService.GetByIdAsync(followerId);
+            //    result.Add(new FollowerDto() { Id = followerId, UserName = user.Username });
+            // }
+            return Ok();
         }
     }
 

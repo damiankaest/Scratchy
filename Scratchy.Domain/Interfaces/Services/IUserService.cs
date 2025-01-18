@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Scratchy.Domain.DB;
+using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.DTO.Response.Explore;
 
 namespace Scratchy.Domain.Interfaces.Services

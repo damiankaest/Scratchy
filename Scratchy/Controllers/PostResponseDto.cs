@@ -1,7 +1,8 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 using Scratchy.Domain.DTO;
-using Scratchy.Domain.DB;
+
+using Scratchy.Domain.DTO.DB;
 
 namespace Scratchy.Controllers
 {
@@ -9,16 +10,11 @@ namespace Scratchy.Controllers
     {
         public PostResponseDto(Post post, User _user)
         {
-            _id = post._id;
-            mediaDataId = post.mediaDataId;
-            userRatingId = post.userRatingId;
-            title = post.title;
-            description = post.description;
+            _id = post.PostId;
             user = _user;
-            CreatedOn = post.CreatedOn;
-            scratches = post.scratches;
+            CreatedOn = post.CreatedAt;
         }
-        public string _id { get; set; } = string.Empty;
+        public int _id { get; set; } = 0;
         public User user { get; set; } = new User() { Username = "nAn"};
         public string mediaDataId { get; set; } = string.Empty;
         public string userRatingId { get; set; } = string.Empty;

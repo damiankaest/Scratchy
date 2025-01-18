@@ -1,4 +1,6 @@
-﻿using Scratchy.Domain.DB;
+﻿
+
+using Scratchy.Domain.DTO.DB;
 
 namespace Scratchy.Domain.Interfaces.Repositories
 {
@@ -6,7 +8,7 @@ namespace Scratchy.Domain.Interfaces.Repositories
     {
         Task<IEnumerable<User>> GetByQueryAsync(string query, int limit);
         Task<IEnumerable<User>> GetAllAsync();
-        Task<User> GetByIdAsync(string id);
+        Task<User> GetByFirebaseIdAsync(string id);
         Task<User> AddAsync(User user);
         Task<User> UpdateAsync(User user);
         Task DeleteAsync(int id);

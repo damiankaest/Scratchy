@@ -47,8 +47,8 @@ namespace Scratchy.Controllers
 
             foreach (var user in users)
             {
-                if (friendIds.Contains(user.UserId))
-                    user.IsFollowing = true;
+                //if (friendIds.Contains(user.UserId))
+                //    user.IsFollowing = true;
             }
 
             var respose = new ExploreResponseDto()

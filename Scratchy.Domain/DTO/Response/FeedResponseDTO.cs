@@ -1,4 +1,5 @@
-﻿using Scratchy.Domain.DB;
+﻿
+using Scratchy.Domain.DTO.DB;
 
 namespace Scratchy.Domain.DTO.Response
 {

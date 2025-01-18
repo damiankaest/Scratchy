@@ -1,10 +1,6 @@
-﻿using Scratchy.Domain.DB;
+﻿
+using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.Interfaces.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Scratchy.Domain.Interfaces.Repositories
 {

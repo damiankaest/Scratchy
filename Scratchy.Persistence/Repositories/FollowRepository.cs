@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Scratchy.Domain.DB;
+using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Persistence.DB;
 
@@ -26,31 +26,31 @@ namespace Scratchy.Persistence.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Follow> GetFollowAsync(string followerId, string followingId)
+        public async Task<Follow> GetFollowAsync(int followerId, int followingId)
         {
             return await _context.Follows
-                .FirstOrDefaultAsync(f => f.FollowerId == followerId && f.FollowingId == followingId);
+                .FirstOrDefaultAsync(f => f.FollowerId == followerId && f.FollowedId == followingId);
         }
 
-        public async Task<bool> IsFollowingAsync(string followerId, string followingId)
+        public async Task<bool> IsFollowingAsync(int followerId, int followingId)
         {
             return await _context.Follows
-                .AnyAsync(f => f.FollowerId == followerId && f.FollowingId == followingId);
+                .AnyAsync(f => f.FollowerId == followerId && f.FollowedId == followingId);
         }
 
-        public async Task<List<string>> GetFollowersAsync(string userId)
+        public async Task<List<int>> GetFollowersAsync(int userId)
         {
             return await _context.Follows
-                .Where(f => f.FollowingId == userId)
+                .Where(f => f.FollowerId == userId)
                 .Select(f => f.FollowerId)
                 .ToListAsync();
         } 
 
-        public async Task<List<string>> GetFollowingAsync(string userId)
+        public async Task<List<int>> GetFollowingAsync(int userId)
         {
             return await _context.Follows
                 .Where(f => f.FollowerId == userId)
-                .Select(f => f.FollowingId)
+                .Select(f => f.FollowedId)
                 .ToListAsync();
         }
     }

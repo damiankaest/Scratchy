@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
-using Scratchy.Domain.DB;
+using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Persistence.DB;
 
@@ -21,15 +21,15 @@ namespace Scratchy.Persistence.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Notification> GetByIdAsync(string id)
+        public async Task<Notification> GetByIdAsync(int id)
         {
             return await _context.Notifications.FindAsync(id);
         }
 
-        public async Task<List<Notification>> GetByUserIdAsync(string userId)
+        public async Task<List<Notification>> GetByUserIdAsync(int userId)
         {
             return await _context.Notifications
-                .Where(n => n.ReceiverId == userId)
+                .Where(n => n.User.UserId == userId)
                 .OrderByDescending(n => n.CreatedAt)
                 .ToListAsync();
         }
@@ -40,7 +40,7 @@ namespace Scratchy.Persistence.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(string id)
+        public async Task DeleteAsync(int id)
         {
             var notification = await GetByIdAsync(id);
             if (notification != null)
@@ -50,23 +50,27 @@ namespace Scratchy.Persistence.Repositories
             }
         }
 
-        public async Task MarkAsReadAsync(string id)
+        public async Task MarkAsReadAsync(int id)
         {
             var notification = await GetByIdAsync(id);
-            if (notification != null && !notification.HasSeen)
+            if (notification != null && !notification.IsRead)
             {
-                notification.HasSeen = true;
+                notification.IsRead = true;
                 await UpdateAsync(notification);
             }
         }
 
-        public async Task<List<Notification>> GetUnreadNotificationsAsync(string userId)
+        public async Task<List<Notification>> GetUnreadNotificationsAsync(int userId)
         {
             return await _context.Notifications
-                .Where(n => n.ReceiverId == userId && !n.HasSeen)
+                .Where(n => n.UserId == userId && !n.IsRead)
                 .OrderByDescending(n => n.CreatedAt)
                 .ToListAsync();
         }
 
+        public Task<List<Notification>> GetByUserIdAsync(string userId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

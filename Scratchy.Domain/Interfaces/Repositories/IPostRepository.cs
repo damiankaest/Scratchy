@@ -1,4 +1,5 @@
-﻿using Scratchy.Domain.DB;
+﻿
+using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.Interfaces.Services;
 
 namespace Scratchy.Domain.Interfaces.Repositories

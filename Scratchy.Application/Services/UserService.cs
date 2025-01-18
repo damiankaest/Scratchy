@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Data.SqlClient;
-using Scratchy.Domain.DB;
-using Scratchy.Domain.DTO.Request;
-using Scratchy.Domain.DTO.Response.Explore;
+﻿using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
 
@@ -42,7 +35,7 @@ namespace Scratchy.Services
 
         public async Task<User> GetByIdAsync(string id)
         {
-            var user = await _userRepository.GetByIdAsync(id);
+            var user = await _userRepository.GetByFirebaseIdAsync(id);
             if (user == null)
                 throw new KeyNotFoundException($"Kein Benutzer mit der ID {id} gefunden.");
 
@@ -62,16 +55,16 @@ namespace Scratchy.Services
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
-            var existingUser = await _userRepository.GetByIdAsync("");
+            var existingUser = await _userRepository.GetByFirebaseIdAsync("");
             if (existingUser == null)
-                throw new KeyNotFoundException($"Kein Benutzer mit der ID {user.Id} gefunden.");
+                throw new KeyNotFoundException($"Kein Benutzer mit der ID {user.UserId} gefunden.");
 
             return await _userRepository.UpdateAsync(user);
         }
 
         public async Task DeleteAsync(string id)
         {
-            var user = await _userRepository.GetByIdAsync(id);
+            var user = await _userRepository.GetByFirebaseIdAsync(id);
             if (user == null)
                 throw new KeyNotFoundException($"Kein Benutzer mit der ID {id} gefunden.");
 

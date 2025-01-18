@@ -1,4 +1,5 @@
-﻿using Scratchy.Domain.DB;
+﻿
+using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
 
@@ -22,7 +23,7 @@ namespace Scratchy.Application.Services
             return await _badgeRepository.GetAllAsync();
         }
 
-        public async Task<Badge> GetBadgeByIdAsync(string badgeId)
+        public async Task<Badge> GetBadgeByIdAsync(int badgeId)
         {
             return await _badgeRepository.GetByIdAsync(badgeId);
         }
@@ -45,7 +46,7 @@ namespace Scratchy.Application.Services
         }
 
         // --- BADGE-Funktionen für USER ---
-        public async Task AddBadgeToUserAsync(string userId, string badgeId)
+        public async Task AddBadgeToUserAsync(int userId, int badgeId)
         {
             // Prüfen, ob UserBadge schon existiert:
             var existing = await _userBadgeRepository.GetByUserAndBadgeAsync(userId, badgeId);
@@ -53,7 +54,6 @@ namespace Scratchy.Application.Services
             {
                 // ggf. Level erhöhen oder eine Exception werfen,
                 // je nachdem wie du dein Business-Case definierst
-                existing.Level++;
                 await _userBadgeRepository.UpdateAsync(existing);
                 return;
             }
@@ -63,18 +63,16 @@ namespace Scratchy.Application.Services
             {
                 UserId = userId,
                 BadgeId = badgeId,
-                Level = 1,
-                EarnedOn = DateTime.Now
+                AwardedAt = DateTime.UtcNow,
             };
             await _userBadgeRepository.AddAsync(userBadge);
         }
 
-        public async Task IncrementUserBadgeLevelAsync(string userId, string badgeId)
+        public async Task IncrementUserBadgeLevelAsync(int userId, int badgeId)
         {
             var userBadge = await _userBadgeRepository.GetByUserAndBadgeAsync(userId, badgeId);
             if (userBadge != null)
             {
-                userBadge.Level++;
                 await _userBadgeRepository.UpdateAsync(userBadge);
             }
             else
@@ -91,6 +89,21 @@ namespace Scratchy.Application.Services
         }
 
         public object GetByUserId(string? currentUserId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteBadgeAsync(int badgeId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object GetDisplayedBadgesByUserId(int? currentUserId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object GetByUserId(int? currentUserId)
         {
             throw new NotImplementedException();
         }

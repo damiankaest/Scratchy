@@ -1,5 +1,5 @@
 ﻿using MongoDB.Driver;
-using Scratchy.Domain.DB;
+
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Persistence.DB;
 

@@ -1,4 +1,4 @@
-﻿using Scratchy.Domain.DB;
+﻿
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
 
@@ -14,11 +14,6 @@ namespace Scratchy.Application.Services
         {
            await _libRepo.AddAsync(libEntry);
             return true;
-        }
-
-        public Task<Library> GetByUserId(string userId)
-        {
-            throw new NotImplementedException();
         }
     }
 }

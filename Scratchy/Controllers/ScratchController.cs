@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Scratchy.Domain.DB;
 using Scratchy.Domain.DTO;
+using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
 using System.Security.Claims;
@@ -13,21 +13,23 @@ namespace Scratchy.Controllers
     [Route("scratches")]
     public class ScratchController : ControllerBase
     {
-        private readonly IScratchRepository _scratchRepository;
-        private readonly IAlbumRepository _albumRepository;
-        private readonly IUserRepository _userDataRepository;
         private readonly ILibraryService _libService;
         private readonly IBlobService _blobService;
         private readonly IFollowerService _followService;
+        private readonly IScratchService _scratchService;
 
-        public ScratchController(IFollowerService followService, IScratchRepository scratchRepository, IUserRepository userDataRepository,ILibraryService libService,IBlobService blobService, IAlbumRepository albumRepository = null)
+        public ScratchController(IScratchService scratchService,
+            IFollowerService followService,  
+            ILibraryService libService,
+            IBlobService blobService,
+            IUserService userService
+            )
+
         {
-            _scratchRepository = scratchRepository;
-            _userDataRepository = userDataRepository;
-            _albumRepository = albumRepository;
             _libService = libService;
             _blobService = blobService;
             _followService = followService;
+            _scratchService = scratchService;
         }
 
         [HttpGet]
@@ -44,20 +46,21 @@ namespace Scratchy.Controllers
 
             homeFeedUserIds.AddRange(await _followService.GetFollowingAsync(currentUserID));
 
-            var listOfScratches = await  _scratchRepository.GetScratchesAsync(homeFeedUserIds);
-
+            var user = _userService.GetUserByFireBaseId(currentUserID);
+            var listOfScratches = await _scratchService.GetHomeFeedByUserIdAsync(currentUserID);
+            
             foreach (var scratch in listOfScratches)
             {
-                var albumInfo = await _albumRepository.GetByIdAsync(scratch.AlbumId);
-                var userInfo = await _userDataRepository.GetByIdAsync(scratch.UserId);
-                scratch.UserName = userInfo.Username;
-                scratch.UserImageUrl = userInfo.ProfilePicture;
-                scratch.SpotifyRefUrl = albumInfo.SpotifyUrl;
-                scratch.AlbumImageUrl = albumInfo.SpotifyImageUrl;
-                scratch.AlbumName = albumInfo.Name;
-                scratch.ArtistName = albumInfo.Artist;
+                //var albumInfo = await _albumRepository.GetByIdAsync(scratch.AlbumId);
+                //var userInfo = await _userDataRepository.GetByIdAsync(scratch.UserId);
+                //scratch.UserName = userInfo.Username;
+                //scratch.UserImageUrl = userInfo.ProfilePicture;
+                //scratch.SpotifyRefUrl = albumInfo.SpotifyUrl;
+                //scratch.AlbumImageUrl = albumInfo.SpotifyImageUrl;
+                //scratch.AlbumName = albumInfo.Name;
+                //scratch.ArtistName = albumInfo.Artist;
             }
-            return Ok(listOfScratches.OrderByDescending(x=>x.CreatedOn));
+            return Ok(listOfScratches.OrderByDescending(x=>x.));
         }
 
         [AllowAnonymous]
@@ -74,17 +77,17 @@ namespace Scratchy.Controllers
         }
 
         [HttpGet("ByUserId")]
-        public async Task<IActionResult> GetPostsByUserId([FromQuery] string userId)
+        public async Task<IActionResult> GetScratchesByUserId([FromQuery] int userId)
         {
-            var listOfPosts = await _scratchRepository.GetByUserIdAsync(userId);
+            var listOfPosts = await _scratchService.GetByUserIdAsync(userId);
             return Ok(listOfPosts);
         }
 
         [HttpGet("DetailsById")]
-        public async Task<IActionResult> GetPostDetailsById([FromQuery] string postId)
+        public async Task<IActionResult> GetPostDetailsById([FromQuery] string scratchId)
         {
-            var listOfPosts = await _scratchRepository.GetByIdAsync(postId);
-            return Ok(listOfPosts);
+            ScratchDetailsRespnseDto listOfScratches = await _scratchService.GetDetailsById(scratchId);
+            return Ok(listOfScratches);
         }
 
         [AllowAnonymous]
@@ -92,7 +95,8 @@ namespace Scratchy.Controllers
         //[Authorize]
         public async Task<IActionResult> CreateNew(CreateScratchRequestDto newScratch) // [FromBody] CreateScratchRequestDto createPost
         {
-            var result = await _scratchRepository.UploadAsync(newScratch);
+            var result = await _scratchService.CreateNewAsync(newScratch);
+            //var result = await _scratchRepository.UploadAsync(newScratch);
             
             return Ok(result);
         }
@@ -102,16 +106,12 @@ namespace Scratchy.Controllers
         //[Authorize]
         public async Task<IActionResult> CreateNewPost() // [FromBody] CreateScratchRequestDto createPost
         {
-
             var createPost = new CreateScratchRequestDto();
             var authHeader = Request.Headers["Authorization"].ToString();
 
             if (!string.IsNullOrEmpty(authHeader) && authHeader.StartsWith("Bearer "))
             {
-                // Nur den reinen Token ohne "Bearer "
                 var token = authHeader.Substring("Bearer ".Length).Trim();
-
-                // Token weiterverarbeiten (z.B. Validierung, Claims auslesen, usw.)
                 return Ok(new { message = "Token empfangen", token });
             }
 
@@ -124,17 +124,19 @@ namespace Scratchy.Controllers
                         )
                         .Value;
 
-            var albumInfo = await _albumRepository.GetByIdAsync(createPost.AlbumId);
+            var albumInfo = await  _albumService.GetByIdAsync(createPost.AlbumId)
+                
+                _albumRepository.GetByIdAsync(createPost.AlbumId);
            
 
-            var newPost = new Scratch(createPost, albumInfo, "");
+            //var newPost = new Scratch(createPost, albumInfo, "");
 
             byte[] imageBytes = Convert.FromBase64String(createPost.UserImageAsBase64String);
             using (var stream = new MemoryStream(imageBytes))
             {
-                newPost.UserImageUrl = await _blobService.UploadFileAsync("userimages", newPost.Id, stream);
+                //newPost. = await _blobService.UploadFileAsync("userimages", newPost.Id, stream);
             }
-            await _scratchRepository.AddAsync(newPost);
+            //await _scratchRepository.AddAsync(newPost);
             return Ok();
         }
 

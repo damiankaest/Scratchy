@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using Scratchy.Application.Services;
-using Scratchy.Domain.DB;
 using Scratchy.Domain.DTO;
+using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.DTO.Request;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
@@ -51,13 +51,14 @@ namespace Scratchy.Controllers
             {
                 var user = new User
                 {
-                    Id = newUser.Uid,
+                    FirebaseId = newUser.Uid,
                     Username = newUser.UserName,
                     Email = newUser.Email,
+                    CreatedAt = DateTime.Now,
                 };
 
                 var result = await _userService.AddAsync(user);
-                return Ok(result);
+                return Ok(result.UserId);
             }
             catch (Exception ex)
             {
@@ -94,7 +95,7 @@ namespace Scratchy.Controllers
         }
 
         [HttpGet("follow")]
-        public async Task<IActionResult> FollowUser(string receiverId)
+        public async Task<IActionResult> FollowUser(int receiverId)
         {
             string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -103,7 +104,7 @@ namespace Scratchy.Controllers
                 return Unauthorized(new { Message = "User ID not found in token." });
             }
 
-            var userResult = await _userService.GetByIdAsync(receiverId);
+            var userResult = await _userService.GetByIdAsync(receiverId.ToString());
             var currentUser = await _userService.GetByIdAsync(currentUserId);
             try
             {
@@ -127,7 +128,7 @@ namespace Scratchy.Controllers
             var currentUser = await _userService.GetByIdAsync(currentUserId);
             try
             {
-                await _followService.UnfollowUserAsync(currentUserId, receiverId);
+                //await _followService.UnfollowUserAsync(currentUserId, receiverId);
             }
             catch (Exception)
             {

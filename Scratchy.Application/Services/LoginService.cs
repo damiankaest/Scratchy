@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Scratchy.Domain.DB;
+
 using Scratchy.Domain.DTO;
+using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.DTO.Request;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
@@ -42,7 +43,7 @@ namespace Scratchy.Application.Services
             if (userAddResult == null)
                 return "Try login later";
 
-            return userAddResult.Id;
+            return userAddResult.UserId.ToString();
         }
     }
 }

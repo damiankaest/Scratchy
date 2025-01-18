@@ -37,7 +37,7 @@ public static class ServiceExtensions
     public static void ConfigureDatabase(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<ScratchItDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), opt => opt.CommandTimeout(300)));
     }
 
     public static void ConfigureRepositories(this IServiceCollection services)

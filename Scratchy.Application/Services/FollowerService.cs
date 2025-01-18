@@ -1,4 +1,4 @@
-﻿using Scratchy.Domain.DB;
+﻿using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
 
@@ -13,7 +13,7 @@ namespace Scratchy.Application.Services
             _followerRepository = followRepository;
         }
 
-        public async Task FollowUserAsync(string followerId, string followingId)
+        public async Task FollowUserAsync(int followerId, int followingId)
         {
             if (followerId == followingId)
                 throw new InvalidOperationException("You cannot follow yourself.");
@@ -24,14 +24,14 @@ namespace Scratchy.Application.Services
             var follow = new Follow
             {
                 FollowerId = followerId,
-                FollowingId = followingId,
+                FollowedId = followingId,
                 CreatedAt = DateTime.UtcNow
             };
 
             await _followerRepository.AddAsync(follow);
         }
 
-        public async Task UnfollowUserAsync(string followerId, string followingId)
+        public async Task UnfollowUserAsync(int followerId, int followingId)
         {
             var follow = await _followerRepository.GetFollowAsync(followerId, followingId);
             if (follow == null)
@@ -40,19 +40,34 @@ namespace Scratchy.Application.Services
             await _followerRepository.RemoveAsync(follow);
         }
 
-        public async Task<bool> IsFollowingAsync(string followerId, string followingId)
+        public async Task<bool> IsFollowingAsync(int followerId, int followingId)
         {
             return await _followerRepository.IsFollowingAsync(followerId, followingId);
         }
 
-        public async Task<List<string>> GetFollowersAsync(string userId)
+        public async Task<List<int>> GetFollowersAsync(int userId)
         {
             return await _followerRepository.GetFollowersAsync(userId);
         }
 
-        public async Task<List<string>> GetFollowingAsync(string userId)
+        public async Task<List<int>> GetFollowingAsync(int userId)
         {
             return await _followerRepository.GetFollowingAsync(userId);
+        }
+
+        Task<List<string>> IFollowerService.GetFollowersAsync(int userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<List<string>> IFollowerService.GetFollowingAsync(string userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task FollowUserAsync(string followerId, int followingId)
+        {
+            throw new NotImplementedException();
         }
     }
 

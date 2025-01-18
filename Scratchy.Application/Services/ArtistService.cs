@@ -1,11 +1,7 @@
-﻿using Scratchy.Domain.DTO.Response.Explore;
+﻿using Scratchy.Domain.DTO.DB;
+using Scratchy.Domain.DTO.Response.Explore;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Scratchy.Application.Services
 {
@@ -61,7 +57,7 @@ namespace Scratchy.Application.Services
 
             var existingArtist = await _artistRepository.GetByIdAsync(1);
             if (existingArtist == null)
-                throw new KeyNotFoundException($"Kein Künstler mit der ID {artist.Id} gefunden.");
+                throw new KeyNotFoundException($"Kein Künstler mit der ID {artist.ArtistId} gefunden.");
 
             return await _artistRepository.UpdateAsync(artist);
         }

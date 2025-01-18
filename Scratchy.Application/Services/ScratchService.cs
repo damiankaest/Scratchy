@@ -2,7 +2,7 @@
 
 namespace Scratchy.Application.Services
 {
-    public class ScratchService: IScratcService
+    public class ScratchService: IScratchService
     {
     }
 }

@@ -2,21 +2,21 @@
 {
     using MongoDB.Bson;
     using MongoDB.Bson.Serialization.Attributes;
+    using Scratchy.Domain.DTO.DB;
 
     public class ExploreArtistsDto
     {
         public ExploreArtistsDto(Artist artist)
         {
-            ArtistId = artist.Id;
+            ArtistId = artist.ArtistId;
             ArtistName = artist.Name;
-            ArtistImg = artist.ImageUrl;
             AlbumCount = 0;
             ScratchCount = 0;
             
         }
         [BsonId]
         [BsonElement("artistId")]
-        public string ArtistId { get; set; }
+        public int ArtistId { get; set; }
 
         [BsonElement("artistName")]
         public string ArtistName { get; set; }

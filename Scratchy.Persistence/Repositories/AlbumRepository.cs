@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using Scratchy.Domain.DB;
+using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
 using Scratchy.Persistence.DB;
@@ -54,7 +54,7 @@ namespace Scratchy.Persistence.Repositories
         public async Task<List<Album>> GetByQueryAsync(string query, int limit = 15)
         {
             var albumResult = await _context.Albums
-                .Where(a => EF.Functions.Like(a.Name, $"{query}%") || EF.Functions.Like(a.Artist, $"%{query}%")).Take(limit)
+                .Where(a => EF.Functions.Like(a.Title, $"{query}%") || EF.Functions.Like(a.Artist.Name, $"%{query}%")).Take(limit)
                 .ToListAsync();
 
             if (!albumResult.Any())
@@ -66,7 +66,7 @@ namespace Scratchy.Persistence.Repositories
                     foreach (var album in albumList)
                     {
                         var existingAlbum = await _context.Albums
-                            .FirstOrDefaultAsync(a => a.SpotifyId == album.SpotifyId && a.Name == album.Name);
+                            .FirstOrDefaultAsync(a => a.AlbumId == album.AlbumId && a.Title== album.Title);
 
                         if (existingAlbum == null)
                         {

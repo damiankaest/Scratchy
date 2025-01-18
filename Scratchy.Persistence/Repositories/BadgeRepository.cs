@@ -1,4 +1,5 @@
-﻿using Scratchy.Domain.DB;
+﻿
+using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.Interfaces.Repositories;
 
 namespace Scratchy.Persistence.Repositories
@@ -26,6 +27,11 @@ namespace Scratchy.Persistence.Repositories
         }
 
         public Task<Badge> GetByIdAsync(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Badge> GetByIdAsync(int id)
         {
             throw new NotImplementedException();
         }

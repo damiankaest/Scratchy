@@ -1,4 +1,5 @@
-﻿using Scratchy.Domain.DTO.Response.Explore;
+﻿using Scratchy.Domain.DTO.DB;
+using Scratchy.Domain.DTO.Response.Explore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

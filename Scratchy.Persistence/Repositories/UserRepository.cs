@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Scratchy.Domain.DB;
+using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Persistence.DB;
 
@@ -27,16 +27,21 @@ namespace Scratchy.Persistence.Repositories
             return await _context.Users.ToListAsync();
         }
 
-        public async Task<User> GetByIdAsync(string id)
+        public async Task<User> GetByFirebaseIdAsync(string id)
+        {
+            return await _context.Users.Where(x=>x.FirebaseId == id).FirstOrDefaultAsync();
+        }
+
+        public async Task<User> GetByIdAsync(int id)
         {
             return await _context.Users.FindAsync(id);
         }
 
         public async Task<User> AddAsync(User user)
         {
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-            return user;
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+                return user;
         }
 
         public async Task<User> UpdateAsync(User user)

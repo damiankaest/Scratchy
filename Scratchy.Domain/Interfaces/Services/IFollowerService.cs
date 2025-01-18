@@ -2,10 +2,10 @@
 {
     public interface IFollowerService
     {
-        Task FollowUserAsync(string followerId, string followingId);
-        Task UnfollowUserAsync(string followerIdstring, string followingId);
-        Task<bool> IsFollowingAsync(string followerId, string followingId);
-        Task<List<string>> GetFollowersAsync(string userId);
-        Task<List<string>> GetFollowingAsync(string userId);
+        Task FollowUserAsync(string followerId, int followingId);
+        Task UnfollowUserAsync(int followerIdstring, int followingId);
+        Task<bool> IsFollowingAsync(int followerId, int followingId);
+        Task<List<string>> GetFollowersAsync(int userId);
+        Task<List<string>> GetFollowingAsync(string firebaseId);
     }
 }

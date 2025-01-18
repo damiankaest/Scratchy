@@ -26,7 +26,7 @@ namespace Scratchy.Controllers
             {
                 //return Unauthorized(new { Message = "User ID not found in token." });
             }
-            var result = _badgeService.GetDisplayedBadgesByUserId(currentUserId);
+            //var result = _badgeService.GetDisplayedBadgesByUserId(currentUserId);
             return Ok();
         }
 
@@ -40,7 +40,7 @@ namespace Scratchy.Controllers
             {
                 //return Unauthorized(new { Message = "User ID not found in token." });
             }
-            var result = _badgeService.GetByUserId(currentUserId);
+            //var result = _badgeService.GetByUserId(currentUserId);
             return Ok();
         }
 
@@ -48,15 +48,15 @@ namespace Scratchy.Controllers
         [Route("getBadgesByUserId")]
         public async Task<IActionResult> GetByUserId(string userId)
         {
-            var result = _badgeService.GetByUserId(userId);
-            return Ok(result);
+            //var result = _badgeService.GetByUserId(userId);
+            return Ok();
         }
 
         [HttpGet]
         [Route("getDisplayedBadgesByUserId")]
         public async Task<IActionResult> GetDisplayedBadgesByUserId(string userId)
         {
-            var result = _badgeService.GetByUserId(userId);
+            //var result = _badgeService.GetByUserId(userId);
             return Ok();
         }
 

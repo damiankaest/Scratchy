@@ -1,5 +1,4 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
-using Scratchy.Domain.DB;
 
 namespace Scratchy.Domain.DTO
 {
@@ -11,7 +10,7 @@ namespace Scratchy.Domain.DTO
             id = user.UserId;
         }
         [BsonElement("id")]
-        public string id { get; set; }
+        public int id { get; set; }
         [BsonElement("username")]
         public string userName { get; set; }
         [BsonElement("profilePicture")]

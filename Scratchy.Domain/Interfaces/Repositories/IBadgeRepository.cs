@@ -1,4 +1,4 @@
-﻿using Scratchy.Domain.DB;
+﻿using Scratchy.Domain.DTO.DB;
 
 namespace Scratchy.Domain.Interfaces.Repositories
 {
@@ -9,7 +9,7 @@ namespace Scratchy.Domain.Interfaces.Repositories
         /// </summary>
         /// <param name="id">The unique identifier of the Badge.</param>
         /// <returns>The Badge if found; otherwise null.</returns>
-        Task<Badge> GetByIdAsync(string id);
+        Task<Badge> GetByIdAsync(int id);
 
         /// <summary>
         /// Retrieves all Badges.
