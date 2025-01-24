@@ -1,0 +1,306 @@
+{
+	"info": {
+		"_postman_id": "354877d3-28fe-42d5-a465-ff2916bf9343",
+		"name": "Privat",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Scratchy",
+			"item": [
+				{
+					"name": "FireBase",
+					"item": [
+						{
+							"name": "ValidateToken/FB",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"idToken\": \"{{_authToken}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{FireBaseGoogleIdentiyKitURL}}/{{ValidateToken}}{{APIKey}}",
+									"host": [
+										"{{FireBaseGoogleIdentiyKitURL}}"
+									],
+									"path": [
+										"{{ValidateToken}}{{APIKey}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register/FB",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Antwort als JSON parsen\r",
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"// Token speichern, falls es existiert\r",
+											"if (jsonData.idToken) {\r",
+											"    pm.environment.set(\"_authToken\", jsonData.idToken);\r",
+											"    console.log(\"Token gespeichert: \" + jsonData.idToken);\r",
+											"} else {\r",
+											"    console.log(\"Kein Token in der Antwort gefunden.\");\r",
+											"}\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"email\": \"example@example.com\",\r\n  \"password\": \"password123\",\r\n  \"returnSecureToken\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{FireBaseGoogleIdentiyKitURL}}/{{SignUp}}{{APIKey}}",
+									"host": [
+										"{{FireBaseGoogleIdentiyKitURL}}"
+									],
+									"path": [
+										"{{SignUp}}{{APIKey}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Login/FB",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Antwort als JSON parsen\r",
+											"var jsonData = pm.response.json();\r",
+											"\r",
+											"// Token speichern, falls es existiert\r",
+											"if (jsonData.idToken) {\r",
+											"    pm.environment.set(\"_authToken\", jsonData.idToken);\r",
+											"    console.log(\"Token gespeichert: \" + jsonData.idToken);\r",
+											"} else {\r",
+											"    console.log(\"Kein Token in der Antwort gefunden.\");\r",
+											"}\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"email\": \"example@example.com\",\r\n  \"password\": \"password123\",\r\n  \"returnSecureToken\": true\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{FireBaseGoogleIdentiyKitURL}}/{{Login}}{{APIKey}}",
+									"host": [
+										"{{FireBaseGoogleIdentiyKitURL}}"
+									],
+									"path": [
+										"{{Login}}{{APIKey}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Backend",
+					"item": [
+						{
+							"name": "Explore",
+							"item": [
+								{
+									"name": "GetAlbumsByQuery Copy",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{_authToken}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "https://localhost:7184/album?query=elvis",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "7184",
+											"path": [
+												"album"
+											],
+											"query": [
+												{
+													"key": "query",
+													"value": "elvis"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Scratches",
+							"item": [
+								{
+									"name": "Scratches",
+									"request": {
+										"method": "GET",
+										"header": []
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Follower",
+							"item": [
+								{
+									"name": "Scratches",
+									"request": {
+										"method": "GET",
+										"header": []
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "User",
+							"item": [
+								{
+									"name": "Register",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"uid\": \"string\",\r\n  \"userName\": \"string\",\r\n  \"email\": \"string\"\r\n}"
+										},
+										"url": {
+											"raw": "https://localhost:7184/User/register",
+											"protocol": "https",
+											"host": [
+												"localhost"
+											],
+											"port": "7184",
+											"path": [
+												"User",
+												"register"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "GetAlbumsByQuery",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{_authToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:7184/album?query=elvis",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7184",
+									"path": [
+										"album"
+									],
+									"query": [
+										{
+											"key": "query",
+											"value": "elvis"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"uid\": \"yhRoGkrwH7cICEse5HYyrt8VVli1\",\r\n  \"userName\": \"damian\",\r\n  \"email\": \"dami98@web.de\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:7184/User/register",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7184",
+									"path": [
+										"User",
+										"register"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}
