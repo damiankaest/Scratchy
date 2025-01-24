@@ -33,9 +33,9 @@ namespace Scratchy.Services
             return await _userRepository.GetAllAsync();
         }
 
-        public async Task<User> GetByIdAsync(string id)
+        public async Task<User> GetByIdAsync(int id)
         {
-            var user = await _userRepository.GetByFirebaseIdAsync(id);
+            var user = await _userRepository.GetByIdAsync(id);
             if (user == null)
                 throw new KeyNotFoundException($"Kein Benutzer mit der ID {id} gefunden.");
 
@@ -79,6 +79,11 @@ namespace Scratchy.Services
         public Task<bool> SendFriendRequest(User currentUser, User userResult)
         {
             throw new NotImplementedException();
+        }
+
+        public Task<User> GetUserByFireBaseId(string currentUserID)
+        {
+            return _userRepository.GetByFirebaseIdAsync(currentUserID);
         }
     }
 }

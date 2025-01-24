@@ -5,6 +5,7 @@ using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
 using System.Security.Claims;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace Scratchy.Controllers
 {
@@ -17,12 +18,15 @@ namespace Scratchy.Controllers
         private readonly IBlobService _blobService;
         private readonly IFollowerService _followService;
         private readonly IScratchService _scratchService;
+        private readonly IUserService _userService;
+        private readonly IAlbumService _albumService;
 
         public ScratchController(IScratchService scratchService,
             IFollowerService followService,  
             ILibraryService libService,
             IBlobService blobService,
-            IUserService userService
+            IUserService userService,
+            IAlbumService albumService
             )
 
         {
@@ -30,8 +34,11 @@ namespace Scratchy.Controllers
             _blobService = blobService;
             _followService = followService;
             _scratchService = scratchService;
+            _userService = userService;
+            _albumService = albumService;
         }
 
+        //[AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAllScratches()
         {
@@ -41,26 +48,33 @@ namespace Scratchy.Controllers
             {
                 return Unauthorized(new { Message = "User ID not found in token." });
             }
+            var currUser = await _userService.GetUserByFireBaseId(currentUserID);
+            var homeFeedUserIds = new List<int>() { currUser.UserId };
 
-            var homeFeedUserIds = new List<string>() { currentUserID };
+            homeFeedUserIds.AddRange(await _followService.GetFollowingAsync(currUser.UserId));
 
-            homeFeedUserIds.AddRange(await _followService.GetFollowingAsync(currentUserID));
+            var user = await _userService.GetUserByFireBaseId(currentUserID);
+            var listOfScratches = await _scratchService.GetHomeFeedByUserIdListAsync(homeFeedUserIds);
+            List<HomeFeedResponseDto> homeFeed = new List<HomeFeedResponseDto>();
 
-            var user = _userService.GetUserByFireBaseId(currentUserID);
-            var listOfScratches = await _scratchService.GetHomeFeedByUserIdAsync(currentUserID);
-            
             foreach (var scratch in listOfScratches)
             {
-                //var albumInfo = await _albumRepository.GetByIdAsync(scratch.AlbumId);
-                //var userInfo = await _userDataRepository.GetByIdAsync(scratch.UserId);
-                //scratch.UserName = userInfo.Username;
-                //scratch.UserImageUrl = userInfo.ProfilePicture;
-                //scratch.SpotifyRefUrl = albumInfo.SpotifyUrl;
-                //scratch.AlbumImageUrl = albumInfo.SpotifyImageUrl;
-                //scratch.AlbumName = albumInfo.Name;
-                //scratch.ArtistName = albumInfo.Artist;
+                homeFeed.Add(new HomeFeedResponseDto()
+                {
+                    Id = scratch.ScratchId,
+                    AlbumName = scratch.Album.Title,
+                    AlbumImageUrl = scratch.Album.CoverImageUrl,
+                    ArtistName = scratch.Album.Artist.Name,
+                    Likes = scratch.LikeCounter,
+                    UserName = scratch.User.Username,
+                    Rating = scratch.Rating,
+                    IsLiked = true,
+                    UserImageUrl = scratch.User.ProfilePictureUrl,
+                    Caption = scratch.Content
+                });
             }
-            return Ok(listOfScratches.OrderByDescending(x=>x.));
+
+            return Ok(homeFeed);
         }
 
         [AllowAnonymous]
@@ -86,7 +100,7 @@ namespace Scratchy.Controllers
         [HttpGet("DetailsById")]
         public async Task<IActionResult> GetPostDetailsById([FromQuery] string scratchId)
         {
-            ScratchDetailsRespnseDto listOfScratches = await _scratchService.GetDetailsById(scratchId);
+            ScratchDetailsResponseDto listOfScratches = await _scratchService.GetDetailsById(scratchId);
             return Ok(listOfScratches);
         }
 
@@ -95,8 +109,16 @@ namespace Scratchy.Controllers
         //[Authorize]
         public async Task<IActionResult> CreateNew(CreateScratchRequestDto newScratch) // [FromBody] CreateScratchRequestDto createPost
         {
-            var result = await _scratchService.CreateNewAsync(newScratch);
-            //var result = await _scratchRepository.UploadAsync(newScratch);
+            var currentUserID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var currUser = await _userService.GetUserByFireBaseId(currentUserID);
+
+            if (currUser == null)
+            {
+                throw new ArgumentException($"User mit ID {newScratch.UserId} wurde nicht gefunden.");
+            }
+
+            var result = await _scratchService.CreateNewAsync(newScratch, currUser);
             
             return Ok(result);
         }
@@ -104,47 +126,57 @@ namespace Scratchy.Controllers
         [AllowAnonymous]
         [HttpPost("new")]
         //[Authorize]
-        public async Task<IActionResult> CreateNewPost() // [FromBody] CreateScratchRequestDto createPost
+        public async Task<IActionResult> CreateNewPost([FromBody] CreateScratchRequestDto createPost) // 
         {
-            var createPost = new CreateScratchRequestDto();
-            var authHeader = Request.Headers["Authorization"].ToString();
+            var currentUserID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (!string.IsNullOrEmpty(authHeader) && authHeader.StartsWith("Bearer "))
+            var currUser = await _userService.GetUserByFireBaseId(currentUserID);
+
+            if (currUser == null)
             {
-                var token = authHeader.Substring("Bearer ".Length).Trim();
-                return Ok(new { message = "Token empfangen", token });
+                throw new ArgumentException($"User mit ID {createPost.UserId} wurde nicht gefunden.");
             }
 
+            var result = await _scratchService.CreateNewAsync(createPost, currUser);
 
-            createPost.UserId = User.
-                Claims.
-                First(
-                    c =>
-                        c.Type == ClaimTypes.NameIdentifier
-                        )
-                        .Value;
+            return Ok(result);
+            //var createPost = new CreateScratchRequestDto();
+            //var authHeader = Request.Headers["Authorization"].ToString();
 
-            var albumInfo = await  _albumService.GetByIdAsync(createPost.AlbumId)
-                
-                _albumRepository.GetByIdAsync(createPost.AlbumId);
-           
+            //if (!string.IsNullOrEmpty(authHeader) && authHeader.StartsWith("Bearer "))
+            //{
+            //    var token = authHeader.Substring("Bearer ".Length).Trim();
+            //    return Ok(new { message = "Token empfangen", token });
+            //}
 
-            //var newPost = new Scratch(createPost, albumInfo, "");
 
-            byte[] imageBytes = Convert.FromBase64String(createPost.UserImageAsBase64String);
-            using (var stream = new MemoryStream(imageBytes))
-            {
-                //newPost. = await _blobService.UploadFileAsync("userimages", newPost.Id, stream);
-            }
+            //createPost.UserId = User.
+            //    Claims.
+            //    First(
+            //        c =>
+            //            c.Type == ClaimTypes.NameIdentifier
+            //            )
+            //            .Value;
+
+            //var albumInfo = await _albumService.GetByIdAsync(createPost.AlbumId);
+
+
+            ////var newPost = new Scratch(createPost, albumInfo, "");
+
+            //byte[] imageBytes = Convert.FromBase64String(createPost.UserImageAsBase64String);
+            //using (var stream = new MemoryStream(imageBytes))
+            //{
+            //    //newPost. = await _blobService.UploadFileAsync("userimages", newPost.Id, stream);
+            //}
             //await _scratchRepository.AddAsync(newPost);
             return Ok();
         }
 
 
         [HttpDelete("delete")]
-        public async Task<IActionResult> CreateNewPost([FromBody] string postId)
+        public async Task<IActionResult> DeleteScratchWithIdAsync([FromBody] string Id)
         {
-            await _scratchRepository.DeleteAsync(postId);
+            var result = await _scratchService.DeleteScratchByIdAsync(Id);
             return Ok();
         }
 

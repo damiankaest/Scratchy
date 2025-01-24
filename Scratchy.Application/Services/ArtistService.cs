@@ -25,7 +25,7 @@ namespace Scratchy.Application.Services
                 artistExplorer.Add(new ExploreArtistsDto(artist));
             }
 
-            return artistExplorer;
+            return artistExplorer.Take(limit);
         }
 
         public async Task<IEnumerable<Artist>> GetAllAsync()

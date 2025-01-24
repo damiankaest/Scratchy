@@ -14,19 +14,19 @@ namespace Scratchy.Controllers
     [Route("explore")]
     public class ExploreController : Controller
     {
-        private IExplorerService _explorerService;  
-        private IAlbumRepository _albumRepository;
+        private IExplorerService _explorerService;
+        private IAlbumService _albumService;
         private IArtistService _artistService;
         private IUserService _userService;
         private IFollowerService _followService;
 
-        public ExploreController(IExplorerService explorerService, IAlbumRepository albumRepository, IArtistService artistService, IUserService userService,IFollowerService followService)
+        public ExploreController(IAlbumService albumService, IExplorerService explorerService, IAlbumRepository albumRepository, IArtistService artistService, IUserService userService,IFollowerService followService)
         {
             _explorerService = explorerService;
-            _albumRepository = albumRepository;
             _artistService = artistService;
             _userService = userService;
             _followService = followService;
+            _albumService = albumService;
         }
 
         [HttpGet]
@@ -39,11 +39,16 @@ namespace Scratchy.Controllers
             {
                 return Unauthorized(new { Message = "User ID not found in token." });
             }
-            var albums = await _albumRepository.GetByQueryAsync(query,3);
+
+            var currUser = await _userService.GetUserByFireBaseId(currentUserID);
+
+
+            //var albums = await _albumRepository.GetByQueryAsync(query,3);
+            var albumExploreResult = await _albumService.GetAlbumExploreInfoAsync(query, 3);
             var artists = await _artistService.GetByQueryAsync(query,3);
             var users = await _userService.GetByQueryAsync(query,3);
 
-            var friendIds = await _followService.GetFollowingAsync(currentUserID);
+            var friendIds = await _followService.GetFollowingAsync(currUser.UserId);
 
             foreach (var user in users)
             {
@@ -54,7 +59,7 @@ namespace Scratchy.Controllers
             var respose = new ExploreResponseDto()
             {
                 Artists = artists.ToList(),
-                Albums = albums,
+                Albums = albumExploreResult,
                 Users = users.ToList()
             };
             return Ok(respose);

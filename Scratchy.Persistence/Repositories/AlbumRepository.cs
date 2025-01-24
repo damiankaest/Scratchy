@@ -24,7 +24,7 @@ namespace Scratchy.Persistence.Repositories
             return await _context.Albums.ToListAsync();
         }
 
-        public async Task<Album> GetByIdAsync(string id)
+        public async Task<Album> GetByIdAsync(int id)
         {
             return await _context.Albums.FindAsync(id);
         }
@@ -41,7 +41,7 @@ namespace Scratchy.Persistence.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(string id)
+        public async Task DeleteAsync(int id)
         {
             var album = await GetByIdAsync(id);
             if (album != null)
@@ -53,19 +53,24 @@ namespace Scratchy.Persistence.Repositories
 
         public async Task<List<Album>> GetByQueryAsync(string query, int limit = 15)
         {
-            var albumResult = await _context.Albums
-                .Where(a => EF.Functions.Like(a.Title, $"{query}%") || EF.Functions.Like(a.Artist.Name, $"%{query}%")).Take(limit)
-                .ToListAsync();
+            try
+            {
+                var albumResult = await _context.Albums
+    .Include(a => a.Artist) 
+    .Where(a => EF.Functions.Like(a.Title, $"{query}%") ||
+                EF.Functions.Like(a.Artist.Name, $"%{query}%")) 
+    .Take(limit)
+    .ToListAsync();
 
             if (!albumResult.Any())
             {
-                try
-                {
+                
                     var albumList = await _spotifyService.SearchForAlbumByQuery(query);
 
                     foreach (var album in albumList)
                     {
                         var existingAlbum = await _context.Albums
+                            
                             .FirstOrDefaultAsync(a => a.AlbumId == album.AlbumId && a.Title== album.Title);
 
                         if (existingAlbum == null)
@@ -77,13 +82,15 @@ namespace Scratchy.Persistence.Repositories
 
                     await _context.SaveChangesAsync();
                 }
-                catch (Exception ex)
-                {
-                    throw new ApplicationException("Fehler beim Abrufen von Alben von Spotify.", ex);
-                }
-            }
+
+            
 
             return albumResult.Take(limit).ToList();
+                }
+                            catch (Exception ex)
+                {
+                throw new ApplicationException("Fehler beim Abrufen von Alben von Spotify.", ex);
+            }
         }
 
         public async Task<Album> GetBySpotifyIdAsync(string spotifyId)

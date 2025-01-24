@@ -15,5 +15,6 @@ namespace Scratchy.Domain.Interfaces.Repositories
 
         Task<List<User>> GetByUsernameAsync(string username);
         Task<User> GetByEmailAsync(string email);
+        Task<User> GetByIdAsync(int id);
     }
 }

@@ -24,7 +24,7 @@ namespace Scratchy.Persistence.Repositories
             await _context.SaveChangesAsync(); // Save changes to the database
         }
 
-        public async Task DeleteAsync(string id)
+        public async Task DeleteAsync(int id)
         {
             var scratch = await _context.Scratches.FindAsync(id);
             if (scratch != null)
@@ -57,7 +57,11 @@ namespace Scratchy.Persistence.Repositories
             try
             {
                 return await _context.Scratches
+                    .Include(s => s.Album )
+                        .ThenInclude(a => a.Artist) // Einbindung von Artist
+                    .Include(s => s.User) // Einbindung von User
                     .Where(s => userIdList.Contains(s.User.UserId))
+                    .OrderByDescending(s => s.CreatedAt)
                     .ToListAsync();
             }
             catch (Exception ex)

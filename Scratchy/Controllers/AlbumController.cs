@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Scratchy.Domain.Interfaces.Repositories;
+using Scratchy.Domain.Interfaces.Services;
 
 namespace Scratchy.Controllers
 {
@@ -10,21 +11,21 @@ namespace Scratchy.Controllers
     public class AlbumController : ControllerBase
     {
 
-        private readonly IAlbumRepository _albumRepository;
-        public AlbumController(IAlbumRepository albumRepository)
+        private readonly IAlbumService _albumService;
+        public AlbumController(IAlbumService albumService)
         {
-            _albumRepository = albumRepository;
+            _albumService = albumService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetByQueryAsync(string query)
         {
-          var result = await _albumRepository.GetByQueryAsync(query);
+           var albumSearchResponseDto = await _albumService.GetByQueryAsync(query);
 
-            if (result == null)
+            if (albumSearchResponseDto == null)
                 return BadRequest("No Data found :(");
 
-            return Ok(result);
+            return Ok(albumSearchResponseDto);
         }
     }
 }

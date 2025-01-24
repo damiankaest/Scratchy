@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Scratchy.Persistence.DB;
 
@@ -11,9 +12,11 @@ using Scratchy.Persistence.DB;
 namespace Scratchy.Persistence.Migrations
 {
     [DbContext(typeof(ScratchItDbContext))]
-    partial class ScratchItDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250119123003_addSpotifyIdToArtist")]
+    partial class addSpotifyIdToArtist
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -133,6 +136,7 @@ namespace Scratchy.Persistence.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ArtistId"));
 
                     b.Property<string>("Bio")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -144,6 +148,7 @@ namespace Scratchy.Persistence.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("ProfilePictureUrl")
+                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 

@@ -63,9 +63,30 @@ namespace Scratchy.Application
             string content = await response.Content.ReadAsStringAsync();
             JObject jsonResponse = JObject.Parse(content);
 
-            var albums = jsonResponse["albums"]?["items"]?
-                .Select(item => new Album())
-                .ToList() ?? new List<Album>();
+             var albums = jsonResponse["albums"]?["items"]?
+              .Select(item => new Album
+              {
+                  Title = item["name"]?.ToString(),
+                  SpotifyId = item["id"]?.ToString(),
+                  ReleaseDate = DateTime.TryParse(item["release_date"]?.ToString(), out var releaseDate) ? releaseDate : null,
+                  CoverImageUrl = item["images"]?.FirstOrDefault()?["url"]?.ToString(),
+                  CreatedAt = DateTime.Now, // Falls ein Standardwert erforderlich ist
+
+                  // Artist Handling (simplifiziert)
+                  Artist = new Artist
+                  {
+                      Name = item["artists"]?.FirstOrDefault()?["name"]?.ToString(),
+                      SpotifyId = item["artists"]?.FirstOrDefault()?["id"]?.ToString(),
+                      CreatedAt = DateTime.Now
+                  },
+
+                  // Navigationseigenschaften
+                  Tracks = new List<Track>(), // Initialisierung für spätere Befüllung
+                  Genres = new List<Genre>(), // Initialisierung für spätere Befüllung
+                  Posts = new List<Post>(), // Initialisierung für spätere Befüllung
+                  Scratches = new List<Scratch>() // Initialisierung für spätere Befüllung
+              })
+              .ToList() ?? new List<Album>();
 
             return albums;
         }

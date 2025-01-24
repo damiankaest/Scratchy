@@ -60,14 +60,10 @@ namespace Scratchy.Application.Services
             throw new NotImplementedException();
         }
 
-        Task<List<string>> IFollowerService.GetFollowingAsync(string userId)
+        async Task<List<int>> IFollowerService.GetFollowingAsync(int userId)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task FollowUserAsync(string followerId, int followingId)
-        {
-            throw new NotImplementedException();
+            var followingIds = await _followerRepository.GetFollowingAsync(userId);
+            return followingIds;
         }
     }
 

@@ -26,7 +26,7 @@ namespace Scratchy.Domain.Interfaces.Services
         /// </summary>
         /// <param name="id">Die ID des Benutzers.</param>
         /// <returns>Der gefundene Benutzer.</returns>
-        Task<User> GetByIdAsync(string id);
+        Task<User> GetByIdAsync(int id);
 
         /// <summary>
         /// Fügt einen neuen Benutzer hinzu.
@@ -48,5 +48,6 @@ namespace Scratchy.Domain.Interfaces.Services
         /// <param name="id">Die ID des Benutzers.</param>
         Task DeleteAsync(int id);
         Task<bool> SendFriendRequest(User currentUser, User userResult);
+        Task<User> GetUserByFireBaseId(string currentUserID);
     }
 }

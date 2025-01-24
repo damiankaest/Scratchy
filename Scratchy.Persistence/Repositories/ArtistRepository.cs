@@ -23,7 +23,12 @@ namespace Scratchy.Persistence.Repositories
         {
             try
             {
-                var response = await _context.Artists.ToListAsync();
+                var response = await _context.Artists
+               .Where(a => a.Name.Contains(query)) // Filter basierend auf der Query
+               .GroupBy(a => a.Name)              // Gruppieren nach ArtistName
+               .Select(g => g.First())                  // Nur den ersten Eintrag jeder Gruppe auswählen
+               .Take(limit)                             // Begrenzung der Ergebnisse
+               .ToListAsync();
 
                 return response;
             }

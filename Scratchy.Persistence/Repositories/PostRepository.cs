@@ -34,9 +34,9 @@ namespace Scratchy.Persistence.Repositories
             
         }
 
-        public async Task DeleteAsync(string id)
+        public async Task DeleteAsync(int id)
         {
-            await _collection.DeleteOneAsync(Builders<BsonDocument>.Filter.Eq("_id", new ObjectId(id)));
+            await _collection.DeleteOneAsync(Builders<BsonDocument>.Filter.Eq("_id", new ObjectId("")));
         }
 
         public async Task<List<Post>> GetAllAsync()
@@ -67,6 +67,11 @@ namespace Scratchy.Persistence.Repositories
             var postList = _collection.Find(Builders<BsonDocument>.Filter.Eq("userId", userId)).First();
             var postListSerialized = postList.Select(doc => BsonSerializer.Deserialize<Post>(postList)).First();
             return postListSerialized;
+        }
+
+        public Task<Post> GetByIdAsync(int id)
+        {
+            throw new NotImplementedException();
         }
 
         public Task UpdateAsync(string id, Post entity)

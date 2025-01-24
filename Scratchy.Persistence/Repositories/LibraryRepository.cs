@@ -18,7 +18,7 @@ namespace Scratchy.Persistence.Repositories
             throw new NotImplementedException();
         }
 
-        public Task DeleteAsync(string id)
+        public Task DeleteAsync(int id)
         {
             throw new NotImplementedException();
         }
@@ -29,6 +29,11 @@ namespace Scratchy.Persistence.Repositories
         }
 
         public Task<LibraryEntry> GetByIdAsync(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<LibraryEntry> GetByIdAsync(int id)
         {
             throw new NotImplementedException();
         }

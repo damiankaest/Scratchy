@@ -5,9 +5,11 @@ namespace Scratchy.Domain.Interfaces.Services
 {
     public interface IScratchService
     {
-        Task<bool> CreateNewAsync(CreateScratchRequestDto newScratch);
+        Task<bool> CreateNewAsync(CreateScratchRequestDto newScratch, User currUser);
+        Task<bool> DeleteScratchByIdAsync(string id);
         Task<IEnumerable<Scratch>> GetByUserIdAsync(int userId);
-        Task GetDetailsById(string scratchId);
-        Task<IEnumerable<Scratch>> GetHomeFeedByUserIdAsync(int userId);
+        Task<ScratchDetailsResponseDto> GetDetailsById(string scratchId);
+        //Task<IEnumerable<Scratch>> GetHomeFeedByUserIdAsync(int userId);
+        Task<IEnumerable<Scratch>> GetHomeFeedByUserIdListAsync(List<int> homeFeedUserIds);
     }
 }

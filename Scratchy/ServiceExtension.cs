@@ -36,6 +36,10 @@ public static class ServiceExtensions
 
     public static void ConfigureDatabase(this IServiceCollection services, IConfiguration configuration)
     {
+
+        //    services.AddDbContextFactory<ScratchItDbContext>(options =>
+        //options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), opt => opt.CommandTimeout(300)));
+
         services.AddDbContext<ScratchItDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), opt => opt.CommandTimeout(300)));
     }
@@ -52,6 +56,7 @@ public static class ServiceExtensions
         services.AddTransient<INotificationRepository, NotificationRepository>();
         services.AddTransient<IBadgeRepository, BadgeRepository>();
         services.AddTransient<IUserBadgeRepository,UserBadgeRepository>();
+
     }
 
     public static void ConfigureServices(this IServiceCollection services)
@@ -72,6 +77,8 @@ public static class ServiceExtensions
         services.AddScoped<IFollowerService, FollowerService>();
         services.AddScoped<INotificationService, NotificationService>();
         services.AddScoped<IBadgeService, BadgeService>();
+        services.AddScoped<IAlbumService, AlbumService>();
+        services.AddScoped<IScratchService, ScratchService>();
     }
 
     public static void ConfigureApplicationInsights(this IServiceCollection services, IConfiguration configuration)

@@ -67,7 +67,7 @@ namespace Scratchy.Controllers
         }
 
         [HttpGet("GetByIdAsync")]
-        public async Task<IActionResult> GetByIdAsync(string id)
+        public async Task<IActionResult> GetByIdAsync(int id)
         {
             var result = await _userService.GetByIdAsync(id);
             return Ok(result);
@@ -104,11 +104,11 @@ namespace Scratchy.Controllers
                 return Unauthorized(new { Message = "User ID not found in token." });
             }
 
-            var userResult = await _userService.GetByIdAsync(receiverId.ToString());
-            var currentUser = await _userService.GetByIdAsync(currentUserId);
+            var userResult = await _userService.GetByIdAsync(receiverId);
+            var currentUser = await _userService.GetUserByFireBaseId(currentUserId);
             try
             {
-                await _followService.FollowUserAsync(currentUserId, receiverId);
+                await _followService.FollowUserAsync(currentUser.UserId, userResult.UserId);
 
             }
             catch (Exception)
@@ -122,7 +122,7 @@ namespace Scratchy.Controllers
 
 
         [HttpGet("unfollowUser")]
-        public async Task<IActionResult> UnfollowUser(string currentUserId, string receiverId)
+        public async Task<IActionResult> UnfollowUser(int currentUserId, int receiverId)
         {
             var userResult = await _userService.GetByIdAsync(receiverId);
             var currentUser = await _userService.GetByIdAsync(currentUserId);
