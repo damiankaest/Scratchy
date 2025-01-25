@@ -14,5 +14,6 @@
         public string AlbumName { get; set; }
         public string ArtistName { get; set; }
         public string AlbumImageUrl { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }

@@ -45,12 +45,7 @@ namespace Scratchy.Persistence.Repositories
         }
 
 
-        public async Task<IEnumerable<Scratch>> GetByUserIdAsync(int userId)
-        {
-            return await _context.Scratches
-                .Where(s => s.UserId == userId)
-                .ToListAsync();
-        }
+        public async Task<IEnumerable<Scratch>> GetByUserIdAsync(int userId) => _context.Scratches.Where(s => s.UserId == userId);
 
         public async Task<IEnumerable<Scratch>> GetScratchesAsync(List<int> userIdList)
         {

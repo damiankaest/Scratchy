@@ -1,4 +1,6 @@
-﻿using Scratchy.Domain.DTO.DB;
+﻿using Scratchy.Application.Services;
+using Scratchy.Domain.DTO.DB;
+using Scratchy.Domain.DTO.Response;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
 
@@ -7,10 +9,12 @@ namespace Scratchy.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IScratchService _scratchService;
 
         public UserService(IUserRepository userRepository)
         {
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            
         }
 
         public async Task<IEnumerable<ExploreUserDto>> GetByQueryAsync(string query, int limit)
@@ -81,9 +85,6 @@ namespace Scratchy.Services
             throw new NotImplementedException();
         }
 
-        public Task<User> GetUserByFireBaseId(string currentUserID)
-        {
-            return _userRepository.GetByFirebaseIdAsync(currentUserID);
-        }
+        public Task<User> GetUserByFireBaseId(string currentUserID) => _userRepository.GetByFirebaseIdAsync(currentUserID);
     }
 }

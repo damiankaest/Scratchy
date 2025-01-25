@@ -70,7 +70,8 @@ namespace Scratchy.Controllers
                     Rating = scratch.Rating,
                     IsLiked = true,
                     UserImageUrl = scratch.User.ProfilePictureUrl,
-                    Caption = scratch.Content
+                    Caption = scratch.Content,
+                    CreatedAt = scratch.CreatedAt,
                 });
             }
 
@@ -107,7 +108,7 @@ namespace Scratchy.Controllers
         [AllowAnonymous]
         [HttpPost("create")]
         //[Authorize]
-        public async Task<IActionResult> CreateNew(CreateScratchRequestDto newScratch) // [FromBody] CreateScratchRequestDto createPost
+        public async Task<IActionResult> CreateNew([FromForm] CreateScratchRequestDto newScratch, IFormFile file)
         {
             var currentUserID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -115,12 +116,12 @@ namespace Scratchy.Controllers
 
             if (currUser == null)
             {
-                throw new ArgumentException($"User mit ID {newScratch.UserId} wurde nicht gefunden.");
+                //throw new ArgumentException($"User mit ID {newScratch.UserId} wurde nicht gefunden.");
             }
 
-            var result = await _scratchService.CreateNewAsync(newScratch, currUser);
+            //var result = await _scratchService.CreateNewAsync(newScratch, currUser);
             
-            return Ok(result);
+            return Ok(true);
         }
 
         [AllowAnonymous]

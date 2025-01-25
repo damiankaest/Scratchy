@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Scratchy.Application.Services;
+using Scratchy.Domain.DTO.Response;
 using Scratchy.Domain.Interfaces.Services;
 using System.Security.Claims;
 
@@ -12,11 +14,13 @@ namespace Scratchy.Controllers
     {
         private IFollowerService _followerService;
         private IUserService _userService;
+        private readonly IScratchService _scratchService;
 
-        public FollowerController(IFollowerService followerService, IUserService userService)
+        public FollowerController(IFollowerService followerService, IUserService userService, IScratchService scratchService)
         {
             _followerService = followerService;
             _userService = userService;
+            _scratchService = scratchService;
         }
         [HttpGet]
         [Route("getFollowingAsync")]
@@ -26,7 +30,7 @@ namespace Scratchy.Controllers
 
             if (string.IsNullOrEmpty(currentUserID))
             {
-                //return Unauthorized(new { Message = "User ID not found in token." });
+                return Unauthorized(new { Message = "User ID not found in token." });
             }
 
             var user = await _userService.GetUserByFireBaseId(currentUserID);
@@ -37,7 +41,14 @@ namespace Scratchy.Controllers
             foreach (var followingId in followingIds)
             {
                 var followedUser = await _userService.GetByIdAsync(followingId);
-                result.Add(new FollowingDto() { Id = followingId, UserName = followedUser.Username });
+                var userStatistic = new UserStatisticDto(await _scratchService.GetByUserIdAsync(followingId));
+                result.Add(new FollowingDto() {
+                    Id = followingId,
+                    UserName = followedUser.Username,
+                    UserImgUrl = followedUser.ProfilePictureUrl,
+                    IsFollowing = true,
+                    UserStatistic = userStatistic
+                });
             }
             return Ok(result);
         }
@@ -63,17 +74,72 @@ namespace Scratchy.Controllers
             // }
             return Ok();
         }
+
+        [HttpGet("follow")]
+        public async Task<IActionResult> FollowUser(int receiverId)
+        {
+            string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(currentUserId))
+            {
+                return Unauthorized(new { Message = "User ID not found in token." });
+            }
+
+            var userResult = await _userService.GetByIdAsync(receiverId);
+            var currentUser = await _userService.GetUserByFireBaseId(currentUserId);
+            try
+            {
+                await _followerService.FollowUserAsync(currentUser.UserId, userResult.UserId);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Already Following");
+            }
+
+            return Ok(true);
+        }
+
+
+        [HttpGet("unfollowUser")]
+        public async Task<IActionResult> UnfollowUser(int receiverId)
+        {
+            string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(currentUserId))
+            {
+                return Unauthorized(new { Message = "User ID not found in token." });
+            }
+
+            var currentUser = await _userService.GetUserByFireBaseId(currentUserId);
+
+            try
+            {
+                await _followerService.UnfollowUserAsync(currentUser.UserId, receiverId);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            return Ok(true);
+        }
     }
 
     internal class FollowerDto
     {
         public int Id { get; internal set; }
         public string UserName { get; internal set; }
+        public string UserImgUrl { get; set; }
     }
 
     internal class FollowingDto
     {
         public int Id { get; set; }
         public string UserName { get; set; }
+        public string UserImgUrl { get; set; }
+        public bool IsFollowing { get; set; }
+        public UserStatisticDto UserStatistic { get; set; }
     }
 }

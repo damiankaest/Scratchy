@@ -74,7 +74,7 @@ namespace Scratchy.Application.Services
 
         public Task<IEnumerable<Scratch>> GetByUserIdAsync(int userId)
         {
-            throw new NotImplementedException();
+            return _scratchRepository.GetByUserIdAsync(userId);
         }
 
         public Task<ScratchDetailsResponseDto> GetDetailsById(string scratchId)

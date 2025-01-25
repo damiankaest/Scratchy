@@ -1,9 +1,15 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http.Features;
 using Scratchy.Initializer;
 
 var builder = WebApplication.CreateBuilder(args);
 
 Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.ValueCountLimit = int.MaxValue; // Anzahl der Formulardatenfelder
+    options.MultipartBodyLengthLimit = 104857600; // Maximale Größe für die Datei (100MB)
+});
 
 builder.Services.ConfigureCors();
 builder.Services.ConfigureSwagger();
