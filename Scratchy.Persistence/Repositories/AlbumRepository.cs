@@ -29,10 +29,11 @@ namespace Scratchy.Persistence.Repositories
             return await _context.Albums.FindAsync(id);
         }
 
-        public async Task AddAsync(Album entity)
+        public async Task<Album> AddAsync(Album entity)
         {
             _context.Albums.Add(entity);
             await _context.SaveChangesAsync();
+            return entity;
         }
 
         public async Task UpdateAsync(Album entity)

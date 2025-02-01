@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Scratchy.Application.Services;
 using Scratchy.Domain.DTO;
 using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
+using System.IO;
 using System.Security.Claims;
 using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
@@ -72,6 +74,7 @@ namespace Scratchy.Controllers
                     UserImageUrl = scratch.User.ProfilePictureUrl,
                     Caption = scratch.Content,
                     CreatedAt = scratch.CreatedAt,
+                    PostImageUrl = scratch.ScratchImageUrl
                 });
             }
 
@@ -110,18 +113,59 @@ namespace Scratchy.Controllers
         //[Authorize]
         public async Task<IActionResult> CreateNew([FromForm] CreateScratchRequestDto newScratch, IFormFile file)
         {
-            var currentUserID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            var currUser = await _userService.GetUserByFireBaseId(currentUserID);
-
-            if (currUser == null)
+            try
             {
-                //throw new ArgumentException($"User mit ID {newScratch.UserId} wurde nicht gefunden.");
-            }
+                // Aktuellen Benutzer identifizieren
+                var currentUserID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var currUser = await _userService.GetUserByFireBaseId(currentUserID);
 
-            //var result = await _scratchService.CreateNewAsync(newScratch, currUser);
-            
-            return Ok(true);
+                if (currUser == null)
+                {
+                    return Unauthorized("Benutzer nicht gefunden.");
+                }
+
+                if (newScratch == null || file == null)
+                {
+                    return BadRequest("Daten oder Datei fehlen.");
+                }
+
+                // Speicherort für die Datei (z.B. in einem Ordner 'uploads' im Projektverzeichnis)
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
+
+                // Überprüfen, ob der Ordner existiert, andernfalls erstellen
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+                var scratchResult = await _scratchService.CreateNewAsync(newScratch, currUser);
+                var uniqueFileName = $"{currUser.UserId}_{scratchResult.ScratchId}{Path.GetExtension(file.FileName)}";
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var fileStream = file.OpenReadStream())
+                {
+                    // Asynchronen Aufruf korrekt mit await verwenden
+                    var blobUrl = await _blobService.UploadFileAsync(
+                        "userimages",
+                        $"{currUser.UserId}_{scratchResult.ScratchId}.jpg",
+                        fileStream
+                    );
+
+                    // Scratch mit der hochgeladenen Datei-URL aktualisieren
+                    await _scratchService.SetUserImageURLOnScratch(scratchResult, blobUrl);
+                }
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Scratch erfolgreich erstellt und Datei gespeichert.",
+                    scratchId = scratchResult.ScratchId
+                });
+            }
+            catch (Exception ex)
+            {
+                // Fehlerbehandlung
+                return StatusCode(500, $"Interner Fehler: {ex.Message}");
+            }
         }
 
         [AllowAnonymous]

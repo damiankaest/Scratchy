@@ -31,6 +31,7 @@ namespace Scratchy.Persistence.DB
         public DbSet<PlaylistTracks> PlaylistTracks { get; set; }
         public DbSet<Badge> Badges { get; set; }
         public DbSet<UserBadge> UserBadges { get; set; }
+        public DbSet<ShowCase> ShowCases { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -56,6 +57,12 @@ namespace Scratchy.Persistence.DB
             builder.Entity<Badge>(entity =>
             {
                 entity.HasKey(b => b.Id);
+            });
+
+            builder.Entity<ShowCase>(entity =>
+            {
+                entity.HasKey(b => b.Id);
+                entity.HasOne(ub => ub.User).WithMany(s => s.ShowCases).HasForeignKey(ub => ub.UserId);
             });
 
             // Falls UserBadge.Id (PK) existiert, oder alternativ (UserId, BadgeId) als Composite Key

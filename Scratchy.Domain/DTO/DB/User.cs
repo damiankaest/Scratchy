@@ -36,5 +36,6 @@ namespace Scratchy.Domain.DTO.DB
         public virtual ICollection<Scratch> Scratches { get; set; }
         public virtual ICollection<Playlist> Playlists { get; set; }
         public virtual ICollection<UserBadge> UserBadges { get; set; }
+        public virtual ICollection<ShowCase> ShowCases { get; set; }
     }
 }

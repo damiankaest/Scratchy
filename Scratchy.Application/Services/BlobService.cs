@@ -20,13 +20,23 @@ namespace Scratchy.Application.Services
             {
                 var container = _blobClient.GetContainerReference(containerName);
                 await container.CreateIfNotExistsAsync();
-                //await container.SetPermissionsAsync(new BlobContainerPermissions
-                //{
-                //    PublicAccess = BlobContainerPublicAccessType.Blob
-                //});
 
-                var blockBlob = container.GetBlockBlobReference(fileName+".jpg");
+                // Blob-Referenz erstellen
+                var blockBlob = container.GetBlockBlobReference(fileName);
+
+                // Content-Type setzen
+                blockBlob.Properties.ContentType = "image/jpeg";
+
+                // Stream an den Anfang zurücksetzen, falls erforderlich
+                if (fileStream.CanSeek)
+                {
+                    fileStream.Position = 0;
+                }
+
+                // Datei in den Blob Storage hochladen
                 await blockBlob.UploadFromStreamAsync(fileStream);
+
+                // URL des hochgeladenen Blobs zurückgeben
                 return blockBlob.Uri.ToString();
             }
             catch (Exception ex)

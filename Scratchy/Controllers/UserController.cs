@@ -139,7 +139,6 @@ namespace Scratchy.Controllers
             return Ok();
         }
 
-
         //    [HttpGet("friendrequest")]
         //public async Task<IActionResult> Friendrequest(string currentUserId, string receiverId )
         //{

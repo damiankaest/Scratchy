@@ -23,6 +23,7 @@ namespace Scratchy.Domain.DTO.DB
         public string Content { get; set; }
         public int Rating { get; set; }
         public int LikeCounter { get; set; }
+        public string? ScratchImageUrl { get; set; }
 
         public DateTime CreatedAt { get; set; }
 

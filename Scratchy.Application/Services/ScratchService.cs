@@ -2,8 +2,6 @@
 using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
-using Scratchy.Services;
-using System.Security.Claims;
 
 namespace Scratchy.Application.Services
 {
@@ -19,16 +17,11 @@ namespace Scratchy.Application.Services
             _userService = userService;
             _albumService = albumService;
         }
-        public async Task<bool> CreateNewAsync(CreateScratchRequestDto newScratch, User currentUser)
+        public async Task<Scratch> CreateNewAsync(CreateScratchRequestDto newScratch, User currentUser)
         {
-
-
-            // 2. Album-Objekt über den albumService abrufen (optional, falls AlbumId angegeben ist)
             Album? album = null;
             if (newScratch.AlbumId!= null)
             {
-
-
                 try
                 {
                     album = await _albumService.GetByIdAsync(newScratch.AlbumId);
@@ -61,10 +54,10 @@ namespace Scratchy.Application.Services
             };
 
             // 4. Scratch speichern
-            await _scratchRepository.AddAsync(scratch);
+            var result = await _scratchRepository.AddAsync(scratch);
 
             // 5. Erfolg zurückgeben
-            return true;
+            return result;
         }
 
         public Task<bool> DeleteScratchByIdAsync(string id)
@@ -87,5 +80,25 @@ namespace Scratchy.Application.Services
             var homeFeed = await _scratchRepository.GetScratchesAsync(homeFeedUserIdList);
             return homeFeed;
         }
+
+        public async Task<bool> SetUserImageURLOnScratch(Scratch entity, string imgUrl)
+        {
+            entity.ScratchImageUrl = imgUrl;
+            try
+            {
+                await _scratchRepository.UpdateAsync(entity);
+                return true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        //Task<Scratch> IScratchService.CreateNewAsync(CreateScratchRequestDto newScratch, User currUser)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

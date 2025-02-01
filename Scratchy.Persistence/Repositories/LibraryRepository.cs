@@ -1,5 +1,5 @@
 ﻿using MongoDB.Driver;
-
+using MongoDB.Libmongocrypt;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Persistence.DB;
 
@@ -13,7 +13,7 @@ namespace Scratchy.Persistence.Repositories
         _context = context;
         }
 
-        public Task AddAsync(LibraryEntry entity)
+        public Task<LibraryEntry> AddAsync(LibraryEntry entity)
         {
             throw new NotImplementedException();
         }

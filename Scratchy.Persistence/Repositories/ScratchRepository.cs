@@ -18,10 +18,20 @@ namespace Scratchy.Persistence.Repositories
             _context = context;
         }
 
-        public async Task AddAsync(Scratch entity)
+        public async Task<Scratch> AddAsync(Scratch entity)
         {
-            await _context.Scratches.AddAsync(entity);
-            await _context.SaveChangesAsync(); // Save changes to the database
+            try
+            {
+                await _context.Scratches.AddAsync(entity);
+                await _context.SaveChangesAsync(); // Save changes to the database
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
+            return entity;
         }
 
         public async Task DeleteAsync(int id)
@@ -77,7 +87,6 @@ namespace Scratchy.Persistence.Repositories
             {
                 // Update fields manually or with helper methods, depending on how you want to handle updates
                 existingScratch.Album.Title = entity.Album.Title;
-                existingScratch.Album.Title = entity.Album.Artist.Name;
                 existingScratch.Rating = entity.Rating;
                 existingScratch.Album.Title = entity.Album.Title;
                 existingScratch.LikeCounter = entity.LikeCounter;

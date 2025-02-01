@@ -14,7 +14,7 @@ namespace Scratchy.Persistence.Repositories
         {
         }
 
-        public Task AddAsync(Post entity)
+        public Task<Post> AddAsync(Post entity)
         {
             throw new NotImplementedException();
         }
