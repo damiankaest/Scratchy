@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.DTO.Response;
 using Scratchy.Domain.Interfaces.Repositories;
@@ -9,10 +10,12 @@ namespace Scratchy.Persistence.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly ScratchItDbContext _context;
+        private readonly IMemoryCache _cache;
 
-        public UserRepository(ScratchItDbContext context)
+        public UserRepository(ScratchItDbContext context, IMemoryCache cache)
         {
             _context = context;
+            _cache = cache;
         }
 
         public async Task<IEnumerable<User>> GetByQueryAsync(string query, int limit)
@@ -30,7 +33,22 @@ namespace Scratchy.Persistence.Repositories
 
         public async Task<User> GetByFirebaseIdAsync(string id)
         {
-            return await _context.Users.Where(x=>x.FirebaseId == id).FirstOrDefaultAsync();
+            string cacheKey = $"User_{id}";
+            if (_cache.TryGetValue(cacheKey, out User cachedUser))
+            {
+                return cachedUser;
+            }
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.FirebaseId == id);
+
+            if (user != null)
+            {
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetSlidingExpiration(TimeSpan.FromMinutes(30));
+
+                _cache.Set(cacheKey, user, cacheEntryOptions);
+            }
+
+            return user;
         }
 
         public async Task<User> GetByIdAsync(int id)

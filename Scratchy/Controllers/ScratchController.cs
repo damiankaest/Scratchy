@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Scratchy.Domain.DTO;
 using Scratchy.Domain.DTO.Response;
 using Scratchy.Domain.Interfaces.Services;
+using Scratchy.Extensions;
 using System.Security.Claims;
 
 namespace Scratchy.Controllers
@@ -36,25 +37,18 @@ namespace Scratchy.Controllers
             _albumService = albumService;
         }
 
-        [Authorize]
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAllScratches()
         {
-            var currentUserID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var currUser = await User.GetCurrentUserAsync(_userService);
 
-            if (string.IsNullOrEmpty(currentUserID))
-            {
-                return Unauthorized(new { Message = "User ID not found in token." });
-            }
-            var currUser = await _userService.GetUserByFireBaseId(currentUserID);
+            var homeFeed = new List<HomeFeedResponseDto>();
             var homeFeedUserIds = new List<int>() { currUser.UserId };
 
             homeFeedUserIds.AddRange(await _followService.GetFollowingAsync(currUser.UserId));
-
-            var user = await _userService.GetUserByFireBaseId(currentUserID);
             var listOfScratches = await _scratchService.GetHomeFeedByUserIdListAsync(homeFeedUserIds);
-            List<HomeFeedResponseDto> homeFeed = new List<HomeFeedResponseDto>();
-
+            
             foreach (var scratch in listOfScratches)
             {
                 homeFeed.Add(new HomeFeedResponseDto()

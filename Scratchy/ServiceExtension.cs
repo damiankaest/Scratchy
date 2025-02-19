@@ -84,6 +84,7 @@ public static class ServiceExtensions
         services.AddScoped<IStatService, StatService>();
         services.AddScoped<IShowCaseService, ShowCaseService>();
         services.AddScoped<ICollectionService, CollectionService>();
+        services.AddMemoryCache();
     }
 
     public static void ConfigureApplicationInsights(this IServiceCollection services, IConfiguration configuration)
