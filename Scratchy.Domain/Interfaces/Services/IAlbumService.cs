@@ -10,5 +10,6 @@ namespace Scratchy.Domain.Interfaces.Services
         Task<List<ExploreAlbumDto>> GetAlbumExploreInfoAsync(string query, int limit);
         Task<Album> GetByIdAsync(int albumId);
         Task<List<NewScratchAlbumSearchResponseDto>> GetByQueryAsync(string query);
+        Task<AlbumDetailsDto> GetDetailsByIdAsync(int albumId);
     }
 }

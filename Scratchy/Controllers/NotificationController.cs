@@ -6,8 +6,8 @@ using System.Security.Claims;
 
 namespace Scratchy.Controllers
 {
-    [Route("api/[controller]")]
     [Authorize]
+    [Route("api/[controller]")]
     [ApiController]
     public class NotificationController : ControllerBase
     {

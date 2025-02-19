@@ -5,9 +5,9 @@ using System.Security.Claims;
 
 namespace Scratchy.Controllers
 {
-    [AllowAnonymous]
+    [Authorize]
     [ApiController]
-    [Route("badges")]
+    [Route("api/[controller]")]
     public class BadgesController : Controller
     {
         private IBadgeService _badgeService;

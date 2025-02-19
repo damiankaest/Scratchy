@@ -1,6 +1,7 @@
 ﻿
 
 using Scratchy.Domain.DTO.DB;
+using Scratchy.Domain.DTO.Response;
 
 namespace Scratchy.Domain.Interfaces.Repositories
 {
@@ -16,5 +17,6 @@ namespace Scratchy.Domain.Interfaces.Repositories
         Task<List<User>> GetByUsernameAsync(string username);
         Task<User> GetByEmailAsync(string email);
         Task<User> GetByIdAsync(int id);
+        Task<UserProfileDto> GetUserProfileByIdAsync(int userId, int currentUserId);
     }
 }

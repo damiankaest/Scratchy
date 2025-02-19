@@ -38,6 +38,11 @@ namespace Scratchy.Persistence.Repositories
             throw new NotImplementedException();
         }
 
+        public Task<IEnumerable<LibraryEntry>> GetByUserIdAsync(int userId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<IEnumerable<LibraryEntry>> GetByUserIdAsync(string userId)
         {
             throw new NotImplementedException();

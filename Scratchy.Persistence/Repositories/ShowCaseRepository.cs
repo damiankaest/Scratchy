@@ -13,14 +13,16 @@ namespace Scratchy.Persistence.Repositories
         {
             _context = context;  
         }
-        public Task<ShowCase> AddAsync(ShowCase entity)
+        public async Task<ShowCase> AddAsync(ShowCase entity)
         {
-            throw new NotImplementedException();
+            await _context.AddAsync(entity);
+            _context.SaveChanges();
+            return entity;
         }
 
-        public Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            _context.Remove(id);
         }
 
         public Task<IEnumerable<ShowCase>> GetAllAsync()
@@ -28,21 +30,17 @@ namespace Scratchy.Persistence.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<ShowCase> GetByIdAsync(int id)
+        public async Task<ShowCase> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.ShowCases.FirstAsync(x=>x.Id == id);
         }
 
-        public async Task<IEnumerable<ShowCase>> GetByUserId(int userId)
-        {
-            var userShowCases = await _context.ShowCases.Where(x => x.UserId == userId).ToListAsync();
-            return userShowCases;
-        }
+        public async Task<IEnumerable<ShowCase>> GetByUserId(int userId) => await _context.ShowCases.Where(x => x.UserId == userId).ToListAsync();
 
-
-        public Task UpdateAsync(ShowCase entity)
+        public async Task UpdateAsync(ShowCase entity)
         {
-            throw new NotImplementedException();
+            _context.Update(entity);
+            await _context.SaveChangesAsync();
         }
     }
 }

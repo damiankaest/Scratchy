@@ -10,9 +10,9 @@ namespace Scratchy.Domain.DTO.DB
         public int UserId { get; set; }
         public virtual User User { get; set; }
         public ShowCaseType Type { get; set; }
-        public int firstPlaceEntityId { get; set; }
-        public int secondPlaceEntityId { get; set; }
-        public int thirdPlaceEntityId { get; set; }
+        public int FirstPlaceEntityId { get; set; }
+        public int SecondPlaceEntityId { get; set; }
+        public int ThirdPlaceEntityId { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime LastUpdate { get; set; }
 

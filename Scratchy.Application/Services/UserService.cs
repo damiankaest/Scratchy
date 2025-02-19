@@ -59,7 +59,7 @@ namespace Scratchy.Services
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
-            var existingUser = await _userRepository.GetByFirebaseIdAsync("");
+            var existingUser = await _userRepository.GetByFirebaseIdAsync(user.FirebaseId);
             if (existingUser == null)
                 throw new KeyNotFoundException($"Kein Benutzer mit der ID {user.UserId} gefunden.");
 
@@ -86,5 +86,12 @@ namespace Scratchy.Services
         }
 
         public Task<User> GetUserByFireBaseId(string currentUserID) => _userRepository.GetByFirebaseIdAsync(currentUserID);
+
+        public async Task<UserProfileDto> GetUserProfileByIdAsync(int userId, int currentUserId)
+        {
+            var userProfileDto = await _userRepository.GetUserProfileByIdAsync(userId, currentUserId);
+            return userProfileDto;
+            
+        }
     }
 }

@@ -12,7 +12,7 @@
             ArtistName = artist.Name;
             AlbumCount = 0;
             ScratchCount = 0;
-            
+            ArtistImg = artist.ProfilePictureUrl;
         }
         [BsonId]
         [BsonElement("artistId")]
@@ -22,7 +22,7 @@
         public string ArtistName { get; set; }
 
         [BsonElement("artistImg")]
-        public string ArtistImg { get; set; }
+        public string ArtistImg { get; set; } = string.Empty;
 
         [BsonElement("albumCount")]
         public int AlbumCount { get; set; }

@@ -9,18 +9,26 @@
 
     public class TrackShowCaseEntity
     {
+        public int ShowCaseId { get; set; } = 0;
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; }
+        public int TrackId { get; set; }
     }
 
     public class BadgeShowCaseEntity
     {
+        public int ShowCaseId { get; set; } = 0;
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; }
+        public int BadgeId { get; set; }
     }
 
     public class AlbumShowCaseEntity
     {
+        public int ShowCaseId { get; set; } = 0;
         public int AlbumId { get; set; } = 0;
         public string AlbumName { get; set; } = "";
-        public int Rating { get; set; } = 0;
-        public int ScratchCount { get; set; } = 0;
+        public string ImageUrl { get; set; } = "";
     }
 
     public enum ShowCaseType

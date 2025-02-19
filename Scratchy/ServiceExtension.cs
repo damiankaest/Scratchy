@@ -56,6 +56,8 @@ public static class ServiceExtensions
         services.AddTransient<INotificationRepository, NotificationRepository>();
         services.AddTransient<IBadgeRepository, BadgeRepository>();
         services.AddTransient<IUserBadgeRepository,UserBadgeRepository>();
+        services.AddTransient<IShowCaseRepository, ShowCaseRepository>();
+        services.AddTransient<ITrackRepository, TrackRepository>();
 
     }
 
@@ -79,6 +81,9 @@ public static class ServiceExtensions
         services.AddScoped<IBadgeService, BadgeService>();
         services.AddScoped<IAlbumService, AlbumService>();
         services.AddScoped<IScratchService, ScratchService>();
+        services.AddScoped<IStatService, StatService>();
+        services.AddScoped<IShowCaseService, ShowCaseService>();
+        services.AddScoped<ICollectionService, CollectionService>();
     }
 
     public static void ConfigureApplicationInsights(this IServiceCollection services, IConfiguration configuration)

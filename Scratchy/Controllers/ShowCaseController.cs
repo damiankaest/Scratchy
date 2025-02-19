@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Scratchy.Domain.DTO.Request;
 using Scratchy.Domain.Interfaces.Services;
-using Scratchy.Services;
 using System.Security.Claims;
 
 namespace Scratchy.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("showcase")]
+    [Route("api/[controller]")]
     public class ShowCaseController : ControllerBase
     {
         private readonly IShowCaseService _showCaseService;
@@ -18,6 +18,30 @@ namespace Scratchy.Controllers
         {
             _showCaseService = showCaseService;
             _userService = userService;
+        }
+
+        [HttpPut("Update")]
+        public async Task<IActionResult> UpdateShowcaseAsync(UpdateShowCaseDto updateDto)
+        {
+            var result = await _showCaseService.UpdateShowcaseAsync(updateDto);
+            return Ok(result);
+        }
+
+        [HttpPost("CreateNew")]
+        public async Task<IActionResult> CreateNewShowCaseAsync(CreateShowCaseRequestDto createDto)
+        {
+            var currentUserID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var currUser = await _userService.GetUserByFireBaseId(currentUserID);
+
+            if (currUser == null)
+            {
+                return Unauthorized("Benutzer nicht gefunden.");
+            }
+
+            currUser = new Domain.DTO.DB.User();
+            currUser.UserId = 5;
+            var result = await _showCaseService.CreateNewShowCaseAsync(createDto, currUser.UserId);
+            return Ok(result);
         }
 
         [HttpGet("getShowCases")]
@@ -32,7 +56,7 @@ namespace Scratchy.Controllers
                 return Unauthorized("Benutzer nicht gefunden.");
             }
 
-            var showCaseResult = await _showCaseService.GetAllShowCasesFromUser(currUser.UserId);
+            var showCaseResult = await _showCaseService.GetAllShowCasesFromUserByIdAsync(currUser.UserId);
             if (showCaseResult == null)
                 return BadRequest("No Data found :(");
 
@@ -43,7 +67,7 @@ namespace Scratchy.Controllers
         [HttpGet("getShowCasesByUserId")]
         public async Task<IActionResult> GetshowCaseByUserIdAsync([FromQuery] int userId)
         {
-            var showCaseResult = await _showCaseService.GetAllShowCasesFromUser(userId);
+            var showCaseResult = await _showCaseService.GetAllShowCasesFromUserByIdAsync(userId);
             if (showCaseResult == null)
                 return BadRequest("No Data found :(");
 

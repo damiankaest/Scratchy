@@ -7,8 +7,8 @@ using System.Security.Claims;
 
 namespace Scratchy.Controllers
 {
-    [AllowAnonymous]
-    [ApiController]
+    [Authorize]
+    [Route("api/[controller]")]
     [Route("follower")]
     public class FollowerController : Controller
     {

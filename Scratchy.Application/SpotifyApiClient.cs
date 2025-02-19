@@ -52,9 +52,8 @@ namespace Scratchy.Application
 
         public async Task<List<Album>> SearchSpotifyAlbumsByQueryAsync(string query, int limit = 10, string market = "DE")
         {
-            // Verwenden Sie die allgemeine Suche ohne spezielle Filter, um die internen Suchalgorithmen von Spotify zu nutzen
+            // Aufbau der Anfrage-URL für die allgemeine Suche
             string requestUri = $"https://api.spotify.com/v1/search?q={Uri.EscapeDataString(query)}&type=album&limit={limit}&market={market}";
-
             HttpResponseMessage response = await _httpClient.GetAsync(requestUri);
 
             if (!response.IsSuccessStatusCode)
@@ -63,30 +62,98 @@ namespace Scratchy.Application
             string content = await response.Content.ReadAsStringAsync();
             JObject jsonResponse = JObject.Parse(content);
 
-             var albums = jsonResponse["albums"]?["items"]?
-              .Select(item => new Album
-              {
-                  Title = item["name"]?.ToString(),
-                  SpotifyId = item["id"]?.ToString(),
-                  ReleaseDate = DateTime.TryParse(item["release_date"]?.ToString(), out var releaseDate) ? releaseDate : null,
-                  CoverImageUrl = item["images"]?.FirstOrDefault()?["url"]?.ToString(),
-                  CreatedAt = DateTime.Now, // Falls ein Standardwert erforderlich ist
+            var albumItems = jsonResponse["albums"]?["items"];
+            var albums = new List<Album>();
 
-                  // Artist Handling (simplifiziert)
-                  Artist = new Artist
-                  {
-                      Name = item["artists"]?.FirstOrDefault()?["name"]?.ToString(),
-                      SpotifyId = item["artists"]?.FirstOrDefault()?["id"]?.ToString(),
-                      CreatedAt = DateTime.Now
-                  },
+            // Cache, um bereits abgefragte Artist-Details nicht mehrfach anzufordern
+            var artistCache = new Dictionary<string, Artist>();
 
-                  // Navigationseigenschaften
-                  Tracks = new List<Track>(), // Initialisierung für spätere Befüllung
-                  Genres = new List<Genre>(), // Initialisierung für spätere Befüllung
-                  Posts = new List<Post>(), // Initialisierung für spätere Befüllung
-                  Scratches = new List<Scratch>() // Initialisierung für spätere Befüllung
-              })
-              .ToList() ?? new List<Album>();
+            if (albumItems != null)
+            {
+                foreach (var item in albumItems)
+                {
+                    // Album-Mapping
+                    var album = new Album
+                    {
+                        Title = item["name"]?.ToString(),
+                        SpotifyId = item["id"]?.ToString(),
+                        ReleaseDate = DateTime.TryParse(item["release_date"]?.ToString(), out var releaseDate)
+                                        ? releaseDate
+                                        : (DateTime?)null,
+                        CoverImageUrl = item["images"]?.FirstOrDefault()?["url"]?.ToString(),
+                        CreatedAt = DateTime.Now,
+                        Tracks = new List<Track>(),
+                        Genres = new List<Genre>(),
+                        Posts = new List<Post>(),
+                        Scratches = new List<Scratch>()
+                    };
+
+                    // Artist-Mapping (hier wird nur der erste Artist aus der Liste verwendet)
+                    var artistToken = item["artists"]?.FirstOrDefault();
+                    if (artistToken != null)
+                    {
+                        string artistName = artistToken["name"]?.ToString();
+                        string artistSpotifyId = artistToken["id"]?.ToString();
+
+                        Artist artist = null;
+                        if (!string.IsNullOrEmpty(artistSpotifyId))
+                        {
+                            // Prüfe, ob wir die Artist-Details bereits abgefragt haben
+                            if (artistCache.ContainsKey(artistSpotifyId))
+                            {
+                                artist = artistCache[artistSpotifyId];
+                            }
+                            else
+                            {
+                                // Zusätzliche Artist-Details von Spotify abrufen
+                                string artistRequestUri = $"https://api.spotify.com/v1/artists/{artistSpotifyId}";
+                                HttpResponseMessage artistResponse = await _httpClient.GetAsync(artistRequestUri);
+
+                                if (artistResponse.IsSuccessStatusCode)
+                                {
+                                    string artistContent = await artistResponse.Content.ReadAsStringAsync();
+                                    JObject artistJson = JObject.Parse(artistContent);
+
+                                    // Profilbild-URL: Das erste Bild in der Liste verwenden
+                                    string profilePictureUrl = artistJson["images"]?.FirstOrDefault()?["url"]?.ToString();
+
+                                    // Genres abrufen und daraus eine Bio generieren, z. B. "Genres: Rock, Pop"
+                                    var genresArray = artistJson["genres"]?.ToObject<List<string>>();
+                                    string bio = genresArray != null && genresArray.Any()
+                                        ? "Genres: " + string.Join(", ", genresArray)
+                                        : "No genres available";
+
+                                    artist = new Artist
+                                    {
+                                        Name = artistName,
+                                        SpotifyId = artistSpotifyId,
+                                        ProfilePictureUrl = profilePictureUrl,
+                                        Bio = bio,
+                                        CreatedAt = DateTime.Now
+                                    };
+
+                                    // Im Cache ablegen, damit bei mehrfach vorkommendem Artist kein weiterer Aufruf erfolgt
+                                    artistCache[artistSpotifyId] = artist;
+                                }
+                                else
+                                {
+                                    // Fallback: Minimaler Artist, falls die zusätzliche Abfrage fehlschlägt
+                                    artist = new Artist
+                                    {
+                                        Name = artistName,
+                                        SpotifyId = artistSpotifyId,
+                                        CreatedAt = DateTime.Now
+                                    };
+                                }
+                            }
+
+                            album.Artist = artist;
+                        }
+                    }
+
+                    albums.Add(album);
+                }
+            }
 
             return albums;
         }

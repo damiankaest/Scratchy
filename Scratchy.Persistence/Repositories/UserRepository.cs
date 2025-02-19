@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Scratchy.Domain.DTO.DB;
+using Scratchy.Domain.DTO.Response;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Persistence.DB;
 
@@ -71,6 +72,55 @@ namespace Scratchy.Persistence.Repositories
             throw new NotImplementedException();
         }
 
+        public async Task<UserProfileDto> GetUserProfileByIdAsync(int userId, int currentUserId)
+        {
+            var user = await _context.Users
+                // Lade alle Scratches des Users und das dazugehörige Album (falls vorhanden)
+                .Include(u => u.Scratches)
+                    .ThenInclude(s => s.Album)
+                // Lade die Followers und Followings, um deren Anzahl zu bestimmen
+                .Include(u => u.Followers)
+                .Include(u => u.Followings)
+                // Falls du ShowCases (oder weitere Navigationen) laden möchtest, kannst du hier weitere Include-Methoden anhängen.
+                .FirstOrDefaultAsync(u => u.UserId == userId);
 
+            if (user == null)
+            {
+                return null;
+            }
+            bool isFollowing = user.Followers.Any(f => f.FollowerId == currentUserId);
+
+            var recentScratches = user.Scratches?
+                .OrderByDescending(s => s.CreatedAt)
+                .Take(10)
+                .Select(s => new RecentScratches
+                {
+                    ScratchId = s.ScratchId,
+                    // Hier wird angenommen, dass deine Album-Entität die Eigenschaften AlbumName und AlbumImageUrl besitzt.
+                    AlbumName = s.Album != null ? s.Album.Title : string.Empty,
+                    AlbumImageUrl = s.Album != null ? s.Album.CoverImageUrl: string.Empty,
+                    Rating = s.Rating,
+                    CreatedAt = s.CreatedAt
+                })
+                .ToList();
+
+            // Optional: Wenn du den aktuell angemeldeten User (currentUserId) kennst, kannst du prüfen,
+            // ob dieser dem angefragten User folgt. Beispiel:
+            //bool isFollowing = user.Followers.Any(f => f.FollowerId == currentUserId);
+
+            var userProfileDto = new UserProfileDto
+            {
+                UserId = user.UserId,
+                UserName = user.Username,
+                UserImageUrl = user.ProfilePictureUrl,
+                ScratchCount = user.Scratches?.Count ?? 0,
+                FollowersCount = user.Followers?.Count ?? 0,
+                FollowingCount = user.Followings?.Count ?? 0,
+                RecentScratches = recentScratches,
+                IsFollowing = isFollowing // oder z. B. isFollowing, wenn du den aktuellen Benutzer berücksichtigst.
+            };
+
+            return userProfileDto;
+        }
     }
 }

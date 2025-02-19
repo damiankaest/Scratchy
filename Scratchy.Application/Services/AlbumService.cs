@@ -52,5 +52,10 @@ namespace Scratchy.Application.Services
 
             return albumSearchList;
         }
+
+        public async Task<AlbumDetailsDto> GetDetailsByIdAsync(int albumId)
+        {
+            return await _albumRepository.GetDetailsByIdAsync(albumId);
+        }
     }
 }

@@ -1,19 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Scratchy.Application.Services;
 using Scratchy.Domain.DTO;
-using Scratchy.Domain.DTO.DB;
-using Scratchy.Domain.Interfaces.Repositories;
+using Scratchy.Domain.DTO.Response;
 using Scratchy.Domain.Interfaces.Services;
-using System.IO;
 using System.Security.Claims;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace Scratchy.Controllers
 {
     [Authorize]
-    [ApiController]     
-    [Route("scratches")]
+    [ApiController]
+    [Route("api/[controller]")]
     public class ScratchController : ControllerBase
     {
         private readonly ILibraryService _libService;
@@ -40,7 +36,7 @@ namespace Scratchy.Controllers
             _albumService = albumService;
         }
 
-        //[AllowAnonymous]
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllScratches()
         {
@@ -74,24 +70,13 @@ namespace Scratchy.Controllers
                     UserImageUrl = scratch.User.ProfilePictureUrl,
                     Caption = scratch.Content,
                     CreatedAt = scratch.CreatedAt,
-                    PostImageUrl = scratch.ScratchImageUrl
+                    PostImageUrl = scratch.ScratchImageUrl,
+                    SpotifyUrl = "https://open.spotify.com/intl-de/album/" + scratch.Album.SpotifyId,
+
                 });
             }
 
             return Ok(homeFeed);
-        }
-
-        [AllowAnonymous]
-        [HttpGet("ping")]
-        public IActionResult Ping()
-        {
-            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            return Ok(
-                new 
-                { 
-                    Message = "This is protected data.", 
-                    UserId = userId 
-                });
         }
 
         [HttpGet("ByUserId")]
@@ -101,21 +86,27 @@ namespace Scratchy.Controllers
             return Ok(listOfPosts);
         }
 
-        [HttpGet("DetailsById")]
-        public async Task<IActionResult> GetPostDetailsById([FromQuery] string scratchId)
+        [HttpGet("distincAlbums")]
+        public async Task<IActionResult> GetindividualAlbumsAsync()
         {
-            ScratchDetailsResponseDto listOfScratches = await _scratchService.GetDetailsById(scratchId);
-            return Ok(listOfScratches);
+            var currentUserID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(currentUserID))
+            {
+                return Unauthorized(new { Message = "User ID not found in token." });
+            }
+            var currUser = await _userService.GetUserByFireBaseId(currentUserID);
+
+            List<AlbumShowCaseEntity> listOfAlbums = await _scratchService.GetIndividualAlbumsByUserIdAsync(currUser.UserId);
+            return Ok(listOfAlbums);
         }
 
-        [AllowAnonymous]
+
         [HttpPost("create")]
-        //[Authorize]
         public async Task<IActionResult> CreateNew([FromForm] CreateScratchRequestDto newScratch, IFormFile file)
         {
             try
             {
-                // Aktuellen Benutzer identifizieren
                 var currentUserID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 var currUser = await _userService.GetUserByFireBaseId(currentUserID);
 
@@ -129,10 +120,8 @@ namespace Scratchy.Controllers
                     return BadRequest("Daten oder Datei fehlen.");
                 }
 
-                // Speicherort für die Datei (z.B. in einem Ordner 'uploads' im Projektverzeichnis)
                 var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
 
-                // Überprüfen, ob der Ordner existiert, andernfalls erstellen
                 if (!Directory.Exists(uploadsFolder))
                 {
                     Directory.CreateDirectory(uploadsFolder);
@@ -143,14 +132,12 @@ namespace Scratchy.Controllers
 
                 using (var fileStream = file.OpenReadStream())
                 {
-                    // Asynchronen Aufruf korrekt mit await verwenden
                     var blobUrl = await _blobService.UploadFileAsync(
                         "userimages",
                         $"{currUser.UserId}_{scratchResult.ScratchId}.jpg",
                         fileStream
                     );
 
-                    // Scratch mit der hochgeladenen Datei-URL aktualisieren
                     await _scratchService.SetUserImageURLOnScratch(scratchResult, blobUrl);
                 }
 
@@ -163,12 +150,10 @@ namespace Scratchy.Controllers
             }
             catch (Exception ex)
             {
-                // Fehlerbehandlung
                 return StatusCode(500, $"Interner Fehler: {ex.Message}");
             }
         }
 
-        [AllowAnonymous]
         [HttpPost("new")]
         //[Authorize]
         public async Task<IActionResult> CreateNewPost([FromBody] CreateScratchRequestDto createPost) // 
@@ -185,36 +170,29 @@ namespace Scratchy.Controllers
             var result = await _scratchService.CreateNewAsync(createPost, currUser);
 
             return Ok(result);
-            //var createPost = new CreateScratchRequestDto();
-            //var authHeader = Request.Headers["Authorization"].ToString();
+        }
 
-            //if (!string.IsNullOrEmpty(authHeader) && authHeader.StartsWith("Bearer "))
-            //{
-            //    var token = authHeader.Substring("Bearer ".Length).Trim();
-            //    return Ok(new { message = "Token empfangen", token });
-            //}
+        [HttpGet("getAlbumScratchesFromUser")]
+        public async Task<IActionResult> GetAlbumScratchesFromUserAsync([FromQuery] int albumId)
+        {
+            var currentUserID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
+            var currUser = await _userService.GetUserByFireBaseId(currentUserID);
 
-            //createPost.UserId = User.
-            //    Claims.
-            //    First(
-            //        c =>
-            //            c.Type == ClaimTypes.NameIdentifier
-            //            )
-            //            .Value;
+            if (currUser == null)
+            {
+                throw new ArgumentException($"User mit ID {currentUserID} wurde nicht gefunden.");
+            }
+            List<CollectionAlbumScratchesDto> result = await _scratchService.GetAlbumScratchesForUserAsync(albumId, currUser.UserId);
+            return Ok(result);
+        }
 
-            //var albumInfo = await _albumService.GetByIdAsync(createPost.AlbumId);
-
-
-            ////var newPost = new Scratch(createPost, albumInfo, "");
-
-            //byte[] imageBytes = Convert.FromBase64String(createPost.UserImageAsBase64String);
-            //using (var stream = new MemoryStream(imageBytes))
-            //{
-            //    //newPost. = await _blobService.UploadFileAsync("userimages", newPost.Id, stream);
-            //}
-            //await _scratchRepository.AddAsync(newPost);
-            return Ok();
+        [HttpGet("getDetailsById")]
+        public async Task<IActionResult> GetDetailsByIdAsync([FromQuery]int scratchId)
+        {
+            ScratchDetailsResponseDto result = await _scratchService.GetDetailsById(scratchId);
+            
+            return Ok(result);
         }
 
 

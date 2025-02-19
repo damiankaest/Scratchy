@@ -1,4 +1,5 @@
 ﻿using Scratchy.Domain.DTO.DB;
+using Scratchy.Domain.DTO.Response;
 using Scratchy.Domain.Interfaces.Services;
 
 namespace Scratchy.Domain.Interfaces.Repositories
@@ -18,6 +19,7 @@ namespace Scratchy.Domain.Interfaces.Repositories
         /// <param name="spotifyId">Die Spotify-ID des Albums.</param>
         /// <returns>Das entsprechende Album oder null, wenn keines gefunden wurde.</returns>
         Task<Album> GetBySpotifyIdAsync(string spotifyId);
-        Task<IEnumerable<Album>> GetByListOfIdAsync(List<int> ids);
+        //Task<IEnumerable<Album>> GetByListOfIdAsync(List<int> ids);
+        Task<AlbumDetailsDto> GetDetailsByIdAsync(int albumId);
     }
 }

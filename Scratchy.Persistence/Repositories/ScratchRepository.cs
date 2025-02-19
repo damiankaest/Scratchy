@@ -54,9 +54,39 @@ namespace Scratchy.Persistence.Repositories
             return await _context.Scratches.FindAsync(id);
         }
 
+        public async Task<IEnumerable<Scratch>> GetByUserAndAlbumIdIdAsync(int userId, int albumId)
+        {
+            try
+            {
+                return await _context.Scratches
+                    .Include(s => s.Album)
+                    .Where(s => s.UserId == userId && s.AlbumId == albumId)
+                    .OrderByDescending(s => s.CreatedAt)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
 
-        public async Task<IEnumerable<Scratch>> GetByUserIdAsync(int userId) => _context.Scratches.Where(s => s.UserId == userId);
-
+        public async Task<IEnumerable<Scratch>> GetByUserIdAsync(int userId)
+        {
+            try
+            {
+                return await _context.Scratches
+                    .Include(s => s.Album)
+                        .ThenInclude(a => a.Artist) // Einbindung von Artist
+                    .Include(s => s.User) // Einbindung von User
+                    .Where(s => s.UserId == userId)
+                    .OrderByDescending(s => s.CreatedAt)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
         public async Task<IEnumerable<Scratch>> GetScratchesAsync(List<int> userIdList)
         {
             try

@@ -11,7 +11,7 @@ namespace Scratchy.Controllers
 {
     [AllowAnonymous]
     [ApiController]
-    [Route("explore")]
+    [Route("api/[controller]")]
     public class ExploreController : Controller
     {
         private IExplorerService _explorerService;
@@ -44,9 +44,9 @@ namespace Scratchy.Controllers
 
 
             //var albums = await _albumRepository.GetByQueryAsync(query,3);
-            var albumExploreResult = await _albumService.GetAlbumExploreInfoAsync(query, 3);
-            var artists = await _artistService.GetByQueryAsync(query,3);
-            var users = await _userService.GetByQueryAsync(query,3);
+            var albumExploreResult = await _albumService.GetAlbumExploreInfoAsync(query, 10);
+            var artists = await _artistService.GetByQueryAsync(query,10);
+            var users = await _userService.GetByQueryAsync(query,10);
 
             var friendIds = await _followService.GetFollowingAsync(currUser.UserId);
 
