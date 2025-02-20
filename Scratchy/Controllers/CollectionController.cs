@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
+using Scratchy.Extensions;
 using Scratchy.Persistence.Repositories;
 using Scratchy.Services;
 using System.Security.Claims;
@@ -29,13 +30,7 @@ namespace Scratchy.Controllers
         [HttpGet]
         public async Task<IActionResult> GetLibrary()
         {
-            var currentUserID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (string.IsNullOrEmpty(currentUserID))
-            {
-                return Unauthorized(new { Message = "User ID not found in token." });
-            }
-            var currUser = await _userService.GetUserByFireBaseId(currentUserID);
+            var currUser = await User.GetCurrentUserAsync(_userService);
 
             var collection = await _collectionService.GetCollectionByUserId(currUser.UserId);
             return Ok(collection);

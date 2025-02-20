@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Scratchy.Application.Services;
 using Scratchy.Domain.DTO.Response.Explore;
+using Scratchy.Domain.Exceptions;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
+using Scratchy.Extensions;
 using Scratchy.Persistence.Repositories;
 using System.Security.Claims;
 
@@ -33,22 +35,13 @@ namespace Scratchy.Controllers
         [Route("searchByQuery")]
         public async Task<IActionResult> SearchByQuery([FromQuery] string query)
         {
-            var currentUserID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var currentUser = await User.GetCurrentUserAsync(_userService);
 
-            if (string.IsNullOrEmpty(currentUserID))
-            {
-                return Unauthorized(new { Message = "User ID not found in token." });
-            }
-
-            var currUser = await _userService.GetUserByFireBaseId(currentUserID);
-
-
-            //var albums = await _albumRepository.GetByQueryAsync(query,3);
             var albumExploreResult = await _albumService.GetAlbumExploreInfoAsync(query, 10);
             var artists = await _artistService.GetByQueryAsync(query,10);
             var users = await _userService.GetByQueryAsync(query,10);
 
-            var friendIds = await _followService.GetFollowingAsync(currUser.UserId);
+            var friendIds = await _followService.GetFollowingAsync(currentUser.UserId);
 
             foreach (var user in users)
             {

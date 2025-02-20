@@ -1,0 +1,2498 @@
+{
+	"info": {
+		"_postman_id": "a05e45fb-136b-4787-939e-aba2957a67bb",
+		"name": "Scratchy API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "FireBase",
+			"item": [
+				{
+					"name": "ValidateToken/FB",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"idToken\": \"{{_authToken}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{FireBaseGoogleIdentiyKitURL}}/{{ValidateToken}}{{APIKey}}",
+							"host": [
+								"{{FireBaseGoogleIdentiyKitURL}}"
+							],
+							"path": [
+								"{{ValidateToken}}{{APIKey}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register/FB",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Antwort als JSON parsen\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Token speichern, falls es existiert\r",
+									"if (jsonData.idToken) {\r",
+									"    pm.environment.set(\"_authToken\", jsonData.idToken);\r",
+									"    console.log(\"Token gespeichert: \" + jsonData.idToken);\r",
+									"} else {\r",
+									"    console.log(\"Kein Token in der Antwort gefunden.\");\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"example@example.com\",\r\n  \"password\": \"password123\",\r\n  \"returnSecureToken\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{FireBaseGoogleIdentiyKitURL}}/{{SignUp}}{{APIKey}}",
+							"host": [
+								"{{FireBaseGoogleIdentiyKitURL}}"
+							],
+							"path": [
+								"{{SignUp}}{{APIKey}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login/FB",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Antwort als JSON parsen\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Token speichern, falls es existiert\r",
+									"if (jsonData.idToken) {\r",
+									"    pm.environment.set(\"_authToken\", jsonData.idToken);\r",
+									"    console.log(\"Token gespeichert: \" + jsonData.idToken);\r",
+									"} else {\r",
+									"    console.log(\"Kein Token in der Antwort gefunden.\");\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"example@example.com\",\r\n  \"password\": \"password123\",\r\n  \"returnSecureToken\": true\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{FireBaseGoogleIdentiyKitURL}}/{{Login}}{{APIKey}}",
+							"host": [
+								"{{FireBaseGoogleIdentiyKitURL}}"
+							],
+							"path": [
+								"{{Login}}{{APIKey}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "api",
+			"item": [
+				{
+					"name": "Album",
+					"item": [
+						{
+							"name": "/api/Album",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Album?query=aute",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"Album"
+									],
+									"query": [
+										{
+											"key": "query",
+											"value": "aute"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/Album?query=aute",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Album"
+											],
+											"query": [
+												{
+													"key": "query",
+													"value": "aute"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "/api/Album/details",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Album/details?albumId=aute",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"Album",
+										"details"
+									],
+									"query": [
+										{
+											"key": "albumId",
+											"value": "aute"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/Album/details?albumId=aute",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Album",
+												"details"
+											],
+											"query": [
+												{
+													"key": "albumId",
+													"value": "aute"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Badges",
+					"item": [
+						{
+							"name": "/api/Badges/getDisplayedBadges",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Badges/getDisplayedBadges",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"Badges",
+										"getDisplayedBadges"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/Badges/getDisplayedBadges",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Badges",
+												"getDisplayedBadges"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "/api/Badges/getBadges",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Badges/getBadges",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"Badges",
+										"getBadges"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/Badges/getBadges",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Badges",
+												"getBadges"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "/api/Badges/getBadgesByUserId",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Badges/getBadgesByUserId?userId=aute",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"Badges",
+										"getBadgesByUserId"
+									],
+									"query": [
+										{
+											"key": "userId",
+											"value": "aute"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/Badges/getBadgesByUserId?userId=aute",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Badges",
+												"getBadgesByUserId"
+											],
+											"query": [
+												{
+													"key": "userId",
+													"value": "aute"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "/api/Badges/getDisplayedBadgesByUserId",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Badges/getDisplayedBadgesByUserId?userId=aute",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"Badges",
+										"getDisplayedBadgesByUserId"
+									],
+									"query": [
+										{
+											"key": "userId",
+											"value": "aute"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/Badges/getDisplayedBadgesByUserId?userId=aute",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Badges",
+												"getDisplayedBadgesByUserId"
+											],
+											"query": [
+												{
+													"key": "userId",
+													"value": "aute"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Follower",
+					"item": [
+						{
+							"name": "/api/Follower/getFollowingAsync",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Follower/getFollowingAsync",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"Follower",
+										"getFollowingAsync"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/Follower/getFollowingAsync",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Follower",
+												"getFollowingAsync"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "/api/Follower/getFollowerAsync",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Follower/getFollowerAsync",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"Follower",
+										"getFollowerAsync"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/Follower/getFollowerAsync",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Follower",
+												"getFollowerAsync"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "/api/Follower/follow",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Follower/follow?receiverId=25956528",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"Follower",
+										"follow"
+									],
+									"query": [
+										{
+											"key": "receiverId",
+											"value": "25956528"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/Follower/follow?receiverId=25956528",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Follower",
+												"follow"
+											],
+											"query": [
+												{
+													"key": "receiverId",
+													"value": "25956528"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "/api/Follower/unfollowUser",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Follower/unfollowUser?receiverId=25956528",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"Follower",
+										"unfollowUser"
+									],
+									"query": [
+										{
+											"key": "receiverId",
+											"value": "25956528"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/Follower/unfollowUser?receiverId=25956528",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Follower",
+												"unfollowUser"
+											],
+											"query": [
+												{
+													"key": "receiverId",
+													"value": "25956528"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Notification",
+					"item": [
+						{
+							"name": "/api/Notification",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Notification",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"Notification"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/Notification",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Notification"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "/api/Notification/create",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"type\": \"consequat dolor officia qui\",\n  \"message\": \"labore fugiat elit non ullamco\",\n  \"receiverId\": \"ad est dolor\",\n  \"senderId\": \"ea sed nulla ut\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/Notification/create",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"Notification",
+										"create"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"type\": \"consequat dolor officia qui\",\n  \"message\": \"labore fugiat elit non ullamco\",\n  \"receiverId\": \"ad est dolor\",\n  \"senderId\": \"ea sed nulla ut\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/Notification/create",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Notification",
+												"create"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Scratch",
+					"item": [
+						{
+							"name": "/api/Scratch",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Scratch",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"Scratch"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/Scratch",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Scratch"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "/api/Scratch/ByUserId",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Scratch/ByUserId?userId=25956528",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"Scratch",
+										"ByUserId"
+									],
+									"query": [
+										{
+											"key": "userId",
+											"value": "25956528"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/Scratch/ByUserId?userId=25956528",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Scratch",
+												"ByUserId"
+											],
+											"query": [
+												{
+													"key": "userId",
+													"value": "25956528"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "/api/Scratch/distincAlbums",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Scratch/distincAlbums",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"Scratch",
+										"distincAlbums"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/Scratch/distincAlbums",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Scratch",
+												"distincAlbums"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "/api/Scratch/create",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "multipart/form-data"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "UserId",
+											"value": "voluptate tempor laborum",
+											"type": "text"
+										},
+										{
+											"key": "Description",
+											"value": "est enim",
+											"type": "text"
+										},
+										{
+											"key": "AlbumId",
+											"value": "-46246372",
+											"type": "text"
+										},
+										{
+											"key": "Rating",
+											"value": "-57110501.28298405",
+											"type": "text"
+										},
+										{
+											"key": "UserImageAsBase64String",
+											"value": "sed occaeca",
+											"type": "text"
+										},
+										{
+											"key": "file",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/Scratch/create",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"Scratch",
+										"create"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "UserId",
+													"value": "voluptate tempor laborum",
+													"type": "text"
+												},
+												{
+													"key": "Description",
+													"value": "est enim",
+													"type": "text"
+												},
+												{
+													"key": "AlbumId",
+													"value": "-46246372",
+													"type": "text"
+												},
+												{
+													"key": "Rating",
+													"value": "-57110501.28298405",
+													"type": "text"
+												},
+												{
+													"key": "UserImageAsBase64String",
+													"value": "sed occaeca",
+													"type": "text"
+												},
+												{
+													"key": "file",
+													"type": "file",
+													"src": []
+												}
+											]
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/Scratch/create",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Scratch",
+												"create"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "/api/Scratch/getAlbumScratchesFromUser",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Scratch/getAlbumScratchesFromUser?albumId=25956528",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"Scratch",
+										"getAlbumScratchesFromUser"
+									],
+									"query": [
+										{
+											"key": "albumId",
+											"value": "25956528"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/Scratch/getAlbumScratchesFromUser?albumId=25956528",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Scratch",
+												"getAlbumScratchesFromUser"
+											],
+											"query": [
+												{
+													"key": "albumId",
+													"value": "25956528"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "/api/Scratch/getDetailsById",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Scratch/getDetailsById?scratchId=25956528",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"Scratch",
+										"getDetailsById"
+									],
+									"query": [
+										{
+											"key": "scratchId",
+											"value": "25956528"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/Scratch/getDetailsById?scratchId=25956528",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Scratch",
+												"getDetailsById"
+											],
+											"query": [
+												{
+													"key": "scratchId",
+													"value": "25956528"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "/api/Scratch/delete",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "\"aute\"",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/Scratch/delete",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"Scratch",
+										"delete"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "\"aute\"",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/Scratch/delete",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Scratch",
+												"delete"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Show Case",
+					"item": [
+						{
+							"name": "/api/ShowCase/Update",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"showCaseType\": 3,\n  \"showCaseId\": 92919370,\n  \"firstPlaceEntityId\": 14863974,\n  \"secondPlaceEntityId\": 80101574,\n  \"thirdPlaceEntityId\": -62405892\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/ShowCase/Update",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"ShowCase",
+										"Update"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"showCaseType\": 3,\n  \"showCaseId\": 92919370,\n  \"firstPlaceEntityId\": 14863974,\n  \"secondPlaceEntityId\": 80101574,\n  \"thirdPlaceEntityId\": -62405892\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/ShowCase/Update",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"ShowCase",
+												"Update"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "/api/ShowCase/CreateNew",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"showCaseType\": 1,\n  \"firstPlaceEntityId\": 89465451,\n  \"secondPlaceEntityId\": 89583876,\n  \"thirdPlaceEntityId\": 38032702\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/ShowCase/CreateNew",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"ShowCase",
+										"CreateNew"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"showCaseType\": 1,\n  \"firstPlaceEntityId\": 89465451,\n  \"secondPlaceEntityId\": 89583876,\n  \"thirdPlaceEntityId\": 38032702\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/ShowCase/CreateNew",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"ShowCase",
+												"CreateNew"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "/api/ShowCase/getShowCases",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/ShowCase/getShowCases",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"ShowCase",
+										"getShowCases"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/ShowCase/getShowCases",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"ShowCase",
+												"getShowCases"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "/api/ShowCase/getShowCasesByUserId",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/ShowCase/getShowCasesByUserId?userId=25956528",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"ShowCase",
+										"getShowCasesByUserId"
+									],
+									"query": [
+										{
+											"key": "userId",
+											"value": "25956528"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/ShowCase/getShowCasesByUserId?userId=25956528",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"ShowCase",
+												"getShowCasesByUserId"
+											],
+											"query": [
+												{
+													"key": "userId",
+													"value": "25956528"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "User",
+					"item": [
+						{
+							"name": "Get Profile",
+							"item": [
+								{
+									"name": "/api/User/GetProfile",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/User/GetProfile",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"User",
+												"GetProfile"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "Success",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/User/GetProfile",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"User",
+														"GetProfile"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "text/plain"
+												}
+											],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								},
+								{
+									"name": "/api/User/GetProfile/:id",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/User/GetProfile/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"User",
+												"GetProfile",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id",
+													"value": "25956528",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "Success",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/api/User/GetProfile/:id",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"api",
+														"User",
+														"GetProfile",
+														":id"
+													],
+													"variable": [
+														{
+															"key": "id",
+															"value": "25956528",
+															"description": "(Required) "
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "text/plain"
+												}
+											],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "/api/User/register",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"uid\": \"fugiat qui non pariatur\",\n  \"userName\": \"fugiat\",\n  \"email\": \"tempor consectetur\",\n  \"profileImage\": \"Excepteur reprehenderit\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/User/register",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"User",
+										"register"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"uid\": \"fugiat qui non pariatur\",\n  \"userName\": \"fugiat\",\n  \"email\": \"tempor consectetur\",\n  \"profileImage\": \"Excepteur reprehenderit\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/api/User/register",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"User",
+												"register"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "/api/User/GetByIdAsync",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/User/GetByIdAsync?id=25956528",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"User",
+										"GetByIdAsync"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "25956528"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/User/GetByIdAsync?id=25956528",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"User",
+												"GetByIdAsync"
+											],
+											"query": [
+												{
+													"key": "id",
+													"value": "25956528"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "/api/User/Search",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/User/Search?query=aute",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"User",
+										"Search"
+									],
+									"query": [
+										{
+											"key": "query",
+											"value": "aute"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/User/Search?query=aute",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"User",
+												"Search"
+											],
+											"query": [
+												{
+													"key": "query",
+													"value": "aute"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "/api/User/GetUserProfileAsync",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/User/GetUserProfileAsync?userId=aute",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"User",
+										"GetUserProfileAsync"
+									],
+									"query": [
+										{
+											"key": "userId",
+											"value": "aute"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/User/GetUserProfileAsync?userId=aute",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"User",
+												"GetUserProfileAsync"
+											],
+											"query": [
+												{
+													"key": "userId",
+													"value": "aute"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "/api/User/follow",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/User/follow?receiverId=25956528",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"User",
+										"follow"
+									],
+									"query": [
+										{
+											"key": "receiverId",
+											"value": "25956528"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/User/follow?receiverId=25956528",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"User",
+												"follow"
+											],
+											"query": [
+												{
+													"key": "receiverId",
+													"value": "25956528"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "/api/User/unfollowUser",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/User/unfollowUser?currentUserId=25956528&receiverId=25956528",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"User",
+										"unfollowUser"
+									],
+									"query": [
+										{
+											"key": "currentUserId",
+											"value": "25956528"
+										},
+										{
+											"key": "receiverId",
+											"value": "25956528"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/User/unfollowUser?currentUserId=25956528&receiverId=25956528",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"User",
+												"unfollowUser"
+											],
+											"query": [
+												{
+													"key": "currentUserId",
+													"value": "25956528"
+												},
+												{
+													"key": "receiverId",
+													"value": "25956528"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "/api/Collection",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Collection",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"Collection"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Collection",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"Collection"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "/api/Explore/searchByQuery",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Explore/searchByQuery?query=aute",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"Explore",
+								"searchByQuery"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "aute"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Explore/searchByQuery?query=aute",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"Explore",
+										"searchByQuery"
+									],
+									"query": [
+										{
+											"key": "query",
+											"value": "aute"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "/api/Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/Health",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"Health"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Health",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"Health"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{_authToken}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "follower",
+			"item": [
+				{
+					"name": "/follower/getFollowingAsync",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/follower/getFollowingAsync",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"follower",
+								"getFollowingAsync"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/follower/getFollowingAsync",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"follower",
+										"getFollowingAsync"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "/follower/getFollowerAsync",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/follower/getFollowerAsync",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"follower",
+								"getFollowerAsync"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/follower/getFollowerAsync",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"follower",
+										"getFollowerAsync"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "/follower/follow",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/follower/follow?receiverId=25956528",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"follower",
+								"follow"
+							],
+							"query": [
+								{
+									"key": "receiverId",
+									"value": "25956528"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/follower/follow?receiverId=25956528",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"follower",
+										"follow"
+									],
+									"query": [
+										{
+											"key": "receiverId",
+											"value": "25956528"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "/follower/unfollowUser",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/follower/unfollowUser?receiverId=25956528",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"follower",
+								"unfollowUser"
+							],
+							"query": [
+								{
+									"key": "receiverId",
+									"value": "25956528"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Success",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/follower/unfollowUser?receiverId=25956528",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"follower",
+										"unfollowUser"
+									],
+									"query": [
+										{
+											"key": "receiverId",
+											"value": "25956528"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "/",
+			"type": "string"
+		}
+	]
+}

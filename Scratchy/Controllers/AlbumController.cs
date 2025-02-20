@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Scratchy.Domain.DTO.Response;
 using Scratchy.Domain.Interfaces.Services;
 
 namespace Scratchy.Controllers

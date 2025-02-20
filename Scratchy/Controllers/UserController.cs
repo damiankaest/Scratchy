@@ -8,6 +8,7 @@ using Scratchy.Domain.DTO.Request;
 using Scratchy.Domain.DTO.Response;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
+using Scratchy.Extensions;
 using System.Security.Claims;
 
 namespace Scratchy.Controllers
@@ -156,15 +157,8 @@ namespace Scratchy.Controllers
         [HttpGet("GetUserProfileAsync")]
         public async Task<IActionResult> GetUserProfileAsync([FromQuery] string userId)
         {
-            string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (string.IsNullOrEmpty(currentUserId))
-            {
-                return Unauthorized(new { Message = "User ID not found in token." });
-            }
-
-            var currentUser = await _userService.GetUserByFireBaseId(currentUserId);
-            UserProfileDto userDetails = await _userService.GetUserProfileByIdAsync(currentUser.UserId, currentUser.UserId);
+            var currUser = await User.GetCurrentUserAsync(_userService);
+            UserProfileDto userDetails = await _userService.GetUserProfileByIdAsync(currUser.UserId, currUser.UserId);
             return Ok(userDetails);
         }
 
@@ -172,18 +166,11 @@ namespace Scratchy.Controllers
         [HttpGet("follow")]
         public async Task<IActionResult> FollowUser(int receiverId)
         {
-            string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (string.IsNullOrEmpty(currentUserId))
-            {
-                return Unauthorized(new { Message = "User ID not found in token." });
-            }
-
+            var currUser = await User.GetCurrentUserAsync(_userService);
             var userResult = await _userService.GetByIdAsync(receiverId);
-            var currentUser = await _userService.GetUserByFireBaseId(currentUserId);
             try
             {
-                await _followService.FollowUserAsync(currentUser.UserId, userResult.UserId);
+                await _followService.FollowUserAsync(currUser.UserId, userResult.UserId);
 
             }
             catch (Exception)

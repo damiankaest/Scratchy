@@ -83,13 +83,7 @@ namespace Scratchy.Controllers
         [HttpGet("distincAlbums")]
         public async Task<IActionResult> GetindividualAlbumsAsync()
         {
-            var currentUserID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (string.IsNullOrEmpty(currentUserID))
-            {
-                return Unauthorized(new { Message = "User ID not found in token." });
-            }
-            var currUser = await _userService.GetUserByFireBaseId(currentUserID);
+            var currUser = await User.GetCurrentUserAsync(_userService);
 
             List<AlbumShowCaseEntity> listOfAlbums = await _scratchService.GetIndividualAlbumsByUserIdAsync(currUser.UserId);
             return Ok(listOfAlbums);
@@ -101,8 +95,7 @@ namespace Scratchy.Controllers
         {
             try
             {
-                var currentUserID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                var currUser = await _userService.GetUserByFireBaseId(currentUserID);
+                var currUser = await User.GetCurrentUserAsync(_userService);
 
                 if (currUser == null)
                 {
@@ -148,35 +141,11 @@ namespace Scratchy.Controllers
             }
         }
 
-        [HttpPost("new")]
-        //[Authorize]
-        public async Task<IActionResult> CreateNewPost([FromBody] CreateScratchRequestDto createPost) // 
-        {
-            var currentUserID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            var currUser = await _userService.GetUserByFireBaseId(currentUserID);
-
-            if (currUser == null)
-            {
-                throw new ArgumentException($"User mit ID {createPost.UserId} wurde nicht gefunden.");
-            }
-
-            var result = await _scratchService.CreateNewAsync(createPost, currUser);
-
-            return Ok(result);
-        }
-
         [HttpGet("getAlbumScratchesFromUser")]
         public async Task<IActionResult> GetAlbumScratchesFromUserAsync([FromQuery] int albumId)
         {
-            var currentUserID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var currUser = await User.GetCurrentUserAsync(_userService);
 
-            var currUser = await _userService.GetUserByFireBaseId(currentUserID);
-
-            if (currUser == null)
-            {
-                throw new ArgumentException($"User mit ID {currentUserID} wurde nicht gefunden.");
-            }
             List<CollectionAlbumScratchesDto> result = await _scratchService.GetAlbumScratchesForUserAsync(albumId, currUser.UserId);
             return Ok(result);
         }
@@ -189,15 +158,11 @@ namespace Scratchy.Controllers
             return Ok(result);
         }
 
-
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteScratchWithIdAsync([FromBody] string Id)
         {
             var result = await _scratchService.DeleteScratchByIdAsync(Id);
             return Ok();
         }
-
-
-
     }
 }

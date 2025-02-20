@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Scratchy.Domain.Interfaces.Services;
+using Scratchy.Extensions;
+using Scratchy.Services;
 using System.Security.Claims;
 
 namespace Scratchy.Controllers
@@ -10,23 +12,20 @@ namespace Scratchy.Controllers
     [Route("api/[controller]")]
     public class BadgesController : Controller
     {
-        private IBadgeService _badgeService;
+        private readonly IBadgeService _badgeService;
+        private readonly IUserService _userService;
 
-        public BadgesController(IBadgeService badgeService)
+        public BadgesController(IBadgeService badgeService,IUserService userService)
         {
             _badgeService = badgeService;
+            _userService = userService;
         }
         [HttpGet]
         [Route("getDisplayedBadges")]
         public async Task<IActionResult> GetDisplayedBadges()
         {
-            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var currUser = await User.GetCurrentUserAsync(_userService);
 
-            if (string.IsNullOrEmpty(currentUserId))
-            {
-                //return Unauthorized(new { Message = "User ID not found in token." });
-            }
-            //var result = _badgeService.GetDisplayedBadgesByUserId(currentUserId);
             return Ok();
         }
 
@@ -34,13 +33,8 @@ namespace Scratchy.Controllers
         [Route("getBadges")]
         public async Task<IActionResult> Get()
         {
-            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var currUser = await User.GetCurrentUserAsync(_userService);
 
-            if (string.IsNullOrEmpty(currentUserId))
-            {
-                //return Unauthorized(new { Message = "User ID not found in token." });
-            }
-            //var result = _badgeService.GetByUserId(currentUserId);
             return Ok();
         }
 
@@ -48,7 +42,7 @@ namespace Scratchy.Controllers
         [Route("getBadgesByUserId")]
         public async Task<IActionResult> GetByUserId(string userId)
         {
-            //var result = _badgeService.GetByUserId(userId);
+            var currUser = await User.GetCurrentUserAsync(_userService);
             return Ok();
         }
 
@@ -56,7 +50,7 @@ namespace Scratchy.Controllers
         [Route("getDisplayedBadgesByUserId")]
         public async Task<IActionResult> GetDisplayedBadgesByUserId(string userId)
         {
-            //var result = _badgeService.GetByUserId(userId);
+            var currUser = await User.GetCurrentUserAsync(_userService);
             return Ok();
         }
 

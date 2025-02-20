@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Scratchy.Domain.DTO.Request;
 using Scratchy.Domain.Interfaces.Services;
-using System.Security.Claims;
+using Scratchy.Extensions;
 
 namespace Scratchy.Controllers
 {
@@ -30,16 +30,7 @@ namespace Scratchy.Controllers
         [HttpPost("CreateNew")]
         public async Task<IActionResult> CreateNewShowCaseAsync(CreateShowCaseRequestDto createDto)
         {
-            var currentUserID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var currUser = await _userService.GetUserByFireBaseId(currentUserID);
-
-            if (currUser == null)
-            {
-                return Unauthorized("Benutzer nicht gefunden.");
-            }
-
-            currUser = new Domain.DTO.DB.User();
-            currUser.UserId = 5;
+            var currUser = await User.GetCurrentUserAsync(_userService);
             var result = await _showCaseService.CreateNewShowCaseAsync(createDto, currUser.UserId);
             return Ok(result);
         }
@@ -47,14 +38,7 @@ namespace Scratchy.Controllers
         [HttpGet("getShowCases")]
         public async Task<IActionResult> GetByQueryAsync()
         {
-
-            var currentUserID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var currUser = await _userService.GetUserByFireBaseId(currentUserID);
-
-            if (currUser == null)
-            {
-                return Unauthorized("Benutzer nicht gefunden.");
-            }
+            var currUser = await User.GetCurrentUserAsync(_userService);
 
             var showCaseResult = await _showCaseService.GetAllShowCasesFromUserByIdAsync(currUser.UserId);
             if (showCaseResult == null)

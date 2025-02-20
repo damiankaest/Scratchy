@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Scratchy.Application.Services;
 using Scratchy.Domain.DTO.Response;
 using Scratchy.Domain.Interfaces.Services;
+using Scratchy.Extensions;
 using System.Security.Claims;
 
 namespace Scratchy.Controllers
@@ -26,16 +27,9 @@ namespace Scratchy.Controllers
         [Route("getFollowingAsync")]
         public async Task<IActionResult> GetCurrentFollowingsAsync()
         {
-            var currentUserID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var currUser = await User.GetCurrentUserAsync(_userService);
 
-            if (string.IsNullOrEmpty(currentUserID))
-            {
-                return Unauthorized(new { Message = "User ID not found in token." });
-            }
-
-            var user = await _userService.GetUserByFireBaseId(currentUserID);
-
-            var followingIds = await _followerService.GetFollowingAsync(user.UserId);
+            var followingIds = await _followerService.GetFollowingAsync(currUser.UserId);
             var result = new List<FollowingDto>();
 
             foreach (var followingId in followingIds)
@@ -57,13 +51,8 @@ namespace Scratchy.Controllers
         [Route("getFollowerAsync")]
         public async Task<IActionResult> GetCurrentFollowersAsync()
         {
-            var currentUserID = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var currUser = await User.GetCurrentUserAsync(_userService);
 
-            if (string.IsNullOrEmpty(currentUserID))
-            {
-                //return Unauthorized(new { Message = "User ID not found in token." });
-            }
-            //var followerIds = await _followerService.GetFollowersAsync(currentUserID);
 
             var result = new List<FollowerDto>();
 
@@ -78,18 +67,12 @@ namespace Scratchy.Controllers
         [HttpGet("follow")]
         public async Task<IActionResult> FollowUser(int receiverId)
         {
-            string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (string.IsNullOrEmpty(currentUserId))
-            {
-                return Unauthorized(new { Message = "User ID not found in token." });
-            }
+            var currUser = await User.GetCurrentUserAsync(_userService);
 
             var userResult = await _userService.GetByIdAsync(receiverId);
-            var currentUser = await _userService.GetUserByFireBaseId(currentUserId);
             try
             {
-                await _followerService.FollowUserAsync(currentUser.UserId, userResult.UserId);
+                await _followerService.FollowUserAsync(currUser.UserId, userResult.UserId);
 
             }
             catch (Exception ex)
@@ -104,18 +87,10 @@ namespace Scratchy.Controllers
         [HttpGet("unfollowUser")]
         public async Task<IActionResult> UnfollowUser(int receiverId)
         {
-            string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (string.IsNullOrEmpty(currentUserId))
-            {
-                return Unauthorized(new { Message = "User ID not found in token." });
-            }
-
-            var currentUser = await _userService.GetUserByFireBaseId(currentUserId);
-
+            var currUser = await User.GetCurrentUserAsync(_userService);
             try
             {
-                await _followerService.UnfollowUserAsync(currentUser.UserId, receiverId);
+                await _followerService.UnfollowUserAsync(currUser.UserId, receiverId);
             }
             catch (Exception)
             {
