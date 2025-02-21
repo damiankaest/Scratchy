@@ -37,7 +37,6 @@ namespace Scratchy.Controllers
             _albumService = albumService;
         }
 
-        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetAllScratches()
         {

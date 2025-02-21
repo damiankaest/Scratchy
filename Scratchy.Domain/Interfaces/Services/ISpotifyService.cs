@@ -4,6 +4,6 @@ namespace Scratchy.Domain.Interfaces.Services
 {
     public interface ISpotifyService
     {
-        public Task<List<Album>> SearchForAlbumByQuery(string query);
+        public Task<List<Album>> SearchForAlbumByQuery(string query, int limit);
     }
 }

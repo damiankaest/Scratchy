@@ -108,4 +108,10 @@
             : base(478, errorSource, message) { }
     }
 
+    public class SearchServiceException : BaseException
+    {
+        public SearchServiceException(string message, string errorSource = "SearchService")
+            : base(479, errorSource, message) { }
+    }
+
 }

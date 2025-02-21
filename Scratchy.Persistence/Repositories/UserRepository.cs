@@ -33,6 +33,10 @@ namespace Scratchy.Persistence.Repositories
 
         public async Task<User> GetByFirebaseIdAsync(string id)
         {
+            try
+            {
+
+
             string cacheKey = $"User_{id}";
             if (_cache.TryGetValue(cacheKey, out User cachedUser))
             {
@@ -47,8 +51,15 @@ namespace Scratchy.Persistence.Repositories
 
                 _cache.Set(cacheKey, user, cacheEntryOptions);
             }
+                return user;
+            }
+            catch (Exception ex)
+            {
 
-            return user;
+                throw;
+            }
+
+            
         }
 
         public async Task<User> GetByIdAsync(int id)

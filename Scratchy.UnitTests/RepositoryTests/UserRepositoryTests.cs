@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Scratchy.Domain.DTO.DB;
 using Scratchy.Persistence.DB;
 using Scratchy.Persistence.Repositories;
@@ -16,12 +17,13 @@ namespace Scratchy.UnitTests.RepositoryTests
     {
         private ScratchItDbContext _dbContext;
         private UserRepository _userRepository;
+        private IMemoryCache cache;
 
         [SetUp]
         public void SetUp()
         {
             _dbContext = InMemoryDbContextFactory.Create();
-            _userRepository = new UserRepository(_dbContext);
+            _userRepository = new UserRepository(_dbContext,cache);
         }
 
         [TearDown]

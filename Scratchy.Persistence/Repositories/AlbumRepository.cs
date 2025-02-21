@@ -3,6 +3,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.DTO.Response;
+using Scratchy.Domain.Exceptions;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
 using Scratchy.Persistence.DB;
@@ -97,52 +98,55 @@ namespace Scratchy.Persistence.Repositories
         {
             try
             {
-                // Versuche zunächst, passende Alben lokal zu finden
-                var albumResult = await _context.Albums
+                // 1. Suche Alben aus der Datenbank
+                var dbAlbums = await _context.Albums
                     .Include(a => a.Artist)
                     .Where(a => EF.Functions.Like(a.Title, $"{query}%") ||
                                 EF.Functions.Like(a.Artist.Name, $"%{query}%"))
                     .Take(limit)
                     .ToListAsync();
 
-                // Falls keine passenden Alben in der lokalen DB gefunden wurden,
-                // hole die Ergebnisse von Spotify und füge sie (sofern nicht bereits vorhanden) hinzu.
-                if (!albumResult.Any())
+                // 2. Falls noch nicht genug Alben vorhanden sind, ergänze mit Spotify-Daten
+                int missingCount = limit - dbAlbums.Count;
+                if (missingCount > 0)
                 {
-                    var albumList = await _spotifyService.SearchForAlbumByQuery(query);
+                    var spotifyAlbums = await _spotifyService.SearchForAlbumByQuery(query, missingCount);
 
-                    foreach (var album in albumList)
+                    // 3. Entferne doppelte Alben (die bereits in der DB existieren)
+                    var uniqueSpotifyAlbums = spotifyAlbums
+                        .Where(sa => !dbAlbums.Any(dbA => dbA.SpotifyId == sa.SpotifyId))
+                        .ToList();
+
+                    // 4. Falls Alben noch nicht in der DB sind, speichere sie
+                    foreach (var album in uniqueSpotifyAlbums)
                     {
-                        // Prüfe, ob ein Album mit gleichem Titel und gleichem Künstler (SpotifyId) schon existiert.
                         var existingAlbum = await _context.Albums
                             .Include(a => a.Artist)
-                            .FirstOrDefaultAsync(a => a.Title == album.Title &&
-                                                      a.Artist.SpotifyId == album.Artist.SpotifyId);
+                            .FirstOrDefaultAsync(a => a.SpotifyId == album.SpotifyId);
 
                         if (existingAlbum == null)
                         {
-                            // Falls der Künstler bereits existiert, verwende diesen,
-                            // um Duplikate in der Artist-Tabelle zu vermeiden.
                             var existingArtist = await _context.Artists
                                 .FirstOrDefaultAsync(a => a.SpotifyId == album.Artist.SpotifyId);
+
                             if (existingArtist != null)
                             {
-                                album.Artist = existingArtist;
+                                album.Artist = existingArtist; // Nutze existierenden Artist
                             }
 
                             _context.Albums.Add(album);
-                            albumResult.Add(album);
+                            dbAlbums.Add(album); // Füge es zur Rückgabeliste hinzu
                         }
                     }
 
-                    await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync(); // Speichere neue Alben in die DB
                 }
 
-                return albumResult.Take(limit).ToList();
+                return dbAlbums.Take(limit).ToList();
             }
             catch (Exception ex)
             {
-                throw new ApplicationException("Fehler beim Abrufen von Alben von Spotify.", ex);
+                throw new SearchServiceException($"Fehler beim Abrufen von Alben: {ex.Message}");
             }
         }
         public async Task<Album> GetBySpotifyIdAsync(string spotifyId)

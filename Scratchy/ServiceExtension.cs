@@ -70,7 +70,7 @@ public static class ServiceExtensions
         });
         services.AddScoped<ILoginService, LoginService>();
         services.AddScoped<IPostService, PostService>();
-        services.AddScoped<ISpotifyService, SpotifyService>();
+        services.AddSingleton<ISpotifyService, SpotifyService>();
         services.AddScoped<ILibraryService, LibraryService>();
         services.AddScoped<IExplorerService, ExploreService>();
         services.AddScoped<IArtistService, ArtistService>();
@@ -84,6 +84,7 @@ public static class ServiceExtensions
         services.AddScoped<IStatService, StatService>();
         services.AddScoped<IShowCaseService, ShowCaseService>();
         services.AddScoped<ICollectionService, CollectionService>();
+        services.AddScoped<ISearchService, SearchService>();
         services.AddMemoryCache();
     }
 

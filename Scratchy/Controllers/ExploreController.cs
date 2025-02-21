@@ -1,17 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Scratchy.Application.Services;
+﻿using Microsoft.AspNetCore.Mvc;
 using Scratchy.Domain.DTO.Response.Explore;
-using Scratchy.Domain.Exceptions;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
 using Scratchy.Extensions;
-using Scratchy.Persistence.Repositories;
-using System.Security.Claims;
 
 namespace Scratchy.Controllers
 {
-    [AllowAnonymous]
+
     [ApiController]
     [Route("api/[controller]")]
     public class ExploreController : Controller

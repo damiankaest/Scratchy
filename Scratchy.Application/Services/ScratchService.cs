@@ -43,9 +43,7 @@ namespace Scratchy.Application.Services
             var scratch = new Scratch
             {
                 UserId = currentUser.UserId,
-                User = currentUser,
                 AlbumId = album?.AlbumId,
-                Album = album,
                 Title = (album?.Title ?? "No Album"), // Beispiel-Title
                 Content = newScratch.Description,
                 Rating = (int)Math.Round(newScratch.Rating),
@@ -54,11 +52,21 @@ namespace Scratchy.Application.Services
                 Tags = new List<Tag>() // Initialisiere Tags, falls später hinzugefügt werden
             };
 
-            // 4. Scratch speichern
-            var result = await _scratchRepository.AddAsync(scratch);
+            try
+            {
+                // 4. Scratch speichern
+                var result = await _scratchRepository.AddAsync(scratch);
 
-            // 5. Erfolg zurückgeben
-            return result;
+                // 5. Erfolg zurückgeben
+                return result;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
+
         }
 
         public Task<bool> DeleteScratchByIdAsync(string id)

@@ -20,10 +20,6 @@ namespace Scratchy.Controllers
         public async Task<IActionResult> GetByQueryAsync([FromQuery] string query)
         {
             var albumSearchResponseDto = await _albumService.GetByQueryAsync(query);
-            if (albumSearchResponseDto == null)
-            {
-                return BadRequest("No Data found :(");
-            }
             return Ok(albumSearchResponseDto);
         }
 

@@ -14,9 +14,9 @@ namespace Scratchy.Application.Services
             _spotifyApiClient = new SpotifyApiClient(spotifyAccessToken);
 
         }
-        public async Task<List<Album>> SearchForAlbumByQuery(string query)
+        public async Task<List<Album>> SearchForAlbumByQuery(string query,int limit)
         {
-            var albums = _spotifyApiClient.SearchSpotifyAlbumsByQueryAsync(query).Result;
+            var albums = _spotifyApiClient.SearchSpotifyAlbumsByQueryAsync(query,limit).Result;
             return albums;
         }
     }
