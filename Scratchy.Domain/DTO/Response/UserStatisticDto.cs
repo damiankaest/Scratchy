@@ -5,6 +5,10 @@ namespace Scratchy.Domain.DTO.Response
 {
     public class UserStatisticDto
     {
+        public UserStatisticDto()
+        {
+            
+        }
         public UserStatisticDto(IEnumerable<Scratch> listOfScratches)
         {
             AlbumCount = CountIndividualAlbums(listOfScratches);

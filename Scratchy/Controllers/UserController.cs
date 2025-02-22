@@ -90,7 +90,7 @@ namespace Scratchy.Controllers
                 result = await _userService.UpdateAsync(user);
                 return Ok(result.UserId);
             }
-            catch (Exception ex)
+            catch
             {
                 return StatusCode(500, "Ein Fehler ist aufgetreten.");
             }
@@ -138,17 +138,9 @@ namespace Scratchy.Controllers
         [HttpGet("GetProfile")]
         public async Task<IActionResult> GetUserProfile()
         {
-            string currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (string.IsNullOrEmpty(currentUserId))
-            {
-                return Unauthorized(new { Message = "User ID not found in token." });
-            }
-
-            var currentUser = await _userService.GetUserByFireBaseId(currentUserId);
-
-            var showcases = await _showCaseService.GetAllShowCasesFromUserByIdAsync(currentUser.UserId);
-            var listOfScratches = await _scratchService.GetByUserIdAsync(currentUser.UserId);
+            var currUser = await User.GetCurrentUserAsync(_userService);
+            var showcases = await _showCaseService.GetAllShowCasesFromUserByIdAsync(currUser.UserId);
+            var listOfScratches = await _scratchService.GetByUserIdAsync(currUser.UserId);
             var stats = await _statService.GetUserStatsByListOfScratches(listOfScratches.ToList());
 
             return Ok(new { showcases, stats });

@@ -11,7 +11,7 @@ namespace Scratchy.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> GetHealthAsync()
+        public IActionResult GetHealthAsync()
         {
             return Ok(true);
         }

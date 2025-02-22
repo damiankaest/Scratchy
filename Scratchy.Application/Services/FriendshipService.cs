@@ -19,7 +19,7 @@ namespace Scratchy.Application.Services
         public async Task<bool> AcceptFriendRequestAsync(AcceptFriendRequestDto acceptFriendRequestDto)
         {
             if (acceptFriendRequestDto == null) return false;
-            var userFriendIds = _friendshipRepository.GetByUserId(acceptFriendRequestDto.RequestId);
+            var userFriendIds = await _friendshipRepository.GetByIdAsync(acceptFriendRequestDto.RequestId);
 
             return true;
         }

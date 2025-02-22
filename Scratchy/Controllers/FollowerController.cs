@@ -75,7 +75,7 @@ namespace Scratchy.Controllers
                 await _followerService.FollowUserAsync(currUser.UserId, userResult.UserId);
 
             }
-            catch (Exception ex)
+            catch
             {
                 return BadRequest("Already Following");
             }
@@ -105,16 +105,16 @@ namespace Scratchy.Controllers
     internal class FollowerDto
     {
         public int Id { get; internal set; }
-        public string UserName { get; internal set; }
-        public string UserImgUrl { get; set; }
+        public string UserName { get; internal set; } = string.Empty;
+        public string UserImgUrl { get; set; } = string.Empty;
     }
 
     internal class FollowingDto
     {
         public int Id { get; set; }
-        public string UserName { get; set; }
-        public string UserImgUrl { get; set; }
+        public string UserName { get; set; } = string.Empty;
+        public string UserImgUrl { get; set; } = string.Empty;
         public bool IsFollowing { get; set; }
-        public UserStatisticDto UserStatistic { get; set; }
+        public UserStatisticDto UserStatistic { get; set; } = new UserStatisticDto();
     }
 }

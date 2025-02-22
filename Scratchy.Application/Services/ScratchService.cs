@@ -21,7 +21,7 @@ namespace Scratchy.Application.Services
         public async Task<Scratch> CreateNewAsync(CreateScratchRequestDto newScratch, User currentUser)
         {
             Album? album = null;
-            if (newScratch.AlbumId!= null)
+            if (newScratch.AlbumId != 0)
             {
                 try
                 {
@@ -60,9 +60,8 @@ namespace Scratchy.Application.Services
                 // 5. Erfolg zurückgeben
                 return result;
             }
-            catch (Exception ex)
+            catch
             {
-
                 throw;
             }
 
