@@ -16,9 +16,11 @@ namespace Scratchy.Controllers
             _albumService = albumService;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetByQueryAsync([FromQuery] string query)
         {
+
             var albumSearchResponseDto = await _albumService.GetByQueryAsync(query);
             return Ok(albumSearchResponseDto);
         }

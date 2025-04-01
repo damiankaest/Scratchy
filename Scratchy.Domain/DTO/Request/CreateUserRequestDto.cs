@@ -13,6 +13,9 @@ namespace Scratchy.Domain.DTO.Request
         public string Email { get; set; } = string.Empty;
         [JsonProperty("profileImage")]
         public string? ProfileImage { get; set; } // Base64-kodiertes Bild
+        [JsonProperty("selectedGenres")]
+        public List<string>? SelectedGenres { get; set; } // Base64-kodiertes Bild
+
     }
 }
 

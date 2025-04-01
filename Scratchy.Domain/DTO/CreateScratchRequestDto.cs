@@ -13,7 +13,7 @@ namespace Scratchy.Domain.DTO
         [BsonElement("rating")]
         public float Rating { get; set; } = 0f;
         [BsonElement("userImageAsBase64String")]
-        public string UserImageAsBase64String { get; set; } = string.Empty;
+        public string? UserImageAsBase64String { get; set; } = string.Empty;
         
     }
 }

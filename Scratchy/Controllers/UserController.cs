@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
-using Scratchy.Application.Services;
 using Scratchy.Domain.DTO;
 using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.DTO.Request;
@@ -9,7 +8,6 @@ using Scratchy.Domain.DTO.Response;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
 using Scratchy.Extensions;
-using System.Security.Claims;
 
 namespace Scratchy.Controllers
 {

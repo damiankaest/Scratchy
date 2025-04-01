@@ -90,7 +90,7 @@ namespace Scratchy.Controllers
 
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateNew([FromForm] CreateScratchRequestDto newScratch, IFormFile file)
+        public async Task<IActionResult> CreateNew([FromForm] CreateScratchRequestDto? newScratch, IFormFile? file)
         {
             try
             {
@@ -101,7 +101,7 @@ namespace Scratchy.Controllers
                     return Unauthorized("Benutzer nicht gefunden.");
                 }
 
-                if (newScratch == null || file == null)
+                if (newScratch == null)
                 {
                     return BadRequest("Daten oder Datei fehlen.");
                 }
@@ -113,18 +113,22 @@ namespace Scratchy.Controllers
                     Directory.CreateDirectory(uploadsFolder);
                 }
                 var scratchResult = await _scratchService.CreateNewAsync(newScratch, currUser);
-                var uniqueFileName = $"{currUser.UserId}_{scratchResult.ScratchId}{Path.GetExtension(file.FileName)}";
-                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-                using (var fileStream = file.OpenReadStream())
+                if (file != null)
                 {
-                    var blobUrl = await _blobService.UploadFileAsync(
-                        "userimages",
-                        $"{currUser.UserId}_{scratchResult.ScratchId}.jpg",
-                        fileStream
-                    );
+                    var uniqueFileName = $"{currUser.UserId}_{scratchResult.ScratchId}{Path.GetExtension(file.FileName)}";
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-                    await _scratchService.SetUserImageURLOnScratch(scratchResult, blobUrl);
+                    using (var fileStream = file.OpenReadStream())
+                    {
+                        var blobUrl = await _blobService.UploadFileAsync(
+                            "userimages",
+                            $"{currUser.UserId}_{scratchResult.ScratchId}.jpg",
+                            fileStream
+                        );
+
+                        await _scratchService.SetUserImageURLOnScratch(scratchResult, blobUrl);
+                    }
                 }
 
                 return Ok(new
