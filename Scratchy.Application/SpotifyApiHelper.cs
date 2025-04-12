@@ -1,36 +1,47 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Scratchy.Application
 {
     public class SpotifyApiHelper
     {
-        public static async Task<string> GetSpotifyAccessToken(string clientId, string clientSecret)
+        public static async Task<SpotifyTokenResponse> GetSpotifyAccessTokenAsync(string clientId, string clientSecret)
         {
             using (var httpClient = new HttpClient())
             {
                 var request = new HttpRequestMessage(HttpMethod.Post, "https://accounts.spotify.com/api/token");
-                var clientCredentials = Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes($"{clientId}:{clientSecret}"));
-
-                request.Headers.Authorization = new AuthenticationHeaderValue("Basic", clientCredentials);
                 request.Content = new FormUrlEncodedContent(new Dictionary<string, string>
-            {
-                { "grant_type", "client_credentials" }
-            });
+        {
+            { "grant_type", "client_credentials" }
+        });
 
-                var response = await httpClient.SendAsync(request);
+                // Spotify requires base64-encoded clientId:clientSecret in the Authorization header
+                var authHeader = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{clientId}:{clientSecret}"));
+                request.Headers.Authorization = new AuthenticationHeaderValue("Basic", authHeader);
+
+                HttpResponseMessage response = await httpClient.SendAsync(request);
                 response.EnsureSuccessStatusCode();
 
-                var json = await response.Content.ReadAsStringAsync();
-                var tokenData = JObject.Parse(json);
+                string jsonResponse = await response.Content.ReadAsStringAsync();
+                var tokenResponse = JsonConvert.DeserializeObject<SpotifyTokenResponse>(jsonResponse);
 
-                return tokenData["access_token"]?.ToString();
+                return tokenResponse;
             }
         }
+    }
+
+    public class SpotifyTokenResponse
+    {
+        [JsonProperty("access_token")]
+        public string AccessToken { get; set; }
+
+        [JsonProperty("expires_in")]
+        public int ExpiresIn { get; set; }
+
+        // Optionally store token type if you like
+        [JsonProperty("token_type")]
+        public string TokenType { get; set; }
     }
 }

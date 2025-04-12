@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Scratchy.Application.Services;
 using Scratchy.Domain.Interfaces.Repositories;
@@ -70,7 +72,15 @@ public static class ServiceExtensions
         });
         services.AddScoped<ILoginService, LoginService>();
         services.AddScoped<IPostService, PostService>();
-        services.AddSingleton<ISpotifyService, SpotifyService>();
+        services.AddSingleton<ISpotifyService,SpotifyService>(sp =>
+        {
+            var configuration = sp.GetRequiredService<IConfiguration>();
+            return new SpotifyService("2783d9fdaf5848ab9a4b7248215f5844", "02d9765ad365414097f1ed7924f71241");
+            //return new SpotifyService(
+            //    configuration.GetValue<string>("Spotify:ClientId"), 
+            //    configuration.GetValue<string>("Spotify:ClientSecret"));
+        });
+
         services.AddScoped<ILibraryService, LibraryService>();
         services.AddScoped<IExplorerService, ExploreService>();
         services.AddScoped<IArtistService, ArtistService>();
