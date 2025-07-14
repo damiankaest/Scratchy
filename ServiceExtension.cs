@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Scratchy.Application.Services;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
-using Scratchy.Persistence.DB;
 using Scratchy.Persistence.Repositories;
 using Scratchy.Services;
 
@@ -36,22 +34,17 @@ public static class ServiceExtensions
         });
     }
 
-    public static void ConfigureDatabase(this IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddDbContext<ScratchItDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-    }
-
     public static void ConfigureRepositories(this IServiceCollection services)
     {
-        services.AddTransient<IUserRepository, UserRepository>();
-        services.AddTransient<IScratchRepository, ScratchRepository>();
-        services.AddTransient<IAlbumRepository, AlbumRepository>();
-        services.AddTransient<ILibraryRepository, LibraryRepository>();
-        services.AddTransient<IArtistRepository, ArtistRepository>();
-        services.AddTransient<IFriendshipRepository, FriendshipRepository>();
-        services.AddTransient<IFollowRepository, FollowRepository>();
-        services.AddTransient<INotificationRepository, NotificationRepository>();
+        // TODO: Replace with MongoDB repositories in Phase 3
+        // services.AddTransient<IUserRepository, UserRepository>();
+        // services.AddTransient<IScratchRepository, ScratchRepository>();
+        // services.AddTransient<IAlbumRepository, AlbumRepository>();
+        // services.AddTransient<ILibraryRepository, LibraryRepository>();
+        // services.AddTransient<IArtistRepository, ArtistRepository>();
+        // services.AddTransient<IFriendshipRepository, FriendshipRepository>();
+        // services.AddTransient<IFollowRepository, FollowRepository>();
+        // services.AddTransient<INotificationRepository, NotificationRepository>();
     }
 
     public static void ConfigureServices(this IServiceCollection services)

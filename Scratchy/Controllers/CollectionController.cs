@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
 using Scratchy.Extensions;
-using Scratchy.Persistence.Repositories;
 using Scratchy.Services;
 using System.Security.Claims;
 

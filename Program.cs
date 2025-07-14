@@ -7,7 +7,6 @@ Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
 
 builder.Services.ConfigureCors();
 builder.Services.ConfigureSwagger();
-builder.Services.ConfigureDatabase(builder.Configuration);
 builder.Services.ConfigureRepositories();
 builder.Services.ConfigureServices();
 builder.Services.ConfigureApplicationInsights(builder.Configuration);
