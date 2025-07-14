@@ -2,8 +2,11 @@
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Scratchy.Application.Services;
+using Scratchy.Domain.Configuration;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
+using Scratchy.Persistence.DB;
+using Scratchy.Persistence.HealthChecks;
 using Scratchy.Persistence.Repositories;
 using Scratchy.Services;
 
@@ -45,6 +48,19 @@ public static class ServiceExtensions
         // services.AddTransient<IFriendshipRepository, FriendshipRepository>();
         // services.AddTransient<IFollowRepository, FollowRepository>();
         // services.AddTransient<INotificationRepository, NotificationRepository>();
+    }
+
+    public static void ConfigureMongoDB(this IServiceCollection services, IConfiguration configuration)
+    {
+        // Configure MongoDB settings
+        services.Configure<MongoDBSettings>(configuration.GetSection("MongoDB"));
+        
+        // Register MongoDB context as singleton (MongoDB client is thread-safe)
+        services.AddSingleton<MongoDbContext>();
+        
+        // Register health check for MongoDB
+        services.AddHealthChecks()
+            .AddCheck<MongoDbHealthCheck>("mongodb");
     }
 
     public static void ConfigureServices(this IServiceCollection services)
