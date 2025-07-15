@@ -2,6 +2,7 @@
 using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
+using Scratchy.Domain.Models;
 
 namespace Scratchy.Application.Services
 {
@@ -18,23 +19,23 @@ namespace Scratchy.Application.Services
         }
 
         // --- CRUD für BADGES ---
-        public async Task<IEnumerable<Badge>> GetAllBadgesAsync()
+        public async Task<IEnumerable<BadgeDocument>> GetAllBadgesAsync()
         {
             return await _badgeRepository.GetAllAsync();
         }
 
-        public async Task<Badge> GetBadgeByIdAsync(int badgeId)
+        public async Task<BadgeDocument> GetBadgeByIdAsync(string badgeId)
         {
             return await _badgeRepository.GetByIdAsync(badgeId);
         }
 
-        public async Task<Badge> CreateBadgeAsync(Badge badge)
+        public async Task<BadgeDocument> CreateBadgeAsync(BadgeDocument badge)
         {
-            await _badgeRepository.AddAsync(badge);
+            await _badgeRepository.CreateAsync(badge);
             return badge;
         }
 
-        public async Task UpdateBadgeAsync(Badge badge)
+        public async Task UpdateBadgeAsync(BadgeDocument badge)
         {
             await _badgeRepository.UpdateAsync(badge);
         }
@@ -46,10 +47,10 @@ namespace Scratchy.Application.Services
         }
 
         // --- BADGE-Funktionen für USER ---
-        public async Task AddBadgeToUserAsync(int userId, int badgeId)
+        public async Task AddBadgeToUserAsync(string userId, string badgeId)
         {
             // Prüfen, ob UserBadge schon existiert:
-            var existing = await _userBadgeRepository.GetByUserAndBadgeAsync(userId, badgeId);
+            var existing = await _userBadgeRepository.GetByIdAsync(userId);
             if (existing != null)
             {
                 // ggf. Level erhöhen oder eine Exception werfen,
@@ -59,18 +60,17 @@ namespace Scratchy.Application.Services
             }
 
             // Sonst neuen Eintrag anlegen:
-            var userBadge = new UserBadge
+            var userBadge = new BadgeDocument
             {
-                UserId = userId,
-                BadgeId = badgeId,
-                AwardedAt = DateTime.UtcNow,
+                
             };
-            await _userBadgeRepository.AddAsync(userBadge);
+            await _userBadgeRepository.CreateAsync(userBadge);
         }
 
-        public async Task IncrementUserBadgeLevelAsync(int userId, int badgeId)
+        public async Task IncrementUserBadgeLevelAsync(string userId)
         {
-            var userBadge = await _userBadgeRepository.GetByUserAndBadgeAsync(userId, badgeId);
+            //TODO FIX BADGE
+            var userBadge = await _userBadgeRepository.GetByIdAsync(userId);
             if (userBadge != null)
             {
                 await _userBadgeRepository.UpdateAsync(userBadge);

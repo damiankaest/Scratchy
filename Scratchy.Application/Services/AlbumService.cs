@@ -1,9 +1,8 @@
 ﻿using Scratchy.Domain.DTO;
-using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.DTO.Response;
-using Scratchy.Domain.DTO.Response.Explore;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
+using Scratchy.Domain.Models;
 
 namespace Scratchy.Application.Services
 {
@@ -21,7 +20,7 @@ namespace Scratchy.Application.Services
                 throw new ArgumentException("Die Suchabfrage darf nicht leer sein.", nameof(query));
             var albumsExplorer = new List<ExploreAlbumDto>();
 
-            foreach (var album in await _albumRepository.GetByQueryAsync(query, limit))
+            foreach (var album in await _albumRepository.FindAsync(query))
             {
                 albumsExplorer.Add(new ExploreAlbumDto(album));
             }
@@ -29,21 +28,21 @@ namespace Scratchy.Application.Services
             return albumsExplorer.Take(limit).ToList();
         }
 
-        public async Task<Album> GetByIdAsync(int albumId)
+        public async Task<AlbumDocument> GetByIdAsync(string albumId)
         {
             return await _albumRepository.GetByIdAsync(albumId);
         }
 
         public async Task<List<NewScratchAlbumSearchResponseDto>> GetByQueryAsync(string query)
         {
-            var albumCollection = await _albumRepository.GetByQueryAsync(query);
+            var albumCollection = await _albumRepository.FindAsync(query);
             List<NewScratchAlbumSearchResponseDto> albumSearchList = new List<NewScratchAlbumSearchResponseDto>();
 
             foreach (var item in albumCollection)
             {
                 albumSearchList.Add(new NewScratchAlbumSearchResponseDto()
                 {
-                    AlbumId = item.AlbumId,
+                    AlbumId = item.Id,
                     ArtistName = item.Artist.Name,
                     CoverImageUrl = item.CoverImageUrl,
                     Title = item.Title
@@ -53,9 +52,9 @@ namespace Scratchy.Application.Services
             return albumSearchList;
         }
 
-        public async Task<AlbumDetailsDto> GetDetailsByIdAsync(int albumId)
+        public async Task<AlbumDocument> GetDetailsByIdAsync(string albumId)
         {
-            return await _albumRepository.GetDetailsByIdAsync(albumId);
+            return await _albumRepository.GetByIdAsync(albumId);
         }
     }
 }

@@ -28,7 +28,7 @@ namespace Scratchy.Controllers
         [HttpGet("details")]
         public async Task<IActionResult> GetAlbumDetails([FromQuery] string albumId)
         {
-            var albumSearchResponseDto = await _albumService.GetDetailsByIdAsync(Convert.ToInt32(albumId));
+            var albumSearchResponseDto = await _albumService.GetDetailsByIdAsync(albumId);
             if (albumSearchResponseDto == null)
             {
                 return BadRequest("No Data found :(");

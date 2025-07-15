@@ -1,15 +1,15 @@
-﻿using Scratchy.Domain.DTO.DB;
+﻿using Scratchy.Domain.Models;
 
 namespace Scratchy.Domain.Interfaces.Repositories
 {
-    public interface IFollowerRepository
+    public interface IFollowerRepository : IMongoRepository<FollowDocument>
     {
-        Task AddAsync(Follow follow);
-        Task RemoveAsync(Follow follow);
-        Task<Follow> GetFollowAsync(int followerId, int followingId);
-        Task<bool> IsFollowingAsync(int followerId, int followingId);
-        Task<List<int>> GetFollowersAsync(int userId);
-        Task<List<int>> GetFollowingAsync(int userId);
+        Task AddAsync(FollowDocument follow);
+        Task RemoveAsync(FollowDocument follow);
+        Task<FollowDocument> GetFollowAsync(string followerIdstring, string followingId);
+        Task<bool> IsFollowingAsync(string followerId, string followingId);
+        Task<List<string>> GetFollowersAsync(string userId);
+        Task<List<string>> GetFollowingAsync(string userId);
     }
 
 }

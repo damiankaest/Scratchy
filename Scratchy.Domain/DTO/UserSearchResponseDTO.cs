@@ -10,7 +10,7 @@ namespace Scratchy.Domain.DTO
             id = user.UserId;
         }
         [BsonElement("id")]
-        public int id { get; set; }
+        public string id { get; set; }
         [BsonElement("username")]
         public string userName { get; set; }
         [BsonElement("profilePicture")]

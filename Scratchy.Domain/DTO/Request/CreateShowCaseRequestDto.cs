@@ -5,8 +5,8 @@ namespace Scratchy.Domain.DTO.Request
     public class CreateShowCaseRequestDto
     {
             public ShowCaseType ShowCaseType { get; set; }
-            public int FirstPlaceEntityId { get; set; }
-            public int SecondPlaceEntityId { get; set; }
-            public int ThirdPlaceEntityId { get; set; }
+            public string FirstPlaceEntityId { get; set; }
+            public string SecondPlaceEntityId { get; set; }
+            public string ThirdPlaceEntityId { get; set; }
     }
 }

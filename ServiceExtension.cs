@@ -45,8 +45,7 @@ public static class ServiceExtensions
         services.AddScoped(typeof(IMongoRepository<>), typeof(MongoRepository<>));
         
         // Register specific repositories that extend the base MongoDB repository
-        // These will be implemented in the next prompt
-        // services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
         // services.AddScoped<IScratchRepository, ScratchRepository>();
         // services.AddScoped<IAlbumRepository, AlbumRepository>();
         // services.AddScoped<ILibraryRepository, LibraryRepository>();
@@ -78,8 +77,13 @@ public static class ServiceExtensions
             return client.GetDatabase(settings.DatabaseName);
         });
         
-        // Register MongoDB context as scoped
-        services.AddScoped<MongoDbContext>();
+        // Register MongoDB context as scoped - explicit registration with dependencies
+        services.AddScoped<MongoDbContext>(serviceProvider =>
+        {
+            var settings = serviceProvider.GetRequiredService<IOptions<MongoDBSettings>>();
+            var logger = serviceProvider.GetRequiredService<ILogger<MongoDbContext>>();
+            return new MongoDbContext(settings, logger);
+        });
         
         // Register health check for MongoDB
         services.AddHealthChecks()

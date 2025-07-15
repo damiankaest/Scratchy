@@ -1,22 +1,19 @@
-﻿
-
-using Scratchy.Domain.DTO.DB;
-using Scratchy.Domain.DTO.Response;
+﻿using Scratchy.Domain.Models;
 
 namespace Scratchy.Domain.Interfaces.Repositories
 {
-    public interface IUserRepository
+    public interface IUserRepository : IMongoRepository<UserDocument>
     {
-        Task<IEnumerable<User>> GetByQueryAsync(string query, int limit);
-        Task<IEnumerable<User>> GetAllAsync();
-        Task<User> GetByFirebaseIdAsync(string id);
-        Task<User> AddAsync(User user);
-        Task<User> UpdateAsync(User user);
-        Task DeleteAsync(int id);
+        Task<IEnumerable<UserDocument>> GetByQueryAsync(string query, int limit);
+        //Task<IEnumerable<UserDocument>> GetAllAsync();
+        //Task<UserDocument> GetByFirebaseIdAsync(string id);
+        //Task<UserDocument> AddAsync(UserDocument user);
+        //Task<UserDocument> UpdateAsync(UserDocument user);
+        //Task DeleteAsync(string id);
 
-        Task<List<User>> GetByUsernameAsync(string username);
-        Task<User> GetByEmailAsync(string email);
-        Task<User> GetByIdAsync(int id);
-        Task<UserProfileDto> GetUserProfileByIdAsync(int userId, int currentUserId);
+        //Task<List<UserDocument>> GetByUsernameAsync(string username);
+        //Task<UserDocument> GetByEmailAsync(string email);
+        //Task<UserDocument> GetByIdAsync(string id);
+        //Task<UserProfileDto> GetUserProfileByIdAsync(string userId, string currentUserId);
     }
 }

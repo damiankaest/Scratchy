@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Scratchy.Domain.Enum;
@@ -597,6 +598,20 @@ public class MongoRepository<T> : IMongoRepository<T> where T : BaseDocument
     public virtual IMongoCollection<T> GetCollection()
     {
         return _collection;
+    }
+
+    public async Task<T?> GetByFireBaseId(string id, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var filter = Builders<T>.Filter.Eq("firebaseId", id);
+            return await _collection.Find(filter).FirstOrDefaultAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting document by ObjectId: {Id}", id);
+            throw;
+        }
     }
 
     #endregion

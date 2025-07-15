@@ -1,7 +1,6 @@
 ﻿using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.DTO.Response.Explore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Scratchy.Domain.Models;
 
 namespace Scratchy.Domain.Interfaces.Services
 {
@@ -19,33 +18,33 @@ namespace Scratchy.Domain.Interfaces.Services
         /// Holt alle Künstler.
         /// </summary>
         /// <returns>Eine Liste von Künstlern.</returns>
-        Task<IEnumerable<Artist>> GetAllAsync();
+        Task<IEnumerable<ArtistDocument>> GetAllAsync();
 
         /// <summary>
         /// Holt einen Künstler basierend auf der ID.
         /// </summary>
         /// <param name="id">Die ID des Künstlers.</param>
         /// <returns>Der gefundene Künstler.</returns>
-        Task<Artist> GetByIdAsync(int id);
+        Task<ArtistDocument> GetByIdAsync(string id);
 
         /// <summary>
         /// Fügt einen neuen Künstler hinzu.
         /// </summary>
         /// <param name="artist">Das Künstlerobjekt.</param>
         /// <returns>Der hinzugefügte Künstler.</returns>
-        Task<Artist> AddAsync(Artist artist);
+        Task<ArtistDocument> AddAsync(ArtistDocument artist);
 
         /// <summary>
         /// Aktualisiert einen bestehenden Künstler.
         /// </summary>
         /// <param name="artist">Das aktualisierte Künstlerobjekt.</param>
         /// <returns>Der aktualisierte Künstler.</returns>
-        Task<Artist> UpdateAsync(Artist artist);
+        Task<ArtistDocument> UpdateAsync(ArtistDocument artist);
 
         /// <summary>
         /// Löscht einen Künstler basierend auf der ID.
         /// </summary>
         /// <param name="id">Die ID des Künstlers.</param>
-        Task DeleteAsync(int id);
+        Task DeleteAsync(string id);
     }
 }

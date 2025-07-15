@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Scratchy.Domain.DTO.DB;
-using Scratchy.Domain.DTO.Response;
-using Scratchy.Domain.DTO.Response.Explore;
+﻿using Scratchy.Domain.Models;
 
 namespace Scratchy.Domain.Interfaces.Services
 {
@@ -20,36 +16,36 @@ namespace Scratchy.Domain.Interfaces.Services
         /// Holt alle Benutzer.
         /// </summary>
         /// <returns>Eine Liste von Benutzern.</returns>
-        Task<IEnumerable<User>> GetAllAsync();
+        Task<IEnumerable<UserDocument>> GetAllAsync();
 
         /// <summary>
         /// Holt einen Benutzer basierend auf der ID.
         /// </summary>
         /// <param name="id">Die ID des Benutzers.</param>
         /// <returns>Der gefundene Benutzer.</returns>
-        Task<User> GetByIdAsync(int id);
+        Task<UserDocument> GetByIdAsync(string id);
 
         /// <summary>
         /// Fügt einen neuen Benutzer hinzu.
         /// </summary>
         /// <param name="user">Das Benutzerobjekt.</param>
         /// <returns>Der hinzugefügte Benutzer.</returns>
-        Task<User> AddAsync(User user);
+        Task<UserDocument> AddAsync(UserDocument user);
 
         /// <summary>
         /// Aktualisiert einen bestehenden Benutzer.
         /// </summary>
         /// <param name="user">Das aktualisierte Benutzerobjekt.</param>
         /// <returns>Der aktualisierte Benutzer.</returns>
-        Task<User> UpdateAsync(User user);
+        Task<UserDocument> UpdateAsync(UserDocument user);
 
         /// <summary>
         /// Löscht einen Benutzer basierend auf der ID.
         /// </summary>
         /// <param name="id">Die ID des Benutzers.</param>
         Task DeleteAsync(int id);
-        Task<bool> SendFriendRequest(User currentUser, User userResult);
-        Task<User> GetUserByFireBaseId(string currentUserID);
-        Task<UserProfileDto> GetUserProfileByIdAsync(int userId, int currentUserId);
+        Task<bool> SendFriendRequest(UserDocument currentUser, UserDocument userResult);
+        Task<UserDocument> GetUserByFireBaseId(string currentUserID);
+        Task<UserDocument> GetUserProfileByIdAsync( string currentUserId);
     }
 }

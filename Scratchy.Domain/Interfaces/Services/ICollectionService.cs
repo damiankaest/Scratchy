@@ -4,6 +4,6 @@ namespace Scratchy.Domain.Interfaces.Services
 {
     public interface ICollectionService
     {
-        public Task<CollectionResponseDto> GetCollectionByUserId(int userId);
+        public Task<CollectionResponseDto> GetCollectionByUserId(string userId);
     }
 }

@@ -104,7 +104,8 @@ public interface IMongoRepository<T> where T : BaseDocument
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>First matching document or null</returns>
     Task<T?> FindOneAsync(FilterDefinition<T> filter, CancellationToken cancellationToken = default);
-
+    Task<T?> GetByFireBaseId(string id, CancellationToken cancellationToken = default);
+    
     /// <summary>
     /// Gets documents with pagination support
     /// </summary>

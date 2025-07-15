@@ -2,14 +2,15 @@
 using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.DTO.Response;
 using Scratchy.Domain.Interfaces.Services;
+using Scratchy.Domain.Models;
 
 namespace Scratchy.Domain.Interfaces.Repositories
 {
-    public interface IScratchRepository : IRepository<Scratch>
+    public interface IScratchRepository : IMongoRepository<ScratchDocument>
     {
-        Task<IEnumerable<Scratch>> GetByUserAndAlbumIdIdAsync(int userId, int albumId);
-        Task<IEnumerable<Scratch>> GetByUserIdAsync(int userId);
-        Task<IEnumerable<Scratch>> GetScratchesAsync(List<int> userIdList);
+        Task<IEnumerable<ScratchDocument>> GetByUserAndAlbumIdIdAsync(string userId, string albumId);
+        Task<IEnumerable<ScratchDocument>> GetByUserIdAsync(string userId);
+        Task<IEnumerable<ScratchDocument>> GetScratchesAsync(List<string> userIdList);
         Task<CreateScratchResponseDto> UploadAsync(CreateScratchRequestDto newScratch);
     }
 }

@@ -1,12 +1,13 @@
 ﻿using Scratchy.Domain.DTO.DB;
+using Scratchy.Domain.Models;
 
 namespace Scratchy.Domain.Interfaces.Services
 {
     public interface ISearchService
     {
-        Task<IEnumerable<Album>> SearchAlbumsAsync(string query);
-        Task<IEnumerable<Artist>> SearchArtistsAsync(string query);
-        Task<IEnumerable<User>> SearchUsersAsync(string query);
-        Task<(IEnumerable<Album> Albums, IEnumerable<Artist> Artists, IEnumerable<User> Users)> SearchAllAsync(string query);
+        Task<IEnumerable<AlbumDocument>> SearchAlbumsAsync(string query);
+        Task<IEnumerable<ArtistDocument>> SearchArtistsAsync(string query);
+        Task<IEnumerable<UserDocument>> SearchUsersAsync(string query);
+        Task<(IEnumerable<AlbumDocument> Albums, IEnumerable<ArtistDocument> Artists, IEnumerable<UserDocument> Users)> SearchAllAsync(string query);
     }
 }

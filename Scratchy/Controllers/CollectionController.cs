@@ -31,7 +31,7 @@ namespace Scratchy.Controllers
         {
             var currUser = await User.GetCurrentUserAsync(_userService);
 
-            var collection = await _collectionService.GetCollectionByUserId(currUser.UserId);
+            var collection = await _collectionService.GetCollectionByUserId(currUser.Id);
             return Ok(collection);
         }
     }

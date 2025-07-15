@@ -1,6 +1,6 @@
-﻿using Scratchy.Domain.DTO.DB;
-using Scratchy.Domain.DTO.Response;
+﻿using Scratchy.Domain.DTO.Response;
 using Scratchy.Domain.Interfaces.Services;
+using Scratchy.Domain.Models;
 
 namespace Scratchy.Application.Services
 {
@@ -10,7 +10,7 @@ namespace Scratchy.Application.Services
         {
             
         }
-        public async Task<UserStatisticDto> GetUserStatsByListOfScratches(List<Scratch> listOfScratches)
+        public async Task<UserStatisticDto> GetUserStatsByListOfScratches(List<ScratchDocument> listOfScratches)
         {
             var userStatistic = new UserStatisticDto(listOfScratches);
             return userStatistic;

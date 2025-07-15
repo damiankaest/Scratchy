@@ -2,8 +2,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Scratchy.Application.Services;
+using Scratchy.Domain.Configuration;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
+using Scratchy.Persistence.DB;
+using Scratchy.Persistence.Repositories;
 using Scratchy.Services;
 
 public static class ServiceExtensions
@@ -34,20 +37,32 @@ public static class ServiceExtensions
     }
     public static void ConfigureRepositories(this IServiceCollection services)
     {
-        // TODO: Replace with MongoDB repositories in Phase 3
-        // All repository registrations temporarily disabled until MongoDB implementation
-        // services.AddTransient<IUserRepository, UserRepository>();
-        // services.AddTransient<IScratchRepository, ScratchRepository>();
-        // services.AddTransient<IAlbumRepository, AlbumRepository>();
-        // services.AddTransient<ILibraryRepository, LibraryRepository>();
-        // services.AddTransient<IArtistRepository, ArtistRepository>();
-        // services.AddTransient<IFriendshipRepository, FriendshipRepository>();
-        // services.AddTransient<IFollowerRepository, FollowRepository>();
-        // services.AddTransient<INotificationRepository, NotificationRepository>();
-        // services.AddTransient<IBadgeRepository, BadgeRepository>();
-        // services.AddTransient<IUserBadgeRepository,UserBadgeRepository>();
-        // services.AddTransient<IShowCaseRepository, ShowCaseRepository>();
-        // services.AddTransient<ITrackRepository, TrackRepository>();
+        // MongoDB repositories
+        services.AddTransient<IUserRepository, UserRepository>();
+        services.AddTransient<IScratchRepository, ScratchRepository>();
+        services.AddTransient<IAlbumRepository, AlbumRepository>();
+        services.AddTransient<ILibraryRepository, LibraryRepository>();
+        services.AddTransient<IArtistRepository, ArtistRepository>();
+        services.AddTransient<IFriendshipRepository, FriendshipRepository>();
+        services.AddTransient<IFollowerRepository, FollowRepository>();
+        services.AddTransient<INotificationRepository, NotificationRepository>();
+        services.AddTransient<IBadgeRepository, BadgeRepository>();
+        services.AddTransient<IUserBadgeRepository,UserBadgeRepository>();
+        services.AddTransient<IShowCaseRepository, ShowCaseRepository>();
+        services.AddTransient<ITrackRepository, TrackRepository>();
+        services.AddTransient<IPostRepository, PostRepository>();
+    }
+
+    public static void ConfigureMongoDB(this IServiceCollection services, IConfiguration configuration)
+    {
+        // Configure MongoDB settings from appsettings.json
+        services.Configure<MongoDBSettings>(configuration.GetSection(MongoDBSettings.SectionName));
+        
+        // Register MongoDB context as singleton
+        services.AddSingleton<MongoDbContext>();
+        
+        // Register generic MongoDB repository
+        services.AddScoped(typeof(IMongoRepository<>), typeof(MongoRepository<>));
     }
 
     public static void ConfigureServices(this IServiceCollection services)

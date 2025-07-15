@@ -1,6 +1,10 @@
-﻿namespace Scratchy.Domain.Interfaces.Repositories
+﻿using MongoDB.Bson.Serialization.Attributes;
+using Scratchy.Domain.Models;
+
+namespace Scratchy.Domain.Interfaces.Repositories
 {
-    public class LibraryEntry
+    [BsonIgnoreExtraElements]
+    public class LibraryEntry : BaseDocument
     {
     }
 }

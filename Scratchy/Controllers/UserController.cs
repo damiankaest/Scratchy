@@ -7,6 +7,7 @@ using Scratchy.Domain.DTO.Request;
 using Scratchy.Domain.DTO.Response;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
+using Scratchy.Domain.Models;
 using Scratchy.Extensions;
 
 namespace Scratchy.Controllers
@@ -59,7 +60,7 @@ namespace Scratchy.Controllers
         {
             try
             {
-                var user = new User
+                var user = new UserDocument
                 {
                     FirebaseId = newUser.Uid,
                     Username = newUser.UserName,
@@ -73,7 +74,7 @@ namespace Scratchy.Controllers
 
                     using (var memoryStream = new MemoryStream(imageBytes))
                     {
-                        var uniqueFileName = $"{user.UserId}_profile.jpg";
+                        var uniqueFileName = $"{user.Id}_profile.jpg";
 
                         var blobUrl = await _blobService.UploadFileAsync(
                             "profileimgs", 
@@ -86,7 +87,7 @@ namespace Scratchy.Controllers
                 }
 
                 result = await _userService.UpdateAsync(user);
-                return Ok(result.UserId);
+                return Ok(result.Id);
             }
             catch
             {
@@ -95,7 +96,7 @@ namespace Scratchy.Controllers
         }
 
         [HttpGet("GetByIdAsync")]
-        public async Task<IActionResult> GetByIdAsync(int id)
+        public async Task<IActionResult> GetByIdAsync(string id)
         {
             var result = await _userService.GetByIdAsync(id);
             return Ok(result);
@@ -123,7 +124,7 @@ namespace Scratchy.Controllers
         }
 
         [HttpGet("GetProfile/{id}")]
-        public async Task<IActionResult> GetProfile(int id)
+        public async Task<IActionResult> GetProfile(string id)
         {
             var showcases = await _showCaseService.GetAllShowCasesFromUserByIdAsync(id);
 
@@ -137,8 +138,8 @@ namespace Scratchy.Controllers
         public async Task<IActionResult> GetUserProfile()
         {
             var currUser = await User.GetCurrentUserAsync(_userService);
-            var showcases = await _showCaseService.GetAllShowCasesFromUserByIdAsync(currUser.UserId);
-            var listOfScratches = await _scratchService.GetByUserIdAsync(currUser.UserId);
+            var showcases = await _showCaseService.GetAllShowCasesFromUserByIdAsync(currUser.Id);
+            var listOfScratches = await _scratchService.GetByUserIdAsync(currUser.Id);
             var stats = await _statService.GetUserStatsByListOfScratches(listOfScratches.ToList());
 
             return Ok(new { showcases, stats });
@@ -148,19 +149,19 @@ namespace Scratchy.Controllers
         public async Task<IActionResult> GetUserProfileAsync([FromQuery] string userId)
         {
             var currUser = await User.GetCurrentUserAsync(_userService);
-            UserProfileDto userDetails = await _userService.GetUserProfileByIdAsync(currUser.UserId, currUser.UserId);
+            UserDocument userDetails = await _userService.GetUserProfileByIdAsync(currUser.FirebaseId);
             return Ok(userDetails);
         }
 
 
         [HttpGet("follow")]
-        public async Task<IActionResult> FollowUser(int receiverId)
+        public async Task<IActionResult> FollowUser(string receiverId)
         {
             var currUser = await User.GetCurrentUserAsync(_userService);
             var userResult = await _userService.GetByIdAsync(receiverId);
             try
             {
-                await _followService.FollowUserAsync(currUser.UserId, userResult.UserId);
+                await _followService.FollowUserAsync(currUser.Id, userResult.Id);
 
             }
             catch (Exception)
@@ -174,7 +175,7 @@ namespace Scratchy.Controllers
 
 
         [HttpGet("unfollowUser")]
-        public async Task<IActionResult> UnfollowUser(int currentUserId, int receiverId)
+        public async Task<IActionResult> UnfollowUser(string currentUserId, string receiverId)
         {
             var userResult = await _userService.GetByIdAsync(receiverId);
             var currentUser = await _userService.GetByIdAsync(currentUserId);

@@ -131,30 +131,33 @@ namespace Scratchy.Domain.Configuration
         {
             var connectionString = ConnectionString;
 
-            // Add environment-specific connection string parameters
+            // Prüfen, ob schon Optionen im String sind (enthalten: '?')
+            var hasOptions = connectionString.Contains("?");
+
+            void AddOption(string option, string value)
+            {
+                // Nur anhängen, wenn noch nicht vorhanden
+                if (!connectionString.Contains(option))
+                {
+                    connectionString += hasOptions ? $"&{option}={value}" : $"?{option}={value}";
+                    hasOptions = true;
+                }
+            }
+
             if (Environment?.ToLower() == "development")
             {
-                // Development optimizations: faster timeouts, smaller pool
-                if (!connectionString.Contains("connectTimeoutMS"))
-                    connectionString += $"&connectTimeoutMS={ConnectionTimeout.TotalMilliseconds}";
-                
-                if (!connectionString.Contains("maxPoolSize"))
-                    connectionString += $"&maxPoolSize={Math.Min(MaxConnectionPoolSize, 25)}";
+                AddOption("connectTimeoutMS", ConnectionTimeout.TotalMilliseconds.ToString());
+                AddOption("maxPoolSize", Math.Min(MaxConnectionPoolSize, 25).ToString());
             }
             else if (Environment?.ToLower() == "production")
             {
-                // Production optimizations: longer timeouts, larger pool
-                if (!connectionString.Contains("connectTimeoutMS"))
-                    connectionString += $"&connectTimeoutMS={ConnectionTimeout.TotalMilliseconds}";
-                
-                if (!connectionString.Contains("maxPoolSize"))
-                    connectionString += $"&maxPoolSize={MaxConnectionPoolSize}";
-                
-                if (!connectionString.Contains("minPoolSize"))
-                    connectionString += $"&minPoolSize={MinConnectionPoolSize}";
+                AddOption("connectTimeoutMS", ConnectionTimeout.TotalMilliseconds.ToString());
+                AddOption("maxPoolSize", MaxConnectionPoolSize.ToString());
+                AddOption("minPoolSize", MinConnectionPoolSize.ToString());
             }
 
             return connectionString;
         }
+
     }
 }

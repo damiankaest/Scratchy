@@ -9,7 +9,7 @@ namespace Scratchy.Domain.DTO
         [BsonElement("description")]
         public string? Description { get; set; } = string.Empty;
         [BsonElement("albumId")]
-        public int AlbumId { get; set; }
+        public string AlbumId { get; set; }
         [BsonElement("rating")]
         public float Rating { get; set; } = 0f;
         [BsonElement("userImageAsBase64String")]

@@ -5,8 +5,8 @@ namespace Scratchy.Domain.Interfaces.Services
 {
     public interface IShowCaseService
     {
-        Task<bool> CreateNewShowCaseAsync(CreateShowCaseRequestDto createDto, int userId);
-        Task<ShowCaseResponseDTO> GetAllShowCasesFromUserByIdAsync(int userId);
+        Task<bool> CreateNewShowCaseAsync(CreateShowCaseRequestDto createDto, string userId);
+        Task<ShowCaseResponseDTO> GetAllShowCasesFromUserByIdAsync(string userId);
         Task<bool> UpdateShowcaseAsync(UpdateShowCaseDto updateDto);
     }
 }

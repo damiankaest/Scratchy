@@ -1,15 +1,15 @@
 ﻿
 using Scratchy.Domain.DTO;
-using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.DTO.Response;
+using Scratchy.Domain.Models;
 
 namespace Scratchy.Domain.Interfaces.Services
 {
     public interface IAlbumService
     {
         Task<List<ExploreAlbumDto>> GetAlbumExploreInfoAsync(string query, int limit);
-        Task<Album> GetByIdAsync(int albumId);
+        Task<AlbumDocument> GetByIdAsync(string albumId);
         Task<List<NewScratchAlbumSearchResponseDto>> GetByQueryAsync(string query);
-        Task<AlbumDetailsDto> GetDetailsByIdAsync(int albumId);
+        Task<AlbumDocument> GetDetailsByIdAsync(string albumId);
     }
 }

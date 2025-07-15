@@ -2,7 +2,7 @@
 {
     public class HomeFeedResponseDto
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string UserName { get; set; } = string.Empty;
         public string UserImageUrl { get; set; } = string.Empty;
         public string PostImageUrl { get; set; } = string.Empty;

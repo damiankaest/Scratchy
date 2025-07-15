@@ -13,6 +13,7 @@ builder.Services.Configure<FormOptions>(options =>
 
 builder.Services.ConfigureCors();
 builder.Services.ConfigureSwagger();
+builder.Services.ConfigureMongoDB(builder.Configuration);
 builder.Services.ConfigureRepositories();
 builder.Services.ConfigureServices();
 builder.Services.ConfigureApplicationInsights(builder.Configuration);
