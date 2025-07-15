@@ -76,6 +76,52 @@ namespace Scratchy.Persistence.DB
         }
 
         /// <summary>
+        /// Gets a collection of the specified document type using automatic collection naming
+        /// </summary>
+        /// <typeparam name="T">The document type</typeparam>
+        /// <returns>The MongoDB collection</returns>
+        public IMongoCollection<T> GetCollection<T>()
+        {
+            var collectionName = GetCollectionName<T>();
+            return GetCollection<T>(collectionName);
+        }
+
+        /// <summary>
+        /// Gets the collection name for a document type
+        /// </summary>
+        /// <typeparam name="T">The document type</typeparam>
+        /// <returns>Collection name</returns>
+        private string GetCollectionName<T>()
+        {
+            var typeName = typeof(T).Name;
+            
+            // Remove "Document" suffix if present and convert to plural lowercase
+            if (typeName.EndsWith("Document"))
+            {
+                typeName = typeName.Substring(0, typeName.Length - 8);
+            }
+
+            // Convert to plural and lowercase for collection naming convention
+            return typeName.ToLowerInvariant() switch
+            {
+                "user" => "users",
+                "artist" => "artists", 
+                "album" => "albums",
+                "track" => "tracks",
+                "post" => "posts",
+                "comment" => "comments",
+                "scratch" => "scratches",
+                "playlist" => "playlists",
+                "follow" => "follows",
+                "notification" => "notifications",
+                "badge" => "badges",
+                "tag" => "tags",
+                "genre" => "genres",
+                _ => $"{typeName.ToLowerInvariant()}s"
+            };
+        }
+
+        /// <summary>
         /// Creates indexes for all collections on startup
         /// </summary>
         /// <param name="cancellationToken">Cancellation token</param>

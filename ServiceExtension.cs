@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MongoDB.Driver;
 using Scratchy.Application.Services;
 using Scratchy.Domain.Configuration;
 using Scratchy.Domain.Interfaces.Repositories;
@@ -39,15 +41,21 @@ public static class ServiceExtensions
 
     public static void ConfigureRepositories(this IServiceCollection services)
     {
-        // TODO: Replace with MongoDB repositories in Phase 3
-        // services.AddTransient<IUserRepository, UserRepository>();
-        // services.AddTransient<IScratchRepository, ScratchRepository>();
-        // services.AddTransient<IAlbumRepository, AlbumRepository>();
-        // services.AddTransient<ILibraryRepository, LibraryRepository>();
-        // services.AddTransient<IArtistRepository, ArtistRepository>();
-        // services.AddTransient<IFriendshipRepository, FriendshipRepository>();
-        // services.AddTransient<IFollowRepository, FollowRepository>();
-        // services.AddTransient<INotificationRepository, NotificationRepository>();
+        // Register the generic MongoDB repository
+        services.AddScoped(typeof(IMongoRepository<>), typeof(MongoRepository<>));
+        
+        // Register specific repositories that extend the base MongoDB repository
+        // These will be implemented in the next prompt
+        // services.AddScoped<IUserRepository, UserRepository>();
+        // services.AddScoped<IScratchRepository, ScratchRepository>();
+        // services.AddScoped<IAlbumRepository, AlbumRepository>();
+        // services.AddScoped<ILibraryRepository, LibraryRepository>();
+        // services.AddScoped<IArtistRepository, ArtistRepository>();
+        // services.AddScoped<IFollowRepository, FollowRepository>();
+        // services.AddScoped<INotificationRepository, NotificationRepository>();
+        // services.AddScoped<IPostRepository, PostRepository>();
+        // services.AddScoped<IBadgeRepository, BadgeRepository>();
+        // services.AddScoped<ITrackRepository, TrackRepository>();
     }
 
     public static void ConfigureMongoDB(this IServiceCollection services, IConfiguration configuration)
@@ -55,8 +63,23 @@ public static class ServiceExtensions
         // Configure MongoDB settings
         services.Configure<MongoDBSettings>(configuration.GetSection("MongoDB"));
         
-        // Register MongoDB context as singleton (MongoDB client is thread-safe)
-        services.AddSingleton<MongoDbContext>();
+        // Register MongoDB client as singleton (MongoDB client is thread-safe)
+        services.AddSingleton<IMongoClient>(serviceProvider =>
+        {
+            var settings = serviceProvider.GetRequiredService<IOptions<MongoDBSettings>>().Value;
+            return new MongoClient(settings.ConnectionString);
+        });
+
+        // Register MongoDB database as scoped
+        services.AddScoped<IMongoDatabase>(serviceProvider =>
+        {
+            var client = serviceProvider.GetRequiredService<IMongoClient>();
+            var settings = serviceProvider.GetRequiredService<IOptions<MongoDBSettings>>().Value;
+            return client.GetDatabase(settings.DatabaseName);
+        });
+        
+        // Register MongoDB context as scoped
+        services.AddScoped<MongoDbContext>();
         
         // Register health check for MongoDB
         services.AddHealthChecks()

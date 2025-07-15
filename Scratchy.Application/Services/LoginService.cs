@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-
-using Scratchy.Domain.DTO;
+﻿using Scratchy.Domain.DTO;
 using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.DTO.Request;
 using Scratchy.Domain.Interfaces.Repositories;
@@ -34,7 +32,7 @@ namespace Scratchy.Application.Services
                 Email = createUserDto.Email
             };
 
-            var passwordHasher = new PasswordHasher<User>();
+            //var passwordHasher = new PasswordHasher<User>();
             //newUser.Password = passwordHasher.HashPassword(newUser, createUserDto.Password);
 
             await _userRepository.AddAsync(new User());
