@@ -12,7 +12,7 @@ namespace Scratchy.Application.Services
             _scratchRepository = scratchRepository;
         }
 
-        public async Task<CollectionResponseDto> GetCollectionByUserId(int userId)
+        public async Task<CollectionResponseDto> GetCollectionByUserId(string userId)
         {
             var scratches = await _scratchRepository.GetByUserIdAsync(userId);
             var result = new CollectionResponseDto();

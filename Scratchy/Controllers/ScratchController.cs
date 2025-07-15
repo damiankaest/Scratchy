@@ -43,16 +43,16 @@ namespace Scratchy.Controllers
             var currUser = await User.GetCurrentUserAsync(_userService);
 
             var homeFeed = new List<HomeFeedResponseDto>();
-            var homeFeedUserIds = new List<int>() { currUser.UserId };
+            var homeFeedUserIds = new List<string>() { currUser.Id };
 
-            homeFeedUserIds.AddRange(await _followService.GetFollowingAsync(currUser.UserId));
+            homeFeedUserIds.AddRange(await _followService.GetFollowingAsync(currUser.Id));
             var listOfScratches = await _scratchService.GetHomeFeedByUserIdListAsync(homeFeedUserIds);
             
             foreach (var scratch in listOfScratches)
             {
                 homeFeed.Add(new HomeFeedResponseDto()
                 {
-                    Id = scratch.ScratchId,
+                    Id = scratch.Id,
                     AlbumName = scratch.Album.Title,
                     AlbumImageUrl = scratch.Album.CoverImageUrl,
                     ArtistName = scratch.Album.Artist.Name,
@@ -64,7 +64,7 @@ namespace Scratchy.Controllers
                     Caption = scratch.Content,
                     CreatedAt = scratch.CreatedAt,
                     PostImageUrl = scratch.ScratchImageUrl,
-                    SpotifyUrl = "https://open.spotify.com/intl-de/album/" + scratch.Album.SpotifyId,
+                    SpotifyUrl = "https://open.spotify.com/intl-de/album/" + scratch.Album.AlbumId,
 
                 });
             }
@@ -73,7 +73,7 @@ namespace Scratchy.Controllers
         }
 
         [HttpGet("ByUserId")]
-        public async Task<IActionResult> GetScratchesByUserId([FromQuery] int userId)
+        public async Task<IActionResult> GetScratchesByUserId([FromQuery] string userId)
         {
             var listOfPosts = await _scratchService.GetByUserIdAsync(userId);
             return Ok(listOfPosts);
@@ -84,7 +84,7 @@ namespace Scratchy.Controllers
         {
             var currUser = await User.GetCurrentUserAsync(_userService);
 
-            List<AlbumShowCaseEntity> listOfAlbums = await _scratchService.GetIndividualAlbumsByUserIdAsync(currUser.UserId);
+            List<AlbumShowCaseEntity> listOfAlbums = await _scratchService.GetIndividualAlbumsByUserIdAsync(currUser.Id);
             return Ok(listOfAlbums);
         }
 
@@ -116,14 +116,14 @@ namespace Scratchy.Controllers
 
                 if (file != null)
                 {
-                    var uniqueFileName = $"{currUser.UserId}_{scratchResult.ScratchId}{Path.GetExtension(file.FileName)}";
+                    var uniqueFileName = $"{currUser.Id}_{scratchResult.Id}{Path.GetExtension(file.FileName)}";
                     var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
                     using (var fileStream = file.OpenReadStream())
                     {
                         var blobUrl = await _blobService.UploadFileAsync(
                             "userimages",
-                            $"{currUser.UserId}_{scratchResult.ScratchId}.jpg",
+                            $"{currUser.Id}_{scratchResult.Id}.jpg",
                             fileStream
                         );
 
@@ -135,7 +135,7 @@ namespace Scratchy.Controllers
                 {
                     success = true,
                     message = "Scratch erfolgreich erstellt und Datei gespeichert.",
-                    scratchId = scratchResult.ScratchId
+                    scratchId = scratchResult.Id
                 });
             }
             catch (Exception ex)
@@ -145,16 +145,16 @@ namespace Scratchy.Controllers
         }
 
         [HttpGet("getAlbumScratchesFromUser")]
-        public async Task<IActionResult> GetAlbumScratchesFromUserAsync([FromQuery] int albumId)
+        public async Task<IActionResult> GetAlbumScratchesFromUserAsync([FromQuery] string albumId)
         {
             var currUser = await User.GetCurrentUserAsync(_userService);
 
-            List<CollectionAlbumScratchesDto> result = await _scratchService.GetAlbumScratchesForUserAsync(albumId, currUser.UserId);
+            List<CollectionAlbumScratchesDto> result = await _scratchService.GetAlbumScratchesForUserAsync(currUser.Id, currUser.Id);
             return Ok(result);
         }
 
         [HttpGet("getDetailsById")]
-        public async Task<IActionResult> GetDetailsByIdAsync([FromQuery]int scratchId)
+        public async Task<IActionResult> GetDetailsByIdAsync([FromQuery]string scratchId)
         {
             ScratchDetailsResponseDto result = await _scratchService.GetDetailsById(scratchId);
             

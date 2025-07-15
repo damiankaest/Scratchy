@@ -1,64 +1,170 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Amazon.Runtime.Internal.Util;
+using MongoDB.Bson;
+using MongoDB.Driver;
 using Scratchy.Domain.DTO.DB;
+using Scratchy.Domain.Enum;
 using Scratchy.Domain.Interfaces.Repositories;
+using Scratchy.Domain.Models;
 using Scratchy.Persistence.DB;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Scratchy.Persistence.Repositories
 {
-
-    public class UserBadgeRepository : IUserBadgeRepository
+    public class UserBadgeRepository : MongoRepository<BadgeDocument>, IUserBadgeRepository
     {
-        private readonly ScratchItDbContext _context;
-
-        public UserBadgeRepository(ScratchItDbContext context)
+        public UserBadgeRepository(MongoDbContext context, ILogger<UserBadgeRepository> logger ): base( context , logger)
         {
-            _context = context;
+                
+        }
+        public Task AddAsync(UserBadge userBadge)
+        {
+            throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// Findet einen UserBadge-Eintrag anhand von User und Badge.
-        /// </summary>
-        /// <param name="userId">ID des Benutzers</param>
-        /// <param name="badgeId">ID des Badges</param>
-        /// <returns>UserBadge oder null, falls nicht vorhanden</returns>
-        public async Task<UserBadge> GetByUserAndBadgeAsync(int userId, int badgeId)
+        public Task<IEnumerable<TResult>> AggregateAsync<TResult>(PipelineDefinition<BadgeDocument, TResult> pipeline, CancellationToken cancellationToken = default)
         {
-            return await _context.UserBadges
-                .FirstOrDefaultAsync(ub => ub.UserId == userId && ub.BadgeId == badgeId);
+            throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// Legt einen neuen Eintrag in der UserBadges-Tabelle an.
-        /// </summary>
-        /// <param name="userBadge">Das zu erstellende UserBadge-Objekt</param>
-        public async Task AddAsync(UserBadge userBadge)
+        public Task<TResult?> AggregateSingleAsync<TResult>(PipelineDefinition<BadgeDocument, TResult> pipeline, CancellationToken cancellationToken = default)
         {
-            await _context.UserBadges.AddAsync(userBadge);
-            await _context.SaveChangesAsync();
+            throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// Aktualisiert einen bestehenden Eintrag (z. B. Level-Up).
-        /// </summary>
-        /// <param name="userBadge">Aktualisiertes UserBadge-Objekt</param>
-        public async Task UpdateAsync(UserBadge userBadge)
+        public Task<long> CountAsync(Expression<Func<BadgeDocument, bool>>? filter = null, CancellationToken cancellationToken = default)
         {
-            _context.UserBadges.Update(userBadge);
-            await _context.SaveChangesAsync();
+            throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// Löscht einen Eintrag anhand der eindeutigen ID (Primärschlüssel in UserBadges).
-        /// </summary>
-        /// <param name="userBadgeId">ID des UserBadge-Eintrags</param>
-        public async Task DeleteAsync(int userBadgeId)
+        public Task<BadgeDocument> CreateAsync(BadgeDocument document, CancellationToken cancellationToken = default)
         {
-            var userBadge = await _context.UserBadges.FindAsync(userBadgeId);
-            if (userBadge != null)
-            {
-                _context.UserBadges.Remove(userBadge);
-                await _context.SaveChangesAsync();
-            }
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<BadgeDocument>> CreateManyAsync(IEnumerable<BadgeDocument> documents, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteAsync(int userBadgeId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> DeleteAsync(string id, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> DeleteAsync(ObjectId id, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<long> DeleteManyAsync(Expression<Func<BadgeDocument, bool>> filter, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> ExistsAsync(Expression<Func<BadgeDocument, bool>> filter, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<BadgeDocument>> FindAsync(Expression<Func<BadgeDocument, bool>> filter, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<BadgeDocument>> FindAsync(FilterDefinition<BadgeDocument> filter, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<BadgeDocument?> FindOneAsync(Expression<Func<BadgeDocument, bool>> filter, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<BadgeDocument?> FindOneAsync(FilterDefinition<BadgeDocument> filter, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<BadgeDocument>> GetAllAsync(CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<BadgeDocument?> GetByIdAsync(string id, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<BadgeDocument?> GetByIdAsync(ObjectId id, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<UserBadge> GetByUserAndBadgeAsync(int userId, int badgeId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IMongoCollection<BadgeDocument> GetCollection()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<BadgeDocument>> GetPagedAsync(Expression<Func<BadgeDocument, bool>>? filter = null, Expression<Func<BadgeDocument, object>>? sortBy = null, SortOrder sortOrder = SortOrder.Ascending, int skip = 0, int limit = 50, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<BulkWriteResult<BadgeDocument>> ReplaceManyAsync(IEnumerable<BadgeDocument> documents, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateAsync(UserBadge userBadge)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<BadgeDocument> UpdateAsync(BadgeDocument document, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<long> UpdateManyAsync(Expression<Func<BadgeDocument, bool>> filter, UpdateDefinition<BadgeDocument> update, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<BadgeDocument?> UpdatePartialAsync(string id, UpdateDefinition<BadgeDocument> update, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<BadgeDocument> UpsertAsync(Expression<Func<BadgeDocument, bool>> filter, BadgeDocument document, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<TResult> WithTransactionAsync<TResult>(Func<IClientSessionHandle, Task<TResult>> operations, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task WithTransactionAsync(Func<IClientSessionHandle, Task> operations, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
         }
     }
 }

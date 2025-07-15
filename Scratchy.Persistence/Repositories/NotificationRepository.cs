@@ -1,74 +1,47 @@
-﻿using Microsoft.EntityFrameworkCore;
-using MongoDB.Driver;
-using Scratchy.Domain.DTO.DB;
+﻿using Microsoft.Extensions.Logging;
 using Scratchy.Domain.Interfaces.Repositories;
+using Scratchy.Domain.Models;
 using Scratchy.Persistence.DB;
 
 namespace Scratchy.Persistence.Repositories
 {
-    public class NotificationRepository : INotificationRepository
+    public class NotificationRepository : MongoRepository<NotificationDocument>, INotificationRepository
     {
-        private readonly ScratchItDbContext _context;
-
-        public NotificationRepository(ScratchItDbContext context) 
+        public NotificationRepository(MongoDbContext context, ILogger<NotificationRepository> logger):base(context, logger)
         {
-            _context = context;
+            
+        }
+        public Task AddAsync(NotificationDocument notification)
+        {
+            throw new NotImplementedException();
         }
 
-        public async Task AddAsync(Notification notification)
+        public Task DeleteAsync(int id)
         {
-            _context.Notifications.Add(notification);
-            await _context.SaveChangesAsync();
+            throw new NotImplementedException();
         }
 
-        public async Task<Notification> GetByIdAsync(int id)
+        public Task<NotificationDocument> GetByIdAsync(int id)
         {
-            return await _context.Notifications.FindAsync(id);
+            throw new NotImplementedException();
         }
 
-        public async Task<List<Notification>> GetByUserIdAsync(int userId)
+        public Task<List<NotificationDocument>> GetByUserIdAsync(string userId)
         {
-            return await _context.Notifications
-                .Where(n => n.User.UserId == userId)
-                .OrderByDescending(n => n.CreatedAt)
-                .ToListAsync();
+            throw new NotImplementedException();
         }
 
-        public async Task UpdateAsync(Notification notification)
+        public Task<List<NotificationDocument>> GetUnreadNotificationsAsync(int userId)
         {
-            _context.Notifications.Update(notification);
-            await _context.SaveChangesAsync();
+            throw new NotImplementedException();
         }
 
-        public async Task DeleteAsync(int id)
+        public Task MarkAsReadAsync(int id)
         {
-            var notification = await GetByIdAsync(id);
-            if (notification != null)
-            {
-                _context.Notifications.Remove(notification);
-                await _context.SaveChangesAsync();
-            }
+            throw new NotImplementedException();
         }
 
-        public async Task MarkAsReadAsync(int id)
-        {
-            var notification = await GetByIdAsync(id);
-            if (notification != null && !notification.IsRead)
-            {
-                notification.IsRead = true;
-                await UpdateAsync(notification);
-            }
-        }
-
-        public async Task<List<Notification>> GetUnreadNotificationsAsync(int userId)
-        {
-            return await _context.Notifications
-                .Where(n => n.UserId == userId && !n.IsRead)
-                .OrderByDescending(n => n.CreatedAt)
-                .ToListAsync();
-        }
-
-        public Task<List<Notification>> GetByUserIdAsync(string userId)
+        public Task UpdateAsync(NotificationDocument notification)
         {
             throw new NotImplementedException();
         }

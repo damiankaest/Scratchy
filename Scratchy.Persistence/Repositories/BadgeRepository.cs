@@ -1,12 +1,22 @@
-﻿
-using Scratchy.Domain.DTO.DB;
-using Scratchy.Domain.Interfaces.Repositories;
+﻿using Scratchy.Domain.Interfaces.Repositories;
+using Scratchy.Domain.Models;
+using Scratchy.Persistence.DB;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Scratchy.Persistence.Repositories
 {
-    public class BadgeRepository : IBadgeRepository
+    public class BadgeRepository : MongoRepository<BadgeDocument>, IBadgeRepository
     {
-        public Task AddAsync(Badge badge)
+        public BadgeRepository(MongoDbContext context, ILogger<BadgeRepository> logger) : base(context, logger)
+        {
+            
+        }
+        public Task AddAsync(BadgeDocument badge)
         {
             throw new NotImplementedException();
         }
@@ -21,22 +31,17 @@ namespace Scratchy.Persistence.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Badge>> GetAllAsync()
+        public Task<IEnumerable<BadgeDocument>> GetAllAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task<Badge> GetByIdAsync(string id)
+        public Task<BadgeDocument> GetByIdAsync(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Badge> GetByIdAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdateAsync(Badge badge)
+        public Task UpdateAsync(BadgeDocument badge)
         {
             throw new NotImplementedException();
         }

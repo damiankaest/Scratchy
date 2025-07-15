@@ -31,7 +31,7 @@ namespace Scratchy.Controllers
         public async Task<IActionResult> CreateNewShowCaseAsync(CreateShowCaseRequestDto createDto)
         {
             var currUser = await User.GetCurrentUserAsync(_userService);
-            var result = await _showCaseService.CreateNewShowCaseAsync(createDto, currUser.UserId);
+            var result = await _showCaseService.CreateNewShowCaseAsync(createDto, currUser.Id);
             return Ok(result);
         }
 
@@ -40,7 +40,7 @@ namespace Scratchy.Controllers
         {
             var currUser = await User.GetCurrentUserAsync(_userService);
 
-            var showCaseResult = await _showCaseService.GetAllShowCasesFromUserByIdAsync(currUser.UserId);
+            var showCaseResult = await _showCaseService.GetAllShowCasesFromUserByIdAsync(currUser.Id);
             if (showCaseResult == null)
                 return BadRequest("No Data found :(");
 
@@ -49,7 +49,7 @@ namespace Scratchy.Controllers
 
 
         [HttpGet("getShowCasesByUserId")]
-        public async Task<IActionResult> GetshowCaseByUserIdAsync([FromQuery] int userId)
+        public async Task<IActionResult> GetshowCaseByUserIdAsync([FromQuery] string userId)
         {
             var showCaseResult = await _showCaseService.GetAllShowCasesFromUserByIdAsync(userId);
             if (showCaseResult == null)

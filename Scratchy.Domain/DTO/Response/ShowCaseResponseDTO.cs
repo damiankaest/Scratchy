@@ -9,24 +9,24 @@
 
     public class TrackShowCaseEntity
     {
-        public int ShowCaseId { get; set; } = 0;
+        public string ShowCaseId { get; set; } = "0";
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; }
-        public int TrackId { get; set; }
+        public string TrackId { get; set; }
     }
 
     public class BadgeShowCaseEntity
     {
-        public int ShowCaseId { get; set; } = 0;
+        public string ShowCaseId { get; set; } = "0";
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; }
-        public int BadgeId { get; set; }
+        public string BadgeId { get; set; }
     }
 
     public class AlbumShowCaseEntity
     {
-        public int ShowCaseId { get; set; } = 0;
-        public int AlbumId { get; set; } = 0;
+        public string ShowCaseId { get; set; } = "0";
+        public string AlbumId { get; set; } = "0";
         public string AlbumName { get; set; } = "";
         public string ImageUrl { get; set; } = "";
     }
@@ -42,10 +42,10 @@
     public class ShowCaseResponseEntity
     {
 
-        public int showCaseId { get; set; }
+        public string showCaseId { get; set; }
         public ShowCaseType showCaseType { get; set; }
-        public int firstPlaceEntityId { get; set; }
-        public int secondPlaceEntityId { get; set; }
-        public int thirdPlaceEntityId { get; set; }
+        public string firstPlaceEntityId { get; set; }
+        public string secondPlaceEntityId { get; set; }
+        public string thirdPlaceEntityId { get; set; }
     }
 }

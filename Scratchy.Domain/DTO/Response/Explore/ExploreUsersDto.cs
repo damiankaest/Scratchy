@@ -2,13 +2,14 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Scratchy.Domain.DTO.DB;
+using Scratchy.Domain.Models;
 
 public class ExploreUserDto
     {
 
-    public ExploreUserDto(User user)
+    public ExploreUserDto(UserDocument user)
     {
-        UserId = user.UserId;
+        UserId = user.Id;
         UserName = user.Username;
         UserImg = user.ProfilePictureUrl;
         ScratchCount = 10;
@@ -17,7 +18,7 @@ public class ExploreUserDto
 
     [BsonId]
         [BsonElement("userId")]
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
         [BsonElement("userName")]
         public string UserName { get; set; }

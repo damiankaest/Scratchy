@@ -1,38 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Scratchy.Domain.DTO.DB;
-using Scratchy.Domain.Interfaces.Repositories;
+﻿using Microsoft.Extensions.Logging;
+using Scratchy.Domain.Models;
 using Scratchy.Persistence.DB;
+using Scratchy.Persistence.Repositories;
 
-namespace Scratchy.Persistence.Repositories
+namespace Scratchy.Domain.Interfaces.Repositories
 {
-    public class TrackRepository : ITrackRepository
+    public class TrackRepository : MongoRepository<TrackDocument>, ITrackRepository
     {
-        private readonly ScratchItDbContext _context;
-
-        public TrackRepository(ScratchItDbContext context)
+        public TrackRepository(MongoDbContext context, ILogger<TrackRepository> logger) : base(context, logger)
         {
-            _context = context;
-        }
-        public Task<Track> AddAsync(Track entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task DeleteAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<Track>> GetAllAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<Track> GetByIdAsync(int id) => await _context.Tracks.FirstOrDefaultAsync(x=>x.TrackId == id);
-
-        public Task UpdateAsync(Track entity)
-        {
-            throw new NotImplementedException();
+            
         }
     }
 }

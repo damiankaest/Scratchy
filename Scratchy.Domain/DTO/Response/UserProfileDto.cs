@@ -10,7 +10,7 @@ namespace Scratchy.Domain.DTO.Response
     public class UserProfileDto
     {
         [JsonPropertyName("userId")]
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
         [JsonPropertyName("userName")]
         public string UserName { get; set; }

@@ -18,7 +18,7 @@ namespace Scratchy.Controllers
         }
         [HttpGet]
         [Route("details")]
-        public async Task<IActionResult> SearchByQuery([FromQuery] int artistId)
+        public async Task<IActionResult> SearchByQuery([FromQuery] string artistId)
         {
             var result = await _artistService.GetByIdAsync(artistId);
             var mostScratchedAlbums = new List<PopularAlbumDto>();

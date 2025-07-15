@@ -1,31 +1,31 @@
 ﻿using Scratchy.Domain.DTO.DB;
-using Scratchy.Domain.Interfaces.Services;
+using Scratchy.Domain.Models;
 
 namespace Scratchy.Domain.Interfaces.Repositories
 {
-    public interface ITrackRepository : IRepository<Track>
+    public interface ITrackRepository : IMongoRepository<TrackDocument>
     {
-        public Task<Track> AddAsync(Track entity)
+        public Task<Track> AddAsync(TrackDocument entity)
         {
             throw new NotImplementedException();
         }
 
-        public Task DeleteAsync(int id)
+        public Task DeleteAsync(string id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Track>> GetAllAsync()
+        public Task<IEnumerable<TrackDocument>> GetAllAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task<Track> GetByIdAsync(int id)
+        public Task<TrackDocument> GetByIdAsync(string id)
         {
             throw new NotImplementedException();
         }
 
-        public Task UpdateAsync(Track entity)
+        public Task UpdateAsync(TrackDocument entity)
         {
             throw new NotImplementedException();
         }

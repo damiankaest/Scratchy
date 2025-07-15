@@ -1,145 +1,55 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
-
 using Scratchy.Domain.DTO;
 using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.DTO.Response;
 using Scratchy.Domain.Interfaces.Repositories;
+using Scratchy.Domain.Models;
 using Scratchy.Persistence.DB;
 
-namespace Scratchy.Persistence.Repositories
+namespace Scratchy.Persistence.Repositories;
+
+/// <summary>
+/// MongoDB repository implementation for Scratch operations
+/// </summary>
+public class ScratchRepository : MongoRepository<ScratchDocument>, IScratchRepository
 {
-    public class ScratchRepository : IScratchRepository
+    private readonly ILogger<ScratchRepository> _logger;
+    private readonly IMongoRepository<UserDocument> _userRepository;
+    private readonly IMongoRepository<AlbumDocument> _albumRepository;
+    private readonly IMongoRepository<TrackDocument> _trackRepository;
+
+    public ScratchRepository(
+        MongoDbContext context,
+        ILogger<ScratchRepository> logger,
+        IMongoRepository<UserDocument> userRepository,
+        IMongoRepository<AlbumDocument> albumRepository,
+        IMongoRepository<TrackDocument> trackRepository)
+        : base(context, logger)
     {
-        private readonly ScratchItDbContext _context;
+        _logger = logger;
+        _userRepository = userRepository;
+        _albumRepository = albumRepository;
+        _trackRepository = trackRepository;
+    }
 
-        public ScratchRepository(ScratchItDbContext context)
-        {
-            _context = context;
-        }
+    public Task<IEnumerable<ScratchDocument>> GetByUserAndAlbumIdIdAsync(string userId, string albumId)
+    {
+        throw new NotImplementedException();
+    }
 
-        public async Task<Scratch> AddAsync(Scratch entity)
-        {
-            try
-            {
-                await _context.Scratches.AddAsync(entity);
-                await _context.SaveChangesAsync(); // Save changes to the database
-            }
-            catch (Exception ex)
-            {
+    public Task<IEnumerable<ScratchDocument>> GetByUserIdAsync(string userId)
+    {
+        throw new NotImplementedException();
+    }
 
-                throw;
-            }
+    public Task<IEnumerable<ScratchDocument>> GetScratchesAsync(List<string> userIdList)
+    {
+        throw new NotImplementedException();
+    }
 
-            return entity;
-        }
-
-        public async Task DeleteAsync(int id)
-        {
-            var scratch = await _context.Scratches.FindAsync(id);
-            if (scratch != null)
-            {
-                _context.Scratches.Remove(scratch);
-                await _context.SaveChangesAsync(); // Save changes to the database
-            }
-        }
-
-        public async Task<IEnumerable<Scratch>> GetAllAsync()
-        {
-            return await _context.Scratches.ToListAsync();
-        }
-
-        public async Task<Scratch> GetByIdAsync(int id)
-        {
-            return await _context.Scratches.FindAsync(id);
-        }
-
-        public async Task<IEnumerable<Scratch>> GetByUserAndAlbumIdIdAsync(int userId, int albumId)
-        {
-            try
-            {
-                return await _context.Scratches
-                    .Include(s => s.Album)
-                    .Where(s => s.UserId == userId && s.AlbumId == albumId)
-                    .OrderByDescending(s => s.CreatedAt)
-                    .ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        public async Task<IEnumerable<Scratch>> GetByUserIdAsync(int userId)
-        {
-            try
-            {
-                return await _context.Scratches
-                    .Include(s => s.Album)
-                        .ThenInclude(a => a.Artist) // Einbindung von Artist
-                    .Include(s => s.User) // Einbindung von User
-                    .Where(s => s.UserId == userId)
-                    .OrderByDescending(s => s.CreatedAt)
-                    .ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-        public async Task<IEnumerable<Scratch>> GetScratchesAsync(List<int> userIdList)
-        {
-            try
-            {
-                return await _context.Scratches
-                    .Include(s => s.Album )
-                        .ThenInclude(a => a.Artist) // Einbindung von Artist
-                    .Include(s => s.User) // Einbindung von User
-                    .Where(s => userIdList.Contains(s.User.UserId))
-                    .OrderByDescending(s => s.CreatedAt)
-                    .ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        public Task<IEnumerable<Scratch>> GetScratchesAsync(List<string> userIdList)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task UpdateAsync(Scratch entity)
-        {
-            var existingScratch = await _context.Scratches.FindAsync(entity.ScratchId);
-            if (existingScratch != null)
-            {
-                // Update fields manually or with helper methods, depending on how you want to handle updates
-                existingScratch.Album.Title = entity.Album.Title;
-                existingScratch.Rating = entity.Rating;
-                existingScratch.Album.Title = entity.Album.Title;
-                existingScratch.LikeCounter = entity.LikeCounter;
-                existingScratch.Album.Title = entity.Album.Title;
-                await _context.SaveChangesAsync(); // Save changes to the database
-            }
-        }
-
-        public async Task<CreateScratchResponseDto> UploadAsync(CreateScratchRequestDto newScratch)
-        {
-            //var scratch = new Scratch(newScratch);
-            var response  = new CreateScratchResponseDto(true, "success");
-            //await _context.AddAsync(scratch);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
-            return response;
-        }
+    public Task<CreateScratchResponseDto> UploadAsync(CreateScratchRequestDto newScratch)
+    {
+        throw new NotImplementedException();
     }
 }

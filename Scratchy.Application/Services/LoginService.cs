@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
-
-using Scratchy.Domain.DTO;
+﻿using Scratchy.Domain.DTO;
 using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.DTO.Request;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
+using Scratchy.Domain.Models;
 
 namespace Scratchy.Application.Services
 {
@@ -24,7 +23,7 @@ namespace Scratchy.Application.Services
 
         public async Task<string> RegisterAsync(CreateUserRequestDto createUserDto)
         {
-            var existingUser = await _userRepository.GetByEmailAsync(createUserDto.Email);
+            var existingUser = await _userRepository.FindAsync(createUserDto.Email);
             if (existingUser != null)
                 return "Email already used.";
 
@@ -34,16 +33,16 @@ namespace Scratchy.Application.Services
                 Email = createUserDto.Email
             };
 
-            var passwordHasher = new PasswordHasher<User>();
+            //var passwordHasher = new PasswordHasher<User>();
             //newUser.Password = passwordHasher.HashPassword(newUser, createUserDto.Password);
 
-            await _userRepository.AddAsync(new User());
+            await _userRepository.CreateAsync(new UserDocument());
 
-            var userAddResult = await _userRepository.GetByEmailAsync(createUserDto.Email);
+            var userAddResult = await _userRepository.FindAsync(createUserDto.Email);
             if (userAddResult == null)
                 return "Try login later";
 
-            return userAddResult.UserId.ToString();
+            return userAddResult.ToString();
         }
     }
 }

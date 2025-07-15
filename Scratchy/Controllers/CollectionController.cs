@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
 using Scratchy.Extensions;
-using Scratchy.Persistence.Repositories;
 using Scratchy.Services;
 using System.Security.Claims;
 
@@ -32,7 +31,7 @@ namespace Scratchy.Controllers
         {
             var currUser = await User.GetCurrentUserAsync(_userService);
 
-            var collection = await _collectionService.GetCollectionByUserId(currUser.UserId);
+            var collection = await _collectionService.GetCollectionByUserId(currUser.Id);
             return Ok(collection);
         }
     }

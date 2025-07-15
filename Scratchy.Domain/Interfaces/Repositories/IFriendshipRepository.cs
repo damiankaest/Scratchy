@@ -1,15 +1,16 @@
 ﻿using Scratchy.Domain.DTO.DB;
+using Scratchy.Domain.Models;
 
 namespace Scratchy.Domain.Interfaces.Repositories
 {
-    public interface IFriendshipRepository
+    public interface IFriendshipRepository : IMongoRepository<FollowDocument>
     {
         object GetByUserId(string requestId);
 
-        Task<Follow> GetByIdAsync(string id);
-        Task<List<Follow>> GetByUserIdAsync(string userId);
-        Task AddAsync(Follow friendship);
-        Task UpdateAsync(Follow friendship);
+        Task<FollowDocument> GetByIdAsync(string id);
+        Task<List<FollowDocument>> GetByUserIdAsync(string userId);
+        Task AddAsync(FollowDocument friendship);
+        Task UpdateAsync(FollowDocument friendship);
         Task<List<string>> GetFriendIdsAsync(string userId);
     }
 }

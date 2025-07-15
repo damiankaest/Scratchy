@@ -1,0 +1,95 @@
+name: Deploy to Hetzner VM
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install SSH key
+      uses: webfactory/ssh-agent@v0.9.0
+      with:
+        ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+        
+    - name: Restore dependencies
+      run: dotnet restore ./Scratchy/Scratchy.csproj
+      
+    - name: Build application
+      run: dotnet build ./Scratchy/Scratchy.csproj --configuration Release --no-restore
+      
+    - name: Run tests
+      run: dotnet test ./Scratchy.UnitTests/Scratchy.UnitTests.csproj --no-restore --verbosity normal
+      
+    - name: Publish application
+      run: dotnet publish ./Scratchy/Scratchy.csproj --configuration Release --output ./publish --no-restore
+      
+    - name: Rsync published app to VM
+      run: |
+        rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./publish/ root@167.235.53.32:/opt/scratchy/
+        
+    - name: Write production appsettings.json on VM
+      run: |
+        ssh -o StrictHostKeyChecking=no root@167.235.53.32 << 'EOF'
+          cat > /opt/scratchy/appsettings.json << EOL
+          {
+            "Logging": {
+              "LogLevel": {
+                "Default": "Information",
+                "Microsoft.AspNetCore": "Warning"
+              }
+            },
+            "JwtSettings": {
+              "Secret": "${{ secrets.JWT_SECRET }}",
+              "Issuer": "ScratchItCredGenerator",
+              "Audience": "ScratchItUser",
+              "ExpiryInHours": 1
+            },
+            "Firebase": {
+              "ProjectId": "scratchy-47e73"
+            },
+            "MongoDB": {
+              "ConnectionString": "${{ secrets.MONGODB_CONNECTION_STRING }}",
+              "DatabaseName": "${{ secrets.MONGODB_DATABASE_NAME }}"
+            },
+            "ConnectionStrings": {
+              "BlobStorageConnectionString": "${{ secrets.BLOB_STORAGE_CONNECTION_STRING }}"
+            },
+            "AllowedHosts": "*",
+            "ApplicationInsights": {
+              "ConnectionString": "${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }}"
+            }
+          }
+          EOL
+        EOF
+
+    - name: Write Firebase service account key on VM
+      run: |
+        ssh -o StrictHostKeyChecking=no root@167.235.53.32 << 'EOF'
+          mkdir -p /opt/scratchy/Initializer
+          cat > /opt/scratchy/Initializer/serviceAccountKey.json << EOL
+          ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
+          EOL
+        EOF
+
+    - name: Set permissions and restart app
+      run: |
+        ssh -o StrictHostKeyChecking=no root@167.235.53.32 << 'EOF'
+          cd /opt/scratchy
+          chmod +x Scratchy
+          chown -R www-data:www-data /opt/scratchy
+          systemctl restart scratchy-app || systemctl start scratchy-app
+          systemctl enable scratchy-app
+          sleep 3
+          systemctl status scratchy-app
+        EOF

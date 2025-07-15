@@ -1,7 +1,7 @@
-﻿using Scratchy.Domain.DTO.DB;
-using Scratchy.Domain.DTO.Response.Explore;
+﻿using Scratchy.Domain.DTO.Response.Explore;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
+using Scratchy.Domain.Models;
 
 namespace Scratchy.Application.Services
 {
@@ -20,7 +20,7 @@ namespace Scratchy.Application.Services
                 throw new ArgumentException("Die Suchabfrage darf nicht leer sein.", nameof(query));
             var artistExplorer = new List<ExploreArtistsDto>();
 
-            foreach (var artist in await _artistRepository.GetByQueryAsync(query, limit))
+            foreach (var artist in await _artistRepository.FindAsync(query))
             {
                 artistExplorer.Add(new ExploreArtistsDto(artist));
             }
@@ -28,12 +28,12 @@ namespace Scratchy.Application.Services
             return artistExplorer.Take(limit);
         }
 
-        public async Task<IEnumerable<Artist>> GetAllAsync()
+        public async Task<IEnumerable<ArtistDocument>> GetAllAsync()
         {
             return await _artistRepository.GetAllAsync();
         }
 
-        public async Task<Artist> GetByIdAsync(int id)
+        public async Task<ArtistDocument> GetByIdAsync(string id)
         {
             var artist = await _artistRepository.GetByIdAsync(id);
             if (artist == null)
@@ -42,27 +42,27 @@ namespace Scratchy.Application.Services
             return artist;
         }
 
-        public async Task<Artist> AddAsync(Artist artist)
+        public async Task<ArtistDocument> AddAsync(ArtistDocument artist)
         {
             if (artist == null)
                 throw new ArgumentNullException(nameof(artist));
 
-            return await _artistRepository.AddAsync(artist);
+            return await _artistRepository.CreateAsync(artist);
         }
 
-        public async Task<Artist> UpdateAsync(Artist artist)
+        public async Task<ArtistDocument> UpdateAsync(ArtistDocument artist)
         {
             if (artist == null)
                 throw new ArgumentNullException(nameof(artist));
 
-            var existingArtist = await _artistRepository.GetByIdAsync(1);
+            var existingArtist = await _artistRepository.GetByIdAsync(artist.Id);
             if (existingArtist == null)
-                throw new KeyNotFoundException($"Kein Künstler mit der ID {artist.ArtistId} gefunden.");
+                throw new KeyNotFoundException($"Kein Künstler mit der ID {artist.Id} gefunden.");
 
             return await _artistRepository.UpdateAsync(artist);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(string id)
         {
             var artist = await _artistRepository.GetByIdAsync(id);
             if (artist == null)

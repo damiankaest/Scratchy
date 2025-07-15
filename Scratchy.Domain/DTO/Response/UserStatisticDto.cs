@@ -1,5 +1,6 @@
 ﻿
 using Scratchy.Domain.DTO.DB;
+using Scratchy.Domain.Models;
 
 namespace Scratchy.Domain.DTO.Response
 {
@@ -9,25 +10,25 @@ namespace Scratchy.Domain.DTO.Response
         {
             
         }
-        public UserStatisticDto(IEnumerable<Scratch> listOfScratches)
+        public UserStatisticDto(IEnumerable<ScratchDocument> listOfScratches)
         {
             AlbumCount = CountIndividualAlbums(listOfScratches);
             AvgRating = listOfScratches == null || !listOfScratches.Any() ? 0: CalculateAvgRating(listOfScratches);
             ScratchCount = listOfScratches == null || !listOfScratches.Any() ? 0 : CountScratches(listOfScratches);
         }
 
-        private int CountScratches(IEnumerable<Scratch> listOfScratches) => listOfScratches?.Count() ?? 0;
+        private int CountScratches(IEnumerable<ScratchDocument> listOfScratches) => listOfScratches?.Count() ?? 0;
 
-        private decimal CalculateAvgRating(IEnumerable<Scratch> listOfScratches)=> 
+        private decimal CalculateAvgRating(IEnumerable<ScratchDocument> listOfScratches)=> 
             (decimal)listOfScratches
                 .Where(scratch => scratch.Rating > 0) 
                 .Average(scratch => scratch.Rating);
         
 
-        private int CountIndividualAlbums(IEnumerable<Scratch> listOfScratches) => 
+        private int CountIndividualAlbums(IEnumerable<ScratchDocument> listOfScratches) => 
             listOfScratches
-                .Where(scratch => scratch.AlbumId.HasValue)
-                .Select(scratch => scratch.AlbumId.Value) 
+                .Where(scratch => scratch.Album.AlbumId != null)
+                .Select(scratch => scratch.Album.AlbumId) 
                 .Distinct()                               
                 .Count();
 

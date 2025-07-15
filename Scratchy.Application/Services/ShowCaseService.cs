@@ -21,13 +21,13 @@ namespace Scratchy.Application.Services
             _trackRepository = trackRepository;
         }
 
-        public async Task<int> CreateShowCaseAsync(ShowCase createDto)
+        public async Task<string> CreateShowCaseAsync(ShowCase createDto)
         {
             var result = await _showCaseRepository.AddAsync(createDto);
             return result.Id;
         }
 
-        public async Task<ShowCaseResponseDTO> GetAllShowCasesFromUserByIdAsync(int userId)
+        public async Task<ShowCaseResponseDTO> GetAllShowCasesFromUserByIdAsync(string userId)
         {
             var userShowCases = await _showCaseRepository.GetByUserId(userId);
 
@@ -63,7 +63,7 @@ namespace Scratchy.Application.Services
         {
             var tracksShowCase = new List<TrackShowCaseEntity>();
 
-            var listofTrackIds = new List<int>() { showCase.FirstPlaceEntityId, showCase.SecondPlaceEntityId, showCase.ThirdPlaceEntityId };
+            var listofTrackIds = new List<string>() { showCase.FirstPlaceEntityId, showCase.SecondPlaceEntityId, showCase.ThirdPlaceEntityId };
 
             foreach (var id in listofTrackIds)
             {
@@ -85,7 +85,7 @@ namespace Scratchy.Application.Services
         {
             var albumShowCase = new List<AlbumShowCaseEntity>();
 
-            var listOfAlbumIds = new List<int>() { showCase.FirstPlaceEntityId, showCase.SecondPlaceEntityId, showCase.ThirdPlaceEntityId };
+            var listOfAlbumIds = new List<string>() { showCase.FirstPlaceEntityId, showCase.SecondPlaceEntityId, showCase.ThirdPlaceEntityId };
 
             foreach (var id in listOfAlbumIds)
             {
@@ -95,7 +95,7 @@ namespace Scratchy.Application.Services
                 albumShowCase.Add(new AlbumShowCaseEntity()
                 {
                     ShowCaseId = showCase.Id,
-                    AlbumId = albumInfo.AlbumId,
+                    AlbumId = albumInfo.Id,
                     AlbumName = albumInfo.Title,
                     ImageUrl = albumInfo.CoverImageUrl
                 });
@@ -108,7 +108,7 @@ namespace Scratchy.Application.Services
         {
             var badgesShowCase = new List<BadgeShowCaseEntity>();
 
-            var listOfBadgesId = new List<int>() { showCase.FirstPlaceEntityId, showCase.SecondPlaceEntityId, showCase.ThirdPlaceEntityId };
+            var listOfBadgesId = new List<string>() { showCase.FirstPlaceEntityId, showCase.SecondPlaceEntityId, showCase.ThirdPlaceEntityId };
 
             foreach (var id in listOfBadgesId)
             {
@@ -126,7 +126,7 @@ namespace Scratchy.Application.Services
             return badgesShowCase;
         }
 
-        public async Task<bool> CreateNewShowCaseAsync(CreateShowCaseRequestDto createDto, int userId)
+        public async Task<bool> CreateNewShowCaseAsync(CreateShowCaseRequestDto createDto, string userId)
         {
             await _showCaseRepository.AddAsync(new ShowCase()
             {

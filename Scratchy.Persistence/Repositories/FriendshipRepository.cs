@@ -1,18 +1,29 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Scratchy.Domain.DTO.DB;
+﻿using Amazon.Runtime.Internal.Util;
 using Scratchy.Domain.Interfaces.Repositories;
+using Scratchy.Domain.Models;
 using Scratchy.Persistence.DB;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Scratchy.Persistence.Repositories
 {
-    public class FriendshipRepository : IFriendshipRepository
+    public class FriendshipRepository : MongoRepository<FollowDocument>, IFriendshipRepository
     {
-        public Task AddAsync(Follow friendship)
+        private readonly ILogger<FriendshipRepository> logger;
+        public FriendshipRepository(MongoDbContext context, ILogger<FriendshipRepository> _logger) : base(context,_logger)
+        {
+            
+        }
+        public Task AddAsync(FollowDocument friendship)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Follow> GetByIdAsync(string id)
+        public Task<FollowDocument> GetByIdAsync(string id)
         {
             throw new NotImplementedException();
         }
@@ -22,7 +33,7 @@ namespace Scratchy.Persistence.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<List<Follow>> GetByUserIdAsync(string userId)
+        public Task<List<FollowDocument>> GetByUserIdAsync(string userId)
         {
             throw new NotImplementedException();
         }
@@ -32,7 +43,7 @@ namespace Scratchy.Persistence.Repositories
             throw new NotImplementedException();
         }
 
-        public Task UpdateAsync(Follow friendship)
+        public Task UpdateAsync(FollowDocument friendship)
         {
             throw new NotImplementedException();
         }

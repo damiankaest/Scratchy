@@ -1,8 +1,6 @@
-﻿using Scratchy.Application.Services;
-using Scratchy.Domain.DTO.DB;
-using Scratchy.Domain.DTO.Response;
-using Scratchy.Domain.Interfaces.Repositories;
+﻿using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
+using Scratchy.Domain.Models;
 
 namespace Scratchy.Services
 {
@@ -24,20 +22,19 @@ namespace Scratchy.Services
 
             var userResponseList = new List<ExploreUserDto>();
 
-            foreach (var user in await _userRepository.GetByQueryAsync(query, limit))
+            foreach (var user in await _userRepository.FindAsync(query))
             {
-                
                 userResponseList.Add(new ExploreUserDto(user));
             }
             return userResponseList;
         }
 
-        public async Task<IEnumerable<User>> GetAllAsync()
+        public async Task<IEnumerable<UserDocument>> GetAllAsync()
         {
             return await _userRepository.GetAllAsync();
         }
 
-        public async Task<User> GetByIdAsync(int id)
+        public async Task<UserDocument> GetByIdAsync(string id)
         {
             var user = await _userRepository.GetByIdAsync(id);
             if (user == null)
@@ -46,29 +43,29 @@ namespace Scratchy.Services
             return user;
         }
 
-        public async Task<User> AddAsync(User user)
+        public async Task<UserDocument> AddAsync(UserDocument user)
         {
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
-            return await _userRepository.AddAsync(user);
+            return await _userRepository.CreateAsync(user);
         }
 
-        public async Task<User> UpdateAsync(User user)
+        public async Task<UserDocument> UpdateAsync(UserDocument user)
         {
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
-            var existingUser = await _userRepository.GetByFirebaseIdAsync(user.FirebaseId);
+            var existingUser = await _userRepository.GetByFireBaseId(user.FirebaseId);
             if (existingUser == null)
-                throw new KeyNotFoundException($"Kein Benutzer mit der ID {user.UserId} gefunden.");
+                throw new KeyNotFoundException($"Kein Benutzer mit der ID {user.Id} gefunden.");
 
             return await _userRepository.UpdateAsync(user);
         }
 
         public async Task DeleteAsync(string id)
         {
-            var user = await _userRepository.GetByFirebaseIdAsync(id);
+            var user = await _userRepository.GetByFireBaseId(id);
             if (user == null)
                 throw new KeyNotFoundException($"Kein Benutzer mit der ID {id} gefunden.");
 
@@ -80,16 +77,16 @@ namespace Scratchy.Services
             throw new NotImplementedException();
         }
 
-        public Task<bool> SendFriendRequest(User currentUser, User userResult)
+        public Task<bool> SendFriendRequest(UserDocument currentUser, UserDocument userResult)
         {
             throw new NotImplementedException();
         }
 
-        public Task<User> GetUserByFireBaseId(string currentUserID) => _userRepository.GetByFirebaseIdAsync(currentUserID);
+        public Task<UserDocument> GetUserByFireBaseId(string currentUserID) => _userRepository.GetByFireBaseId(currentUserID);
 
-        public async Task<UserProfileDto> GetUserProfileByIdAsync(int userId, int currentUserId)
+        public async Task<UserDocument> GetUserProfileByIdAsync(string currentUserId)
         {
-            var userProfileDto = await _userRepository.GetUserProfileByIdAsync(userId, currentUserId);
+            var userProfileDto = await _userRepository.GetByIdAsync(currentUserId);
             return userProfileDto;
             
         }

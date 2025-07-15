@@ -3,6 +3,7 @@ using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.DTO.Response;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
+using Scratchy.Domain.Models;
 
 namespace Scratchy.Application.Services
 {
@@ -18,10 +19,10 @@ namespace Scratchy.Application.Services
             _userService = userService;
             _albumService = albumService;
         }
-        public async Task<Scratch> CreateNewAsync(CreateScratchRequestDto newScratch, User currentUser)
+        public async Task<ScratchDocument> CreateNewAsync(CreateScratchRequestDto newScratch, UserDocument currentUser)
         {
-            Album? album = null;
-            if (newScratch.AlbumId != 0)
+            AlbumDocument? album = null;
+            if (newScratch.AlbumId != "0")
             {
                 try
                 {
@@ -40,24 +41,28 @@ namespace Scratchy.Application.Services
             }
 
             // 3. Neues Scratch-Objekt erstellen
-            var scratch = new Scratch
+            var scratch = new ScratchDocument
             {
-                UserId = currentUser.UserId,
-                AlbumId = album?.AlbumId,
+                User =new UserReference(){
+                     UserId = currentUser.Id,
+
+                },
+                Album = new AlbumReference()
+                {
+                    AlbumId = album.Id,
+                },
                 Title = (album?.Title ?? "No Album"), // Beispiel-Title
                 Content = newScratch.Description,
                 Rating = (int)Math.Round(newScratch.Rating),
                 LikeCounter = 0,
                 CreatedAt = DateTime.UtcNow,
-                Tags = new List<Tag>() // Initialisiere Tags, falls später hinzugefügt werden
+                Tags = new List<string>() // Initialisiere Tags, falls später hinzugefügt werden
             };
 
             try
             {
                 // 4. Scratch speichern
-                var result = await _scratchRepository.AddAsync(scratch);
-
-                // 5. Erfolg zurückgeben
+                var result = await _scratchRepository.CreateAsync(scratch);
                 return result;
             }
             catch
@@ -73,7 +78,7 @@ namespace Scratchy.Application.Services
             throw new NotImplementedException();
         }
 
-        public async Task<List<CollectionAlbumScratchesDto>> GetAlbumScratchesForUserAsync(int albumId, int userId)
+        public async Task<List<CollectionAlbumScratchesDto>> GetAlbumScratchesForUserAsync(string albumId, string userId)
         {
             var scratches = await _scratchRepository.GetByUserAndAlbumIdIdAsync(userId, albumId);
 
@@ -82,7 +87,7 @@ namespace Scratchy.Application.Services
                 {
                     CreatedAt = s.CreatedAt,
                     AlbumId = albumId,
-                    ScratchId = s.ScratchId,
+                    ScratchId = s.Id,
                     ImageUrl = s.ScratchImageUrl,
                     Rating = s.Rating,
                     UserId = userId
@@ -92,34 +97,34 @@ namespace Scratchy.Application.Services
             return albumScratches;
         }
 
-        public Task<IEnumerable<Scratch>> GetByUserIdAsync(int userId)
+        public Task<IEnumerable<ScratchDocument>> GetByUserIdAsync(string userId)
         {
             return _scratchRepository.GetByUserIdAsync(userId);
         }
 
-        public async Task<ScratchDetailsResponseDto> GetDetailsById(int scratchId)
+        public async Task<ScratchDetailsResponseDto> GetDetailsById(string scratchId)
         {
-            var scratch = await _scratchRepository.GetByIdAsync(scratchId);
+            var scratch = await _scratchRepository.GetByIdAsync(scratchId.ToString());
             var result = new ScratchDetailsResponseDto()
             {
-                ScratchId = scratch.ScratchId,
-                AlbumId = (int)scratch.AlbumId,
+                ScratchId = scratch.Id,
+                AlbumId = scratch.Album.AlbumId,
                 CreatedAt = scratch.CreatedAt,
                 ImageUrl = scratch.ScratchImageUrl,
                 Rating = scratch.Rating,
-                UserId = scratch.UserId,
+                UserId = scratch.User.UserId,
                 Title = scratch.Title
             };
             return result;
         }
 
-        public async Task<IEnumerable<Scratch>> GetHomeFeedByUserIdListAsync(List<int> homeFeedUserIdList)
+        public async Task<IEnumerable<ScratchDocument>> GetHomeFeedByUserIdListAsync(List<string> homeFeedUserIdList)
         {
             var homeFeed = await _scratchRepository.GetScratchesAsync(homeFeedUserIdList);
             return homeFeed;
         }
 
-        public async Task<List<AlbumShowCaseEntity>> GetIndividualAlbumsByUserIdAsync(int userId)
+        public async Task<List<AlbumShowCaseEntity>> GetIndividualAlbumsByUserIdAsync(string userId)
         {
             var scratches = await _scratchRepository.GetByUserIdAsync(userId);
 
@@ -138,7 +143,7 @@ namespace Scratchy.Application.Services
             return albums;
         }
 
-        public async Task<bool> SetUserImageURLOnScratch(Scratch entity, string imgUrl)
+        public async Task<bool> SetUserImageURLOnScratch(ScratchDocument entity, string imgUrl)
         {
             entity.ScratchImageUrl = imgUrl;
             try
@@ -151,6 +156,11 @@ namespace Scratchy.Application.Services
 
                 throw;
             }
+        }
+
+        Task<IEnumerable<ScratchDocument>> IScratchService.GetHomeFeedByUserIdListAsync(List<string> homeFeedUserIds)
+        {
+            throw new NotImplementedException();
         }
 
         //Task<Scratch> IScratchService.CreateNewAsync(CreateScratchRequestDto newScratch, User currUser)

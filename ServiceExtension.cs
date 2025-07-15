@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MongoDB.Driver;
 using Scratchy.Application.Services;
+using Scratchy.Domain.Configuration;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
 using Scratchy.Persistence.DB;
+using Scratchy.Persistence.HealthChecks;
 using Scratchy.Persistence.Repositories;
 using Scratchy.Services;
 
@@ -36,22 +39,55 @@ public static class ServiceExtensions
         });
     }
 
-    public static void ConfigureDatabase(this IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddDbContext<ScratchItDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-    }
-
     public static void ConfigureRepositories(this IServiceCollection services)
     {
-        services.AddTransient<IUserRepository, UserRepository>();
-        services.AddTransient<IScratchRepository, ScratchRepository>();
-        services.AddTransient<IAlbumRepository, AlbumRepository>();
-        services.AddTransient<ILibraryRepository, LibraryRepository>();
-        services.AddTransient<IArtistRepository, ArtistRepository>();
-        services.AddTransient<IFriendshipRepository, FriendshipRepository>();
-        services.AddTransient<IFollowRepository, FollowRepository>();
-        services.AddTransient<INotificationRepository, NotificationRepository>();
+        // Register the generic MongoDB repository
+        services.AddScoped(typeof(IMongoRepository<>), typeof(MongoRepository<>));
+        
+        // Register specific repositories that extend the base MongoDB repository
+        services.AddScoped<IUserRepository, UserRepository>();
+        // services.AddScoped<IScratchRepository, ScratchRepository>();
+        // services.AddScoped<IAlbumRepository, AlbumRepository>();
+        // services.AddScoped<ILibraryRepository, LibraryRepository>();
+        // services.AddScoped<IArtistRepository, ArtistRepository>();
+        // services.AddScoped<IFollowRepository, FollowRepository>();
+        // services.AddScoped<INotificationRepository, NotificationRepository>();
+        // services.AddScoped<IPostRepository, PostRepository>();
+        // services.AddScoped<IBadgeRepository, BadgeRepository>();
+        // services.AddScoped<ITrackRepository, TrackRepository>();
+    }
+
+    public static void ConfigureMongoDB(this IServiceCollection services, IConfiguration configuration)
+    {
+        // Configure MongoDB settings
+        services.Configure<MongoDBSettings>(configuration.GetSection("MongoDB"));
+        
+        // Register MongoDB client as singleton (MongoDB client is thread-safe)
+        services.AddSingleton<IMongoClient>(serviceProvider =>
+        {
+            var settings = serviceProvider.GetRequiredService<IOptions<MongoDBSettings>>().Value;
+            return new MongoClient(settings.ConnectionString);
+        });
+
+        // Register MongoDB database as scoped
+        services.AddScoped<IMongoDatabase>(serviceProvider =>
+        {
+            var client = serviceProvider.GetRequiredService<IMongoClient>();
+            var settings = serviceProvider.GetRequiredService<IOptions<MongoDBSettings>>().Value;
+            return client.GetDatabase(settings.DatabaseName);
+        });
+        
+        // Register MongoDB context as scoped - explicit registration with dependencies
+        services.AddScoped<MongoDbContext>(serviceProvider =>
+        {
+            var settings = serviceProvider.GetRequiredService<IOptions<MongoDBSettings>>();
+            var logger = serviceProvider.GetRequiredService<ILogger<MongoDbContext>>();
+            return new MongoDbContext(settings, logger);
+        });
+        
+        // Register health check for MongoDB
+        services.AddHealthChecks()
+            .AddCheck<MongoDbHealthCheck>("mongodb");
     }
 
     public static void ConfigureServices(this IServiceCollection services)

@@ -1,24 +1,29 @@
-﻿using MongoDB.Driver;
+﻿using Amazon.Runtime.Internal.Util;
+using Microsoft.Extensions.Logging;
 using MongoDB.Libmongocrypt;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Persistence.DB;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Scratchy.Persistence.Repositories
 {
-    public class LibraryRepository : ILibraryRepository
+    public class LibraryRepository : MongoRepository<LibraryEntry>, ILibraryRepository
     {
-        private readonly ScratchItDbContext _context;
-
-        public LibraryRepository(ScratchItDbContext context) {
-        _context = context;
+        private readonly ILogger<LibraryRepository> _libraryRepository;
+        public LibraryRepository(MongoDbContext context, ILogger<LibraryRepository> logger) : base(context, logger)
+        {
+            
         }
-
         public Task<LibraryEntry> AddAsync(LibraryEntry entity)
         {
             throw new NotImplementedException();
         }
 
-        public Task DeleteAsync(int id)
+        public Task DeleteAsync(string id)
         {
             throw new NotImplementedException();
         }
@@ -29,16 +34,6 @@ namespace Scratchy.Persistence.Repositories
         }
 
         public Task<LibraryEntry> GetByIdAsync(string id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<LibraryEntry> GetByIdAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<LibraryEntry>> GetByUserIdAsync(int userId)
         {
             throw new NotImplementedException();
         }

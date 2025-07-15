@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Scratchy.Application.Services;
+using Scratchy.Domain.Configuration;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Domain.Interfaces.Services;
 using Scratchy.Persistence.DB;
@@ -35,19 +35,9 @@ public static class ServiceExtensions
             });
         });
     }
-
-    public static void ConfigureDatabase(this IServiceCollection services, IConfiguration configuration)
-    {
-
-        //    services.AddDbContextFactory<ScratchItDbContext>(options =>
-        //options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), opt => opt.CommandTimeout(300)));
-
-        services.AddDbContext<ScratchItDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), opt => opt.CommandTimeout(300)));
-    }
-
     public static void ConfigureRepositories(this IServiceCollection services)
     {
+        // MongoDB repositories
         services.AddTransient<IUserRepository, UserRepository>();
         services.AddTransient<IScratchRepository, ScratchRepository>();
         services.AddTransient<IAlbumRepository, AlbumRepository>();
@@ -60,7 +50,19 @@ public static class ServiceExtensions
         services.AddTransient<IUserBadgeRepository,UserBadgeRepository>();
         services.AddTransient<IShowCaseRepository, ShowCaseRepository>();
         services.AddTransient<ITrackRepository, TrackRepository>();
+        services.AddTransient<IPostRepository, PostRepository>();
+    }
 
+    public static void ConfigureMongoDB(this IServiceCollection services, IConfiguration configuration)
+    {
+        // Configure MongoDB settings from appsettings.json
+        services.Configure<MongoDBSettings>(configuration.GetSection(MongoDBSettings.SectionName));
+        
+        // Register MongoDB context as singleton
+        services.AddSingleton<MongoDbContext>();
+        
+        // Register generic MongoDB repository
+        services.AddScoped(typeof(IMongoRepository<>), typeof(MongoRepository<>));
     }
 
     public static void ConfigureServices(this IServiceCollection services)

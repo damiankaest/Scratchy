@@ -8,12 +8,12 @@ Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
 builder.Services.Configure<FormOptions>(options =>
 {
     options.ValueCountLimit = int.MaxValue; // Anzahl der Formulardatenfelder
-    options.MultipartBodyLengthLimit = 104857600; // Maximale Größe für die Datei (100MB)
+    options.MultipartBodyLengthLimit = 104857600; // Maximale Grï¿½ï¿½e fï¿½r die Datei (100MB)
 });
 
 builder.Services.ConfigureCors();
 builder.Services.ConfigureSwagger();
-builder.Services.ConfigureDatabase(builder.Configuration);
+builder.Services.ConfigureMongoDB(builder.Configuration);
 builder.Services.ConfigureRepositories();
 builder.Services.ConfigureServices();
 builder.Services.ConfigureApplicationInsights(builder.Configuration);

@@ -29,7 +29,7 @@ namespace Scratchy.Controllers
         {
             var currUser = await User.GetCurrentUserAsync(_userService);
 
-            var followingIds = await _followerService.GetFollowingAsync(currUser.UserId);
+            var followingIds = await _followerService.GetFollowingAsync(currUser.Id);
             var result = new List<FollowingDto>();
 
             foreach (var followingId in followingIds)
@@ -65,14 +65,14 @@ namespace Scratchy.Controllers
         }
 
         [HttpGet("follow")]
-        public async Task<IActionResult> FollowUser(int receiverId)
+        public async Task<IActionResult> FollowUser(string receiverId)
         {
             var currUser = await User.GetCurrentUserAsync(_userService);
 
             var userResult = await _userService.GetByIdAsync(receiverId);
             try
             {
-                await _followerService.FollowUserAsync(currUser.UserId, userResult.UserId);
+                await _followerService.FollowUserAsync(currUser.Id, userResult.Id);
 
             }
             catch
@@ -85,12 +85,12 @@ namespace Scratchy.Controllers
 
 
         [HttpGet("unfollowUser")]
-        public async Task<IActionResult> UnfollowUser(int receiverId)
+        public async Task<IActionResult> UnfollowUser(string receiverId)
         {
             var currUser = await User.GetCurrentUserAsync(_userService);
             try
             {
-                await _followerService.UnfollowUserAsync(currUser.UserId, receiverId);
+                await _followerService.UnfollowUserAsync(currUser.Id, receiverId);
             }
             catch (Exception)
             {
@@ -104,14 +104,14 @@ namespace Scratchy.Controllers
 
     internal class FollowerDto
     {
-        public int Id { get; internal set; }
+        public string Id { get; internal set; }
         public string UserName { get; internal set; } = string.Empty;
         public string UserImgUrl { get; set; } = string.Empty;
     }
 
     internal class FollowingDto
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string UserName { get; set; } = string.Empty;
         public string UserImgUrl { get; set; } = string.Empty;
         public bool IsFollowing { get; set; }

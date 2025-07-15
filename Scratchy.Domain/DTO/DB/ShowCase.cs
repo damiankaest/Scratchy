@@ -1,18 +1,18 @@
 ﻿using Scratchy.Domain.DTO.Response;
+using Scratchy.Domain.Models;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Scratchy.Domain.DTO.DB
 {
-    public class ShowCase
+    public class ShowCase : BaseDocument
     {
-        public int Id { get; set; }
         [ForeignKey(nameof(User))]
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public virtual User User { get; set; }
         public ShowCaseType Type { get; set; }
-        public int FirstPlaceEntityId { get; set; }
-        public int SecondPlaceEntityId { get; set; }
-        public int ThirdPlaceEntityId { get; set; }
+        public string FirstPlaceEntityId { get; set; }
+        public string SecondPlaceEntityId { get; set; }
+        public string ThirdPlaceEntityId { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime LastUpdate { get; set; }
 

@@ -1,58 +1,44 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Scratchy.Domain.DTO.DB;
+﻿using Microsoft.Extensions.Logging;
 using Scratchy.Domain.Interfaces.Repositories;
+using Scratchy.Domain.Models;
 using Scratchy.Persistence.DB;
 
 namespace Scratchy.Persistence.Repositories
 {
-    public class FollowRepository : IFollowerRepository
+    public class FollowRepository : MongoRepository<FollowDocument>, IFollowerRepository
     {
-        private readonly ScratchItDbContext _context;
-
-        public FollowRepository(ScratchItDbContext context)
+        public FollowRepository(MongoDbContext context, ILogger<FollowRepository> logger) : base(context,logger)
         {
-            _context = context;
+            
+        }
+        public Task AddAsync(FollowDocument follow)
+        {
+            throw new NotImplementedException();
         }
 
-        public async Task AddAsync(Follow follow)
+        public Task<FollowDocument> GetFollowAsync(string followerIdstring, string followingId)
         {
-            _context.Follows.Add(follow);
-            await _context.SaveChangesAsync();
+            throw new NotImplementedException();
         }
 
-        public async Task RemoveAsync(Follow follow)
+        public Task<List<string>> GetFollowersAsync(string userId)
         {
-            _context.Follows.Remove(follow);
-            await _context.SaveChangesAsync();
+            throw new NotImplementedException();
         }
 
-        public async Task<Follow> GetFollowAsync(int followerId, int followingId)
+        public Task<List<string>> GetFollowingAsync(string userId)
         {
-            return await _context.Follows
-                .FirstOrDefaultAsync(f => f.FollowerId == followerId && f.FollowedId == followingId);
+            throw new NotImplementedException();
         }
 
-        public async Task<bool> IsFollowingAsync(int followerId, int followingId)
+        public Task<bool> IsFollowingAsync(string followerId, string followingId)
         {
-            return await _context.Follows
-                .AnyAsync(f => f.FollowerId == followerId && f.FollowedId == followingId);
+            throw new NotImplementedException();
         }
 
-        public async Task<List<int>> GetFollowersAsync(int userId)
+        public Task RemoveAsync(FollowDocument follow)
         {
-            return await _context.Follows
-                .Where(f => f.FollowerId == userId)
-                .Select(f => f.FollowerId)
-                .ToListAsync();
-        } 
-
-        public async Task<List<int>> GetFollowingAsync(int userId)
-        {
-            return await _context.Follows
-                .Where(f => f.FollowerId == userId)
-                .Select(f => f.FollowedId)
-                .ToListAsync();
+            throw new NotImplementedException();
         }
     }
-
 }

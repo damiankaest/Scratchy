@@ -1,28 +1,30 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Extensions.Logging;
 using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.Interfaces.Repositories;
 using Scratchy.Persistence.DB;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Scratchy.Persistence.Repositories
 {
-    public class ShowCaseRepository : IShowCaseRepository
+    public class ShowCaseRepository : MongoRepository<ShowCase>, IShowCaseRepository
     {
-        private readonly ScratchItDbContext _context;
 
-        public ShowCaseRepository(ScratchItDbContext context)
+        public ShowCaseRepository(MongoDbContext context, ILogger<ShowCaseRepository> logger) : base(context, logger)
         {
-            _context = context;  
+            
         }
-        public async Task<ShowCase> AddAsync(ShowCase entity)
+        public Task<ShowCase> AddAsync(ShowCase entity)
         {
-            await _context.AddAsync(entity);
-            _context.SaveChanges();
-            return entity;
+            throw new NotImplementedException();
         }
 
-        public async Task DeleteAsync(int id)
+        public Task DeleteAsync(string id)
         {
-            _context.Remove(id);
+            throw new NotImplementedException();
         }
 
         public Task<IEnumerable<ShowCase>> GetAllAsync()
@@ -30,17 +32,19 @@ namespace Scratchy.Persistence.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<ShowCase> GetByIdAsync(int id)
+        public Task<ShowCase> GetByIdAsync(string id)
         {
-            return await _context.ShowCases.FirstAsync(x=>x.Id == id);
+            throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<ShowCase>> GetByUserId(int userId) => await _context.ShowCases.Where(x => x.UserId == userId).ToListAsync();
-
-        public async Task UpdateAsync(ShowCase entity)
+        public Task<IEnumerable<ShowCase>> GetByUserId(string userId)
         {
-            _context.Update(entity);
-            await _context.SaveChangesAsync();
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateAsync(ShowCase entity)
+        {
+            throw new NotImplementedException();
         }
     }
 }

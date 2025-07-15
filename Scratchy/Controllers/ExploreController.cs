@@ -36,7 +36,7 @@ namespace Scratchy.Controllers
             var artists = await _artistService.GetByQueryAsync(query,10);
             var users = await _userService.GetByQueryAsync(query,10);
 
-            var friendIds = await _followService.GetFollowingAsync(currentUser.UserId);
+            var friendIds = await _followService.GetFollowingAsync(currentUser.Id);
 
             foreach (var user in users)
             {

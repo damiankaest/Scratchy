@@ -1,11 +1,12 @@
 ﻿
 using Scratchy.Domain.DTO.DB;
 using Scratchy.Domain.Interfaces.Services;
+using Scratchy.Domain.Models;
 
 namespace Scratchy.Domain.Interfaces.Repositories
 {
-    public interface IPostRepository : IRepository<Post>
+    public interface IPostRepository : IMongoRepository<PostDocument>
     {
-        public Task<List<Post>> GetAllByUserIdAsync(string userId);
+        public Task<List<PostDocument>> GetAllByUserIdAsync(string userId);
     }
 }
